@@ -67,16 +67,27 @@ const MetricTooltip = ({ title, description }) => (
   <JoyTooltip 
     title={
       <Box sx={{ maxWidth: 280 }}>
-        <Typography level="title-sm" sx={{ mb: 1 }}>
+        <Typography level="title-sm" sx={{ mb: 1, color: 'common.white' }}>
           {title}
         </Typography>
-        <Typography level="body-xs">
+        <Typography level="body-xs" sx={{ color: 'common.white' }}>
           {description}
         </Typography>
       </Box>
     }
     placement="top"
     arrow
+    variant="solid"
+    sx={{
+      backgroundColor: 'neutral.800',
+      color: 'common.white',
+      border: '1px solid',
+      borderColor: 'neutral.700',
+      boxShadow: 'lg',
+      '& .MuiTooltip-arrow': {
+        color: 'neutral.800',
+      }
+    }}
   >
     <IconButton 
       size="sm" 
