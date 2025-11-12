@@ -163,7 +163,7 @@ export default function Signup() {
         minHeight: '100vh', 
         display: 'flex',
         position: 'relative',
-        background: 'linear-gradient(135deg, #4338CA 0%, #312E81 50%, #1E1B4B 100%)',
+  background: 'linear-gradient(135deg, #FBFCFF 0%, #EDEFF5 100%)',
         '&::before': {
           content: '""',
           position: 'absolute',
@@ -220,16 +220,14 @@ export default function Signup() {
             sx={{ 
               mb: 3,
               fontSize: { lg: '2.5rem', xl: '3rem' },
-              fontWeight: 800,
-              background: 'linear-gradient(45deg, #ffffff 0%, #f1f5f9 100%)',
-              backgroundClip: 'text',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
+              fontWeight: 700,
+              color: '#2E2F33',
               lineHeight: 1.1,
               letterSpacing: '-0.02em'
             }}
           >
-            Join the Future of Customer Success
+            Precision in Data.
+            <br /> Clarity in Design.
           </Typography>
           
           <Typography 
@@ -239,7 +237,7 @@ export default function Signup() {
               opacity: 0.9,
               fontSize: '1.125rem',
               lineHeight: 1.4,
-              color: '#e2e8f0',
+              color: '#49505A',
               fontWeight: 400
             }}
           >
@@ -417,8 +415,8 @@ export default function Signup() {
                 {/* Company Information Section */}
                 <Box>
                   <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
-                    <BusinessIcon sx={{ color: '#4338CA' }} fontSize="small" />
-                    <Typography level="title-sm" sx={{ color: '#4338CA', fontWeight: 600 }}>
+                    <BusinessIcon sx={{ color: '#FF6D56' }} fontSize="small" />
+                    <Typography level="title-sm" sx={{ color: '#FF6D56', fontWeight: 600 }}>
                       Company Information
                     </Typography>
                   </Stack>
@@ -449,10 +447,10 @@ export default function Signup() {
                       sx={{
                         borderRadius: '8px',
                         border: '1.5px solid',
-                        borderColor: errors.companyName ? 'danger.400' : '#d1d5db',
+                        borderColor: errors.companyName ? 'danger.400' : '#828392',
                         '&:focus-within': {
-                          borderColor: '#4338CA',
-                          boxShadow: '0 0 0 3px rgba(67, 56, 202, 0.1)'
+                          borderColor: '#FF6D56',
+                          boxShadow: '0 0 0 3px rgba(255, 109, 86, 0.15)'
                         }
                       }}
                     />
@@ -474,10 +472,10 @@ export default function Signup() {
                       sx={{
                         borderRadius: '8px',
                         border: '1.5px solid',
-                        borderColor: errors.companyIndustry ? 'danger.400' : '#d1d5db',
+                        borderColor: errors.companyIndustry ? 'danger.400' : '#828392',
                         '&:focus-within': {
-                          borderColor: '#4338CA',
-                          boxShadow: '0 0 0 3px rgba(67, 56, 202, 0.1)'
+                          borderColor: '#FF6D56',
+                          boxShadow: '0 0 0 3px rgba(255, 109, 86, 0.15)'
                         }
                       }}
                     >
@@ -507,10 +505,10 @@ export default function Signup() {
                       sx={{
                         borderRadius: '8px',
                         border: '1.5px solid',
-                        borderColor: errors.companySize ? 'danger.400' : '#d1d5db',
+                        borderColor: errors.companySize ? 'danger.400' : '#828392',
                         '&:focus-within': {
-                          borderColor: '#4338CA',
-                          boxShadow: '0 0 0 3px rgba(67, 56, 202, 0.1)'
+                          borderColor: '#FF6D56',
+                          boxShadow: '0 0 0 3px rgba(255, 109, 86, 0.15)'
                         }
                       }}
                     >
@@ -531,8 +529,8 @@ export default function Signup() {
                 {/* Personal Information Section */}
                 <Box>
                   <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
-                    <PersonIcon sx={{ color: '#4338CA' }} fontSize="small" />
-                    <Typography level="title-sm" sx={{ color: '#4338CA', fontWeight: 600 }}>
+                    <PersonIcon sx={{ color: '#FF6D56' }} fontSize="small" />
+                    <Typography level="title-sm" sx={{ color: '#FF6D56', fontWeight: 600 }}>
                       Personal Information
                     </Typography>
                   </Stack>
@@ -548,10 +546,10 @@ export default function Signup() {
                         sx={{
                           borderRadius: '8px',
                           border: '1.5px solid',
-                          borderColor: errors.fullName ? 'danger.400' : '#d1d5db',
+                          borderColor: errors.fullName ? 'danger.400' : '#828392',
                           '&:focus-within': {
-                            borderColor: '#4338CA',
-                            boxShadow: '0 0 0 3px rgba(67, 56, 202, 0.1)'
+                            borderColor: '#FF6D56',
+                            boxShadow: '0 0 0 3px rgba(255, 109, 86, 0.15)'
                           }
                         }}
                       />
@@ -570,10 +568,10 @@ export default function Signup() {
                           disabled={isSubmitting}
                           sx={{
                             borderRadius: '8px',
-                            border: '1.5px solid #d1d5db',
+                            border: '1.5px solid #828392',
                             '&:focus-within': {
-                              borderColor: '#4338CA',
-                              boxShadow: '0 0 0 3px rgba(67, 56, 202, 0.1)'
+                              borderColor: '#FF6D56',
+                              boxShadow: '0 0 0 3px rgba(255, 109, 86, 0.15)'
                             }
                           }}
                         />
@@ -587,10 +585,10 @@ export default function Signup() {
                           disabled={isSubmitting}
                           sx={{
                             borderRadius: '8px',
-                            border: '1.5px solid #d1d5db',
+                            border: '1.5px solid #828392',
                             '&:focus-within': {
-                              borderColor: '#4338CA',
-                              boxShadow: '0 0 0 3px rgba(67, 56, 202, 0.1)'
+                              borderColor: '#FF6D56',
+                              boxShadow: '0 0 0 3px rgba(255, 109, 86, 0.15)'
                             }
                           }}
                         >
@@ -610,8 +608,8 @@ export default function Signup() {
                 {/* Account Credentials Section */}
                 <Box>
                   <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
-                    <EmailIcon sx={{ color: '#4338CA' }} fontSize="small" />
-                    <Typography level="title-sm" sx={{ color: '#4338CA', fontWeight: 600 }}>
+                    <EmailIcon sx={{ color: '#FF6D56' }} fontSize="small" />
+                    <Typography level="title-sm" sx={{ color: '#FF6D56', fontWeight: 600 }}>
                       Account Credentials
                     </Typography>
                   </Stack>
@@ -628,10 +626,10 @@ export default function Signup() {
                         sx={{
                           borderRadius: '8px',
                           border: '1.5px solid',
-                          borderColor: errors.email ? 'danger.400' : '#d1d5db',
+                          borderColor: errors.email ? 'danger.400' : '#828392',
                           '&:focus-within': {
-                            borderColor: '#4338CA',
-                            boxShadow: '0 0 0 3px rgba(67, 56, 202, 0.1)'
+                            borderColor: '#FF6D56',
+                            boxShadow: '0 0 0 3px rgba(255, 109, 86, 0.15)'
                           }
                         }}
                       />
@@ -651,10 +649,10 @@ export default function Signup() {
                         sx={{
                           borderRadius: '8px',
                           border: '1.5px solid',
-                          borderColor: errors.password ? 'danger.400' : '#d1d5db',
+                          borderColor: errors.password ? 'danger.400' : '#828392',
                           '&:focus-within': {
-                            borderColor: '#4338CA',
-                            boxShadow: '0 0 0 3px rgba(67, 56, 202, 0.1)'
+                            borderColor: '#FF6D56',
+                            boxShadow: '0 0 0 3px rgba(255, 109, 86, 0.15)'
                           }
                         }}
                       />
@@ -674,10 +672,10 @@ export default function Signup() {
                         sx={{
                           borderRadius: '8px',
                           border: '1.5px solid',
-                          borderColor: errors.confirmPassword ? 'danger.400' : '#d1d5db',
+                          borderColor: errors.confirmPassword ? 'danger.400' : '#828392',
                           '&:focus-within': {
-                            borderColor: '#4338CA',
-                            boxShadow: '0 0 0 3px rgba(67, 56, 202, 0.1)'
+                            borderColor: '#FF6D56',
+                            boxShadow: '0 0 0 3px rgba(255, 109, 86, 0.15)'
                           }
                         }}
                       />
@@ -695,7 +693,7 @@ export default function Signup() {
                   loading={isSubmitting}
                   disabled={isSubmitting}
                   sx={{
-                    background: 'linear-gradient(45deg, #4338CA 0%, #312E81 100%)',
+                    background: '#FF6D56',
                     color: 'white',
                     borderRadius: '12px',
                     py: 1.5,
@@ -703,7 +701,7 @@ export default function Signup() {
                     fontWeight: 600,
                     mt: 2,
                     '&:hover': {
-                      background: 'linear-gradient(45deg, #3730A3 0%, #1E1B4B 100%)',
+                      background: '#E55F4C',
                       transform: 'translateY(-1px)',
                       boxShadow: '0 10px 25px -5px rgba(67, 56, 202, 0.4)'
                     },
@@ -726,7 +724,7 @@ export default function Signup() {
                       level="body-sm"
                       sx={{ 
                         fontWeight: 600,
-                        color: '#4338CA',
+                        color: '#FF6D56',
                         textDecoration: 'none',
                         '&:hover': {
                           textDecoration: 'underline'

@@ -99,7 +99,7 @@ export default function Signin() {
         minHeight: '100vh', 
         display: 'flex',
         position: 'relative',
-        background: 'linear-gradient(135deg, #4338CA 0%, #312E81 50%, #1E1B4B 100%)',
+  background: 'linear-gradient(135deg, #FBFCFF 0%, #EDEFF5 100%)',
         '&::before': {
           content: '""',
           position: 'absolute',
@@ -156,16 +156,14 @@ export default function Signin() {
             sx={{ 
               mb: 3,
               fontSize: { lg: '2.5rem', xl: '3rem' },
-              fontWeight: 800,
-              background: 'linear-gradient(45deg, #ffffff 0%, #f1f5f9 100%)',
-              backgroundClip: 'text',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
+              fontWeight: 700,
+              color: '#2E2F33',
               lineHeight: 1.1,
               letterSpacing: '-0.02em'
             }}
           >
-            Scale Customer Success with Intelligence
+            Precision in Data.
+            <br /> Clarity in Design.
           </Typography>
           
           <Typography 
@@ -175,7 +173,7 @@ export default function Signin() {
               opacity: 0.9,
               fontSize: '1.125rem',
               lineHeight: 1.4,
-              color: '#e2e8f0',
+              color: '#49505A',
               fontWeight: 400
             }}
           >
@@ -237,7 +235,7 @@ export default function Signin() {
                     sx={{ 
                       opacity: 0.85,
                       lineHeight: 1.4,
-                      color: '#cbd5e1'
+                      color: '#6A717D'
                     }}
                   >
                     {feature.desc}
@@ -307,11 +305,8 @@ export default function Signin() {
                 level="h2" 
                 sx={{ 
                   mb: 1,
-                  background: 'linear-gradient(45deg, #4338CA 0%, #312E81 100%)',
-                  backgroundClip: 'text',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  fontWeight: 800,
+                    color: '#2E2F33',
+                    fontWeight: 700,
                   fontSize: { xs: '1.75rem', md: '2rem' }
                 }}
               >
@@ -326,7 +321,7 @@ export default function Signin() {
                   color: '#5a6169'
                 }}
               >
-                Sign in to continue your customer success journey
+                Sign in to continue with SubZero insights
               </Typography>
             </Box>
 
@@ -361,16 +356,16 @@ export default function Signin() {
                     startDecorator={<EmailIcon sx={{ color: '#4338CA' }} />}
                     sx={{
                       borderRadius: '12px',
-                      border: '2px solid #e5e7eb',
-                      bgcolor: '#fafafa',
+                      border: '1px solid #828392',
+                      bgcolor: '#FBFCFF',
                       '&:hover': {
-                        borderColor: '#4338CA',
-                        bgcolor: '#ffffff'
+                        borderColor: '#FF6D56',
+                        bgcolor: '#FFFFFF'
                       },
                       '&:focus-within': {
-                        borderColor: '#4338CA',
+                        borderColor: '#FF6D56',
                         bgcolor: '#ffffff',
-                        boxShadow: '0 0 0 3px rgba(67, 56, 202, 0.1)',
+                        boxShadow: '0 0 0 3px rgba(255, 109, 86, 0.15)',
                       }
                     }}
                   />
@@ -390,16 +385,16 @@ export default function Signin() {
                     startDecorator={<LockIcon sx={{ color: '#4338CA' }} />}
                     sx={{
                       borderRadius: '12px',
-                      border: '2px solid #e5e7eb',
-                      bgcolor: '#fafafa',
+                      border: '1px solid #828392',
+                      bgcolor: '#FBFCFF',
                       '&:hover': {
-                        borderColor: '#4338CA',
-                        bgcolor: '#ffffff'
+                        borderColor: '#FF6D56',
+                        bgcolor: '#FFFFFF'
                       },
                       '&:focus-within': {
-                        borderColor: '#4338CA',
+                        borderColor: '#FF6D56',
                         bgcolor: '#ffffff',
-                        boxShadow: '0 0 0 3px rgba(67, 56, 202, 0.1)',
+                        boxShadow: '0 0 0 3px rgba(255, 109, 86, 0.15)',
                       }
                     }}
                   />
@@ -426,7 +421,7 @@ export default function Signin() {
                           bgcolor: 'rgba(67, 56, 202, 0.1)'
                         }
                       },
-                      color: '#374151'
+                        color: '#2E2F33'
                     }}
                   />
                   <Link 
@@ -439,7 +434,7 @@ export default function Signin() {
                     }}
                     sx={{ 
                       fontWeight: 600,
-                      color: '#4338CA',
+                      color: '#FF6D56',
                       textDecoration: 'none',
                       '&:hover': {
                         color: '#312E81'
@@ -457,7 +452,7 @@ export default function Signin() {
                   loading={isSubmitting}
                   disabled={isSubmitting}
                   sx={{
-                    background: 'linear-gradient(45deg, #4338CA 0%, #8B5CF6 100%)',
+                    background: '#FF6D56',
                     color: 'white',
                     borderRadius: '12px',
                     py: 1.75,
@@ -467,8 +462,8 @@ export default function Signin() {
                     border: 'none',
                     textTransform: 'none',
                     '&:hover': {
-                      background: 'linear-gradient(45deg, #3730A3 0%, #7C3AED 100%)',
-                      boxShadow: '0 12px 24px rgba(67, 56, 202, 0.4)',
+                      background: '#E55F4C',
+                      boxShadow: '0 8px 20px rgba(130,131,146,0.18)',
                       transform: 'translateY(-2px)',
                     },
                     '&:active': {
@@ -487,7 +482,7 @@ export default function Signin() {
                     color="neutral" 
                     sx={{ 
                       px: 2,
-                      color: '#6b7280',
+                      color: '#49505A',
                       fontWeight: 500
                     }}
                   >
@@ -548,15 +543,15 @@ export default function Signin() {
                         px: 2,
                         py: 1,
                         borderRadius: '8px',
-                        bgcolor: 'rgba(67, 56, 202, 0.1)',
-                        border: '1px solid rgba(67, 56, 202, 0.2)'
+                        bgcolor: 'rgba(255, 109, 86, 0.1)',
+                        border: '1px solid rgba(255, 109, 86, 0.2)'
                       }}
                     >
                       <Typography sx={{ fontSize: '1rem' }}>⭐</Typography>
                       <Typography 
                         level="body-xs" 
                         sx={{ 
-                          color: '#4338CA',
+                          color: '#FF6D56',
                           fontWeight: 600
                         }}
                       >
