@@ -129,7 +129,7 @@ export default function Analytics() {
       if (client.contract?.startDate && client.mrr) {
         const startDate = new Date(client.contract.startDate);
         const monthKey = `${startDate.getFullYear()}-${String(startDate.getMonth() + 1).padStart(2, '0')}`;
-        mrrByMonth[monthKey] = (mrrByMonth[monthKey] || 0) + client.mrr;
+        mrrByMonth[monthKey] = (mrrByMonth[monthKey] || 0) + (Number(client.mrr) || 0);
       }
     });
 
@@ -152,7 +152,7 @@ export default function Analytics() {
             renewalsByMonth[monthKey] = { count: 0, mrr: 0 };
           }
           renewalsByMonth[monthKey].count += 1;
-          renewalsByMonth[monthKey].mrr += client.mrr;
+          renewalsByMonth[monthKey].mrr += (Number(client.mrr) || 0);
         }
       }
     });
@@ -169,13 +169,13 @@ export default function Analytics() {
 
     // Top customers by MRR
     const topCustomersByMRR = [...clients]
-      .sort((a, b) => (b.mrr || 0) - (a.mrr || 0))
+      .sort((a, b) => (Number(b.mrr) || 0) - (Number(a.mrr) || 0))
       .slice(0, 10)
       .map(client => ({
         id: client.client?.id,
         name: client.company?.name || 'Unknown',
-        mrr: client.mrr || 0,
-        ltv: client.ltv || 0,
+        mrr: Number(client.mrr) || 0,
+        ltv: Number(client.ltv) || 0,
         endDate: client.contract?.endDate || 'N/A'
       }));
 
@@ -189,7 +189,7 @@ export default function Analytics() {
     ];
 
     clients.forEach(client => {
-      const ltv = client.ltv || 0;
+      const ltv = Number(client.ltv) || 0;
       const bucket = ltvBuckets.find(b => ltv >= b.min && ltv < b.max);
       if (bucket) bucket.count++;
     });
@@ -200,8 +200,8 @@ export default function Analytics() {
       const monthsOld = startDate ? Math.floor((now - startDate) / (1000 * 60 * 60 * 24 * 30)) : 0;
       return {
         age: monthsOld,
-        mrr: client.mrr || 0,
-        ltv: client.ltv || 0,
+        mrr: Number(client.mrr) || 0,
+        ltv: Number(client.ltv) || 0,
         name: client.company?.name || 'Unknown'
       };
     }).filter(d => d.age > 0 && d.mrr > 0);
@@ -287,15 +287,15 @@ export default function Analytics() {
       return renewalDate <= sixtyDaysFromNow && renewalDate >= now;
     });
 
-    const renewalPipeline30Days = contractsRenewing30Days.reduce((sum, client) => sum + (client.mrr || 0), 0);
-    const renewalPipeline60Days = contractsRenewing60Days.reduce((sum, client) => sum + (client.mrr || 0), 0);
-    const avgContractLength = clients.reduce((sum, client) => sum + (client.subscribedMonths || 0), 0) / clients.length;
+    const renewalPipeline30Days = contractsRenewing30Days.reduce((sum, client) => sum + (Number(client.mrr) || 0), 0);
+    const renewalPipeline60Days = contractsRenewing60Days.reduce((sum, client) => sum + (Number(client.mrr) || 0), 0);
+    const avgContractLength = clients.reduce((sum, client) => sum + (Number(client.subscribedMonths) || 0), 0) / clients.length;
 
     // At-Risk Analysis
-    const medianLTV = [...clients].sort((a, b) => (a.ltv || 0) - (b.ltv || 0))[Math.floor(clients.length / 2)]?.ltv || 0;
+    const medianLTV = [...clients].sort((a, b) => (Number(a.ltv) || 0) - (Number(b.ltv) || 0))[Math.floor(clients.length / 2)]?.ltv || 0;
     const atRiskContracts = clients.filter(client => {
       const renewalDate = client.renewal?.date ? new Date(client.renewal.date) : null;
-      const lowLTV = (client.ltv || 0) < medianLTV;
+      const lowLTV = (Number(client.ltv) || 0) < medianLTV;
       const renewingSoon = renewalDate && renewalDate <= thirtyDaysFromNow;
       return lowLTV || renewingSoon;
     });
