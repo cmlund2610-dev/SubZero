@@ -24,6 +24,7 @@ const Account = lazy(() => import('./pages/Account.jsx'));
 const Profile = lazy(() => import('./components/Profile.jsx'));
 const UserManagement = lazy(() => import('./components/UserManagement.jsx'));
 const Billing = lazy(() => import('./components/Billing.jsx'));
+const Settings = lazy(() => import('./components/Settings.jsx'));
 
 // Auth components
 const Signin = lazy(() => import('./components/auth/Signin.jsx'));
@@ -90,6 +91,10 @@ export const router = createBrowserRouter([
       {
         path: 'profile',
         element: <Profile />
+      },
+      {
+        path: 'settings',
+        element: <Settings />
       },
       {
         path: 'users',

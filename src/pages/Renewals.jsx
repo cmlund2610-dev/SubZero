@@ -110,10 +110,10 @@ export default function Renewals() {
               <Button 
                 size="lg"
                 sx={{
-                  background: 'linear-gradient(45deg, #8B5CF6 0%, #06B6D4 100%)',
+                  background: '#FF6D56',
                   color: 'white',
                   '&:hover': {
-                    background: 'linear-gradient(45deg, #7C3AED 0%, #0891B2 100%)',
+                    background: '#E55F4C',
                   }
                 }}
                 onClick={() => window.location.href = '/data'}

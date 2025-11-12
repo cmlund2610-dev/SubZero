@@ -62,9 +62,9 @@ export default function Clients() {
               sx={{
                 px: 4,
                 py: 1.5,
-                background: 'linear-gradient(45deg, #4338CA, #7C3AED)',
+                background: '#FF6D56',
                 '&:hover': {
-                  background: 'linear-gradient(45deg, #3730A3, #6D28D9)',
+                  background: '#E55F4C',
                 }
               }}
             >
