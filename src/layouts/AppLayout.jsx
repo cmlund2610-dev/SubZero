@@ -124,7 +124,11 @@ export default function AppLayout() {
             <NavItem to="/data" icon={<CloudUpload />}>
               Data Import
             </NavItem>
-            <NavItem to="/account" icon={<Settings />}>
+            {/* Account and Settings are separate destinations */}
+            <NavItem to="/account" icon={<Person />}>
+              Account
+            </NavItem>
+            <NavItem to="/settings" icon={<Settings />}>
               Settings
             </NavItem>
             
@@ -151,10 +155,10 @@ export default function AppLayout() {
             sx={{ 
               p: 2, 
               mb: 2,
-              background: 'linear-gradient(135deg, rgba(67, 56, 202, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%)',
+              background: 'linear-gradient(135deg, rgba(255, 109, 86, 0.10) 0%, rgba(255, 109, 86, 0.15) 100%)',
               cursor: 'pointer',
               '&:hover': {
-                background: 'linear-gradient(135deg, rgba(67, 56, 202, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%)'
+                background: 'linear-gradient(135deg, rgba(255, 109, 86, 0.15) 0%, rgba(255, 109, 86, 0.20) 100%)'
               }
             }}
             onClick={() => navigate('/profile')}
@@ -171,7 +175,7 @@ export default function AppLayout() {
                 <Typography level="body-xs" color="neutral">
                   {jobTitle}
                 </Typography>
-                <Typography level="body-xs" sx={{ color: '#4338CA', fontWeight: 500 }}>
+                <Typography level="body-xs" sx={{ color: '#FF6D56', fontWeight: 500 }}>
                   {companyName} • {roleDisplay}
                 </Typography>
               </Stack>
@@ -223,7 +227,7 @@ export default function AppLayout() {
               left: 0,
               right: 0,
               bottom: 0,
-              backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(67, 56, 202, 0.05) 1px, transparent 0)',
+              backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(255, 109, 86, 0.06) 1px, transparent 0)',
               backgroundSize: '40px 40px',
               pointerEvents: 'none',
               zIndex: 0
