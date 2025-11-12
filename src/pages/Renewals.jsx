@@ -323,14 +323,13 @@ export default function Renewals() {
         <Table hoverRow>
           <thead>
             <tr>
-              <th style={{ width: '20%' }}>Company</th>
-              <th style={{ width: '12%' }}>Days Until</th>
-              <th style={{ width: '13%' }}>Renewal Date</th>
-              <th style={{ width: '13%' }}>Current MRR</th>
-              <th style={{ width: '13%' }}>Proposed MRR</th>
-              <th style={{ width: '10%' }}>Stage</th>
-              <th style={{ width: '10%' }}>Probability</th>
-              <th style={{ width: '9%' }}>CSM</th>
+              <th style={{ width: '22%' }}>Company</th>
+              <th style={{ width: '13%' }}>Days Until</th>
+              <th style={{ width: '15%' }}>Renewal Date</th>
+              <th style={{ width: '15%' }}>Current MRR</th>
+              <th style={{ width: '13%' }}>Stage</th>
+              <th style={{ width: '12%' }}>Probability</th>
+              <th style={{ width: '10%' }}>CSM</th>
             </tr>
           </thead>
           <tbody>
@@ -370,22 +369,6 @@ export default function Renewals() {
                   <Typography level="body-sm">
                     {formatCurrency(renewal.currentMRR)}
                   </Typography>
-                </td>
-                <td>
-                  <Stack spacing={0.5}>
-                    <Typography level="body-sm" sx={{ fontWeight: 600 }}>
-                      {formatCurrency(renewal.proposedMRR)}
-                    </Typography>
-                    {renewal.proposedMRR !== renewal.currentMRR && (
-                      <Typography 
-                        level="body-xs" 
-                        color={renewal.proposedMRR > renewal.currentMRR ? 'success' : 'danger'}
-                      >
-                        {renewal.proposedMRR > renewal.currentMRR ? '+' : ''}
-                        {formatCurrency(renewal.proposedMRR - renewal.currentMRR)}
-                      </Typography>
-                    )}
-                  </Stack>
                 </td>
                 <td>
                   <Select
