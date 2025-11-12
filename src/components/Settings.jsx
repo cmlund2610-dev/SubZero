@@ -16,9 +16,9 @@ export default function Settings() {
   return (
     <PageContainer>
       <PageHeader
-        icon={<SettingsIcon />}
+        icon={SettingsIcon}
         title="Settings"
-        subtitle="Manage your preferences and application settings"
+        description="Manage your preferences and application settings"
       />
 
       <Tabs defaultValue={0} sx={{ bgcolor: 'transparent' }}>
