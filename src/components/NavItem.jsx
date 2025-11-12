@@ -12,35 +12,25 @@
 
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { ListItem, ListItemButton, ListItemDecorator, Typography } from '@mui/joy';
+import { ListItem, ListItemButton, Typography, Box } from '@mui/joy';
+import { navRowButtonSx, navIconBoxSx, navIconSx, navItemLabelSx } from './navStyles.js';
 
 export default function NavItem({ to, icon, children }) {
   return (
-    <ListItem>
+    <ListItem sx={{ p: 0 }}>
       <ListItemButton
         component={NavLink}
         to={to}
-        sx={({ vars }) => ({
-          borderRadius: 'md',
-          '&.active': {
-            bgcolor: 'primary.softBg',
-            color: 'primary.softColor',
-            fontWeight: 600,
-            '& .MuiListItemDecorator-root': {
-              color: 'inherit'
-            }
-          },
-          '&:hover': {
-            bgcolor: 'background.level1'
-          }
-        })}
+        sx={navRowButtonSx}
       >
-        <ListItemDecorator sx={{ color: 'neutral.500' }}>
-          {icon}
-        </ListItemDecorator>
-        <Typography level="body-sm" sx={{ fontWeight: 500 }}>
-          {children}
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box sx={navIconBoxSx}>
+            {icon && React.cloneElement(icon, { sx: navIconSx })}
+          </Box>
+          <Typography level="body-sm" sx={navItemLabelSx}>
+            {children}
+          </Typography>
+        </Box>
       </ListItemButton>
     </ListItem>
   );

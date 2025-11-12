@@ -5,54 +5,48 @@
  */
 
 import React, { useState } from 'react';
-import { Box, Typography, List, ListItem, ListItemButton, ListItemContent } from '@mui/joy';
+import { Box, Typography, List, ListItemButton, ListItem } from '@mui/joy';
 import { KeyboardArrowDown } from '@mui/icons-material';
+import { navRowButtonSx, navIconBoxSx, navIconSx, navItemLabelSx } from './navStyles.js';
 import NavItem from './NavItem.jsx';
 
 export default function CollapsibleNavSection({ 
   title, 
   children, 
-  defaultExpanded = true 
+  defaultExpanded = true,
+  icon: IconComponent
 }) {
   const [expanded, setExpanded] = useState(defaultExpanded);
 
   return (
     <Box sx={{ mb: 1 }}>
       {/* Section Header */}
-      <ListItemButton
-        onClick={() => setExpanded(!expanded)}
-        sx={{
-          px: 2,
-          py: 1,
-          borderRadius: 'sm',
-          '&:hover': {
-            bgcolor: 'transparent',
-          },
-        }}
-      >
-        <ListItemContent>
-          <Typography
-            level="body-xs"
-            sx={{
-              fontWeight: 700,
-              textTransform: 'uppercase',
-              letterSpacing: '0.08em',
-              color: 'text.tertiary',
-              fontSize: '0.6875rem',
-            }}
-          >
-            {title}
-          </Typography>
-        </ListItemContent>
-        <KeyboardArrowDown
+      <ListItem sx={{ p: 0 }}>
+        <ListItemButton 
+          onClick={() => setExpanded(!expanded)} 
           sx={{
-            fontSize: 18,
-            color: 'text.tertiary',
-            transform: expanded ? 'rotate(0deg)' : 'rotate(-90deg)',
-            transition: 'transform 0.2s ease',
+            ...navRowButtonSx,
+            justifyContent: 'space-between',
           }}
-        />
-      </ListItemButton>
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={navIconBoxSx}>
+              {IconComponent && <IconComponent sx={navIconSx} />}
+            </Box>
+            <Typography level="body-sm" sx={navItemLabelSx}>
+              {title}
+            </Typography>
+          </Box>
+          <KeyboardArrowDown
+            sx={{
+              fontSize: 18,
+              color: 'text.tertiary',
+              transform: expanded ? 'rotate(0deg)' : 'rotate(-90deg)',
+              transition: 'transform 0.2s ease',
+            }}
+          />
+        </ListItemButton>
+      </ListItem>
 
       {/* Child Items */}
       {expanded && (

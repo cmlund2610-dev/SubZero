@@ -36,7 +36,10 @@ import {
   Logout,
   Person,
   CreditCard,
-  Diamond
+  Diamond,
+  AccessibilityNew,
+  PieChartOutline,
+  ManageAccounts
 } from '@mui/icons-material';
 
 import NavItem from '../components/NavItem.jsx';
@@ -114,26 +117,26 @@ export default function AppLayout() {
               Home
             </NavItem>
             
-            <CollapsibleNavSection title="Clients" defaultExpanded={false}>
+            <CollapsibleNavSection title="Clients" defaultExpanded={false} icon={AccessibilityNew}>
               <NavItem to="/clients" icon={<Diamond />}>
-                Clients overview
+                Client overview
               </NavItem>
               <NavItem to="/renewals" icon={<Receipt />}>
-                Contract Renewals
+                Contract renewals
               </NavItem>
             </CollapsibleNavSection>
             
-            <CollapsibleNavSection title="Analytics" defaultExpanded={false}>
+            <CollapsibleNavSection title="Analytics" defaultExpanded={false} icon={PieChartOutline}>
               <NavItem to="/analytics" icon={<BarChart />}>
-                Metrics & Data
+                Metrics
               </NavItem>
               <NavItem to="/data" icon={<CloudUpload />}>
-                Data Import
+                Data import
               </NavItem>
             </CollapsibleNavSection>
             
-            <CollapsibleNavSection title="Settings" defaultExpanded={false}>
-              <NavItem to="/settings" icon={<Settings />}>
+            <CollapsibleNavSection title="Settings" defaultExpanded={false} icon={Settings}>
+              <NavItem to="/settings" icon={<ManageAccounts />}>
                 Account settings
               </NavItem>
               <AdminOnly>

@@ -10,13 +10,13 @@ import PageContainer from '../components/PageContainer.jsx';
 import PageHeader from '../components/PageHeader.jsx';
 import Profile from '../components/Profile.jsx';
 import UserPreferences from '../components/UserPreferences.jsx';
-import { AccountCircle } from '@mui/icons-material';
+import { ManageAccounts } from '@mui/icons-material';
 
 export default function Account() {
   return (
     <PageContainer>
       <PageHeader
-        icon={AccountCircle}
+        icon={ManageAccounts}
         title="Account"
         description="Manage your account profile and preferences"
       />
