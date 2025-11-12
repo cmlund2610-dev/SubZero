@@ -1,0 +1,58 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isCompanyMember(companyId) {
+      return isAuthenticated() && 
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.companyId == companyId;
+    }
+    
+    function isCompanyAdmin(companyId) {
+      return isAuthenticated() &&
+             exists(/databases/$(database)/documents/companies/$(companyId)) &&
+             get(/databases/$(database)/documents/companies/$(companyId)).data.adminUsers.hasAny([request.auth.uid]);
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (
+        request.auth.uid == userId ||
+        isCompanyMember(resource.data.companyId)
+      );
+      allow write: if isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Companies collection
+    match /companies/{companyId} {
+      allow read: if isCompanyMember(companyId);
+      allow write: if isCompanyAdmin(companyId);
+      
+      // Clients subcollection
+      match /clients/{clientId} {
+        allow read: if isCompanyMember(companyId);
+        allow write: if isCompanyMember(companyId);
+        
+        // Notes subcollection
+        match /notes/{noteId} {
+          allow read: if isCompanyMember(companyId);
+          allow create: if isCompanyMember(companyId);
+          allow update: if isCompanyMember(companyId);
+          allow delete: if isCompanyMember(companyId) && 
+                          resource.data.createdBy == request.auth.uid;
+        }
+        
+        // Tasks subcollection
+        match /tasks/{taskId} {
+          allow read: if isCompanyMember(companyId);
+          allow write: if isCompanyMember(companyId);
+        }
+      }
+    }
+  }
+}
