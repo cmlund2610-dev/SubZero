@@ -221,6 +221,8 @@ export default function Renewals() {
 
   // Handlers for updating stage and probability
   const handleStageChange = async (clientId, newStage) => {
+    console.log('🔵 Stage change requested:', { clientId, newStage, companyId: userCompany?.id });
+    
     const updatedData = {
       ...renewalsData[clientId],
       stage: newStage
@@ -233,20 +235,24 @@ export default function Renewals() {
     }));
     
     // Save to Firestore
-    if (userCompany?.id) {
-      try {
-        await updateClientRenewal(userCompany.id, clientId, updatedData);
-        console.log('✅ Stage saved to Firestore:', clientId, newStage);
-      } catch (error) {
-        console.error('❌ Error saving stage change:', error);
-        alert('Failed to save stage change. Please try again.');
-      }
-    } else {
-      console.warn('⚠️ No company ID - changes only saved locally');
+    if (!userCompany?.id) {
+      console.error('❌ No company ID found!', { userCompany });
+      alert('Cannot save: No company found. Please sign out and sign in again.');
+      return;
+    }
+    
+    try {
+      await updateClientRenewal(userCompany.id, clientId, updatedData);
+      console.log('✅ Stage saved to Firestore:', clientId, newStage);
+    } catch (error) {
+      console.error('❌ Error saving stage change:', error);
+      alert(`Failed to save stage change. Error: ${error.message}`);
     }
   };
 
   const handleProbabilityChange = async (clientId, newProbability) => {
+    console.log('🔵 Probability change requested:', { clientId, newProbability, companyId: userCompany?.id });
+    
     const updatedData = {
       ...renewalsData[clientId],
       probability: newProbability
@@ -259,16 +265,18 @@ export default function Renewals() {
     }));
     
     // Save to Firestore
-    if (userCompany?.id) {
-      try {
-        await updateClientRenewal(userCompany.id, clientId, updatedData);
-        console.log('✅ Probability saved to Firestore:', clientId, newProbability);
-      } catch (error) {
-        console.error('❌ Error saving probability change:', error);
-        alert('Failed to save probability change. Please try again.');
-      }
-    } else {
-      console.warn('⚠️ No company ID - changes only saved locally');
+    if (!userCompany?.id) {
+      console.error('❌ No company ID found!', { userCompany });
+      alert('Cannot save: No company found. Please sign out and sign in again.');
+      return;
+    }
+    
+    try {
+      await updateClientRenewal(userCompany.id, clientId, updatedData);
+      console.log('✅ Probability saved to Firestore:', clientId, newProbability);
+    } catch (error) {
+      console.error('❌ Error saving probability change:', error);
+      alert(`Failed to save probability change. Error: ${error.message}`);
     }
   };
 

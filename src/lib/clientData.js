@@ -155,6 +155,15 @@ export const deleteClientTask = async (companyId, clientId, taskId) => {
  */
 export const updateClientRenewal = async (companyId, clientId, renewalData) => {
   try {
+    console.log('🔵 Updating renewal data:', { companyId, clientId, renewalData });
+    
+    if (!companyId) {
+      throw new Error('Company ID is required');
+    }
+    if (!clientId) {
+      throw new Error('Client ID is required');
+    }
+    
     const clientRef = doc(db, `companies/${companyId}/clients/${clientId}`);
     
     // Use setDoc with merge to create if doesn't exist
@@ -163,8 +172,17 @@ export const updateClientRenewal = async (companyId, clientId, renewalData) => {
       renewalTracking: renewalData,
       updatedAt: serverTimestamp()
     }, { merge: true });
+    
+    console.log('✅ Successfully saved renewal data to Firestore');
   } catch (error) {
-    console.error('Error updating renewal data:', error);
+    console.error('❌ Error updating renewal data:', error);
+    console.error('Error details:', {
+      code: error.code,
+      message: error.message,
+      companyId,
+      clientId,
+      renewalData
+    });
     throw error;
   }
 };
