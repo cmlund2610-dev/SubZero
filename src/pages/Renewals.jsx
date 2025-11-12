@@ -16,7 +16,9 @@ import {
   Table,
   Button,
   Grid,
-  Link
+  Link,
+  Select,
+  Option
 } from '@mui/joy';
 import { 
   TrendingUp as TrendingUpIcon,
@@ -33,6 +35,9 @@ export default function Renewals() {
   const [activeStage, setActiveStage] = useState('all');
   const navigate = useNavigate();
   
+  // State to track renewal data with stage/probability changes
+  const [renewalsData, setRenewalsData] = useState({});
+  
   // Get client data and calculate renewals
   const clients = ImportedData.getClients();
   
@@ -46,21 +51,24 @@ export default function Renewals() {
         const today = new Date();
         const daysUntil = Math.ceil((renewalDate - today) / (1000 * 60 * 60 * 24));
         
+        // Use stored data if available, otherwise use defaults
+        const stored = renewalsData[client.id] || {};
+        
         return {
           id: client.id,
           company: client.company?.name || 'Unknown Company',
           renewalDate: client.renewal.date,
           currentMRR: client.mrr || 0,
           proposedMRR: client.mrr || 0, // In real app, this would be separate
-          stage: 'forecast', // Default stage
-          probability: client.health?.score || 50,
+          stage: stored.stage || 'forecast', // Use stored or default stage
+          probability: stored.probability !== undefined ? stored.probability : (client.health?.score || 50),
           csm: client.csm?.owner || 'Unassigned',
           daysUntil
         };
       })
       .filter(renewal => renewal.daysUntil <= 90 && renewal.daysUntil >= 0)
       .sort((a, b) => a.daysUntil - b.daysUntil);
-  }, [clients]);
+  }, [clients, renewalsData]);
 
   // Show empty state if no renewals
   if (upcomingRenewals.length === 0) {
@@ -181,6 +189,27 @@ export default function Renewals() {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     }).format(value);
+  };
+
+  // Handlers for updating stage and probability
+  const handleStageChange = (clientId, newStage) => {
+    setRenewalsData(prev => ({
+      ...prev,
+      [clientId]: {
+        ...prev[clientId],
+        stage: newStage
+      }
+    }));
+  };
+
+  const handleProbabilityChange = (clientId, newProbability) => {
+    setRenewalsData(prev => ({
+      ...prev,
+      [clientId]: {
+        ...prev[clientId],
+        probability: newProbability
+      }
+    }));
   };
 
     // Filter renewals by stage
@@ -359,22 +388,42 @@ export default function Renewals() {
                   </Stack>
                 </td>
                 <td>
-                  <Chip 
-                    size="sm" 
-                    variant="soft" 
+                  <Select
+                    value={renewal.stage}
+                    onChange={(e, value) => handleStageChange(renewal.id, value)}
+                    size="sm"
+                    variant="soft"
                     color={getStageColor(renewal.stage)}
+                    sx={{ minWidth: 120 }}
                   >
-                    {stages.find(s => s.key === renewal.stage)?.label}
-                  </Chip>
+                    <Option value="forecast">Forecast</Option>
+                    <Option value="tentative">Tentative</Option>
+                    <Option value="negotiation">Negotiation</Option>
+                    <Option value="closed_won">Closed Won</Option>
+                    <Option value="closed_lost">Closed Lost</Option>
+                  </Select>
                 </td>
                 <td>
-                  <Chip 
-                    size="sm" 
-                    variant="soft" 
+                  <Select
+                    value={renewal.probability}
+                    onChange={(e, value) => handleProbabilityChange(renewal.id, value)}
+                    size="sm"
+                    variant="soft"
                     color={getProbabilityColor(renewal.probability)}
+                    sx={{ minWidth: 80 }}
                   >
-                    {renewal.probability}%
-                  </Chip>
+                    <Option value={0}>0%</Option>
+                    <Option value={10}>10%</Option>
+                    <Option value={20}>20%</Option>
+                    <Option value={30}>30%</Option>
+                    <Option value={40}>40%</Option>
+                    <Option value={50}>50%</Option>
+                    <Option value={60}>60%</Option>
+                    <Option value={70}>70%</Option>
+                    <Option value={80}>80%</Option>
+                    <Option value={90}>90%</Option>
+                    <Option value={100}>100%</Option>
+                  </Select>
                 </td>
                 <td>
                   <Typography level="body-sm">
