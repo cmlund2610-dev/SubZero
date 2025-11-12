@@ -1,10 +1,11 @@
 /**
- * BeeHive Brand Style Guide
+ * SubZero Brand Style Guide (Legacy)
  * 
- * This file contains all brand guidelines, colors, typography, gradients,
- * spacing, and component styles for consistent design across the application.
+ * This file contains legacy brand guidelines, colors, typography, gradients,
+ * spacing, and component styles. New projects should use subzero.tokens.json
+ * and theme.js for the current SubZero brand palette.
  * 
- * Last updated: November 9, 2025
+ * Last updated: November 12, 2025
  */
 
 /* ========================================
