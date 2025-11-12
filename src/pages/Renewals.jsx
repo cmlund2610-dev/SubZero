@@ -26,36 +26,45 @@ import {
   Receipt
 } from '@mui/icons-material';
 import { ImportedData } from '../lib/persist.js';
+import { useAuth } from '../context/AuthContext.jsx';
+import { updateClientRenewal, getCompanyRenewalsData } from '../lib/clientData.js';
 import EnhancedNavigation from '../components/EnhancedNavigation.jsx';
 import HelpTooltip from '../components/HelpTooltip.jsx';
 import PageHeader from '../components/PageHeader.jsx';
 import PageContainer from '../components/PageContainer.jsx';
 
-const RENEWALS_STORAGE_KEY = 'subzero_renewals_data';
-
 export default function Renewals() {
   const [activeStage, setActiveStage] = useState('all');
   const navigate = useNavigate();
-  
-  // Load renewals data from localStorage on mount
-  const [renewalsData, setRenewalsData] = useState(() => {
-    try {
-      const stored = localStorage.getItem(RENEWALS_STORAGE_KEY);
-      return stored ? JSON.parse(stored) : {};
-    } catch (e) {
-      console.warn('Failed to load renewals data from localStorage', e);
-      return {};
-    }
-  });
+  const { userCompany } = useAuth();
+  const [renewalsData, setRenewalsData] = useState({});
+  const [loading, setLoading] = useState(true);
 
-  // Save renewals data to localStorage whenever it changes
+  // Load renewals data from Firestore on mount
   useEffect(() => {
-    try {
-      localStorage.setItem(RENEWALS_STORAGE_KEY, JSON.stringify(renewalsData));
-    } catch (e) {
-      console.error('Failed to save renewals data to localStorage', e);
-    }
-  }, [renewalsData]);
+    const loadRenewalsData = async () => {
+      if (!userCompany?.id) return;
+      
+      try {
+        setLoading(true);
+        const data = await getCompanyRenewalsData(userCompany.id);
+        setRenewalsData(data);
+      } catch (error) {
+        console.error('Error loading renewals data:', error);
+        // Fall back to localStorage if Firestore fails
+        try {
+          const stored = localStorage.getItem('subzero_renewals_data');
+          if (stored) setRenewalsData(JSON.parse(stored));
+        } catch (e) {
+          console.warn('Failed to load renewals data from localStorage', e);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadRenewalsData();
+  }, [userCompany?.id]);
   
   // Get client data and calculate renewals
   const clients = ImportedData.getClients();
@@ -211,24 +220,48 @@ export default function Renewals() {
   };
 
   // Handlers for updating stage and probability
-  const handleStageChange = (clientId, newStage) => {
+  const handleStageChange = async (clientId, newStage) => {
+    const updatedData = {
+      ...renewalsData[clientId],
+      stage: newStage
+    };
+    
+    // Update local state immediately
     setRenewalsData(prev => ({
       ...prev,
-      [clientId]: {
-        ...prev[clientId],
-        stage: newStage
-      }
+      [clientId]: updatedData
     }));
+    
+    // Save to Firestore
+    if (userCompany?.id) {
+      try {
+        await updateClientRenewal(userCompany.id, clientId, updatedData);
+      } catch (error) {
+        console.error('Error saving stage change:', error);
+      }
+    }
   };
 
-  const handleProbabilityChange = (clientId, newProbability) => {
+  const handleProbabilityChange = async (clientId, newProbability) => {
+    const updatedData = {
+      ...renewalsData[clientId],
+      probability: newProbability
+    };
+    
+    // Update local state immediately
     setRenewalsData(prev => ({
       ...prev,
-      [clientId]: {
-        ...prev[clientId],
-        probability: newProbability
-      }
+      [clientId]: updatedData
     }));
+    
+    // Save to Firestore
+    if (userCompany?.id) {
+      try {
+        await updateClientRenewal(userCompany.id, clientId, updatedData);
+      } catch (error) {
+        console.error('Error saving probability change:', error);
+      }
+    }
   };
 
     // Filter renewals by stage

@@ -29,11 +29,21 @@ import {
   Option,
   List,
   ListItem,
-  Avatar
+  Avatar,
+  CircularProgress
 } from '@mui/joy';
 import { ArrowBack as ArrowBackIcon } from '@mui/icons-material';
 import { ImportedData } from '../lib/persist.js';
 import { useAuth } from '../context/AuthContext.jsx';
+import {
+  addClientNote,
+  getClientNotes,
+  deleteClientNote,
+  addClientTask,
+  getClientTasks,
+  updateClientTask,
+  deleteClientTask
+} from '../lib/clientData.js';
 
 export default function ClientDetail() {
   const { id } = useParams();
@@ -304,43 +314,63 @@ export default function ClientDetail() {
 
 // ---- Notes Section Component ----
 function NotesSection({ client }) {
-  const { userProfile } = useAuth();
-  const storageKey = `subzero_client_notes_${client.id}`;
-  const [notes, setNotes] = useState([]); // {id, text, createdAt, createdBy, createdByName}
+  const { userProfile, userCompany } = useAuth();
+  const [notes, setNotes] = useState([]);
   const [draft, setDraft] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
+  // Load notes from Firestore
   useEffect(() => {
+    const loadNotes = async () => {
+      if (!userCompany?.id) return;
+      
+      try {
+        setLoading(true);
+        const fetchedNotes = await getClientNotes(userCompany.id, client.id);
+        setNotes(fetchedNotes);
+      } catch (error) {
+        console.error('Error loading notes:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadNotes();
+  }, [client.id, userCompany?.id]);
+
+  const addNote = async () => {
+    if (!draft.trim() || !userCompany?.id) return;
+    
+    setSaving(true);
     try {
-      const raw = localStorage.getItem(storageKey);
-      if (raw) setNotes(JSON.parse(raw));
-    } catch (e) {
-      console.warn('Failed to load notes', e);
-    }
-  }, [storageKey]);
-
-  const persist = (next) => {
-    setNotes(next);
-    localStorage.setItem(storageKey, JSON.stringify(next));
-  };
-
-  const addNote = () => {
-    if (!draft.trim()) return;
-    const next = [
-      { 
-        id: crypto.randomUUID(), 
-        text: draft.trim(), 
-        createdAt: Date.now(),
-        createdBy: userProfile?.id || 'unknown',
+      const noteData = {
+        text: draft.trim(),
+        createdBy: userProfile?.uid || 'unknown',
         createdByName: userProfile?.fullName || 'Unknown User'
-      },
-      ...notes
-    ];
-    persist(next);
-    setDraft('');
+      };
+      
+      const newNote = await addClientNote(userCompany.id, client.id, noteData);
+      setNotes([newNote, ...notes]);
+      setDraft('');
+    } catch (error) {
+      console.error('Error adding note:', error);
+      alert('Failed to save note. Please try again.');
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const deleteNote = (id) => {
-    persist(notes.filter(n => n.id !== id));
+  const deleteNote = async (noteId) => {
+    if (!userCompany?.id) return;
+    
+    try {
+      await deleteClientNote(userCompany.id, client.id, noteId);
+      setNotes(notes.filter(n => n.id !== noteId));
+    } catch (error) {
+      console.error('Error deleting note:', error);
+      alert('Failed to delete note. Please try again.');
+    }
   };
 
   return (
@@ -358,8 +388,10 @@ function NotesSection({ client }) {
                 placeholder="Meeting summary, observation, next steps..."
               />
               <Stack direction="row" justifyContent="flex-end" spacing={1}>
-                <Button variant="outlined" color="neutral" onClick={() => setDraft('')}>Clear</Button>
-                <Button variant="solid" color="primary" onClick={addNote}>Save Note</Button>
+                <Button variant="outlined" color="neutral" onClick={() => setDraft('')} disabled={saving}>Clear</Button>
+                <Button variant="solid" color="primary" onClick={addNote} loading={saving} disabled={!draft.trim()}>
+                  Save Note
+                </Button>
               </Stack>
             </Stack>
           </Card>
@@ -368,31 +400,36 @@ function NotesSection({ client }) {
           <Card variant="outlined" sx={{ p: 3 }}>
             <Stack spacing={2}>
               <Typography level="title-md">Recent Notes</Typography>
-              {notes.length === 0 && (
+              {loading ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+                  <CircularProgress />
+                </Box>
+              ) : notes.length === 0 ? (
                 <Typography level="body-sm" color="neutral">No notes yet.</Typography>
-              )}
-              <List sx={{ p: 0, gap: 1 }}>
-                {notes.map(note => (
-                  <ListItem key={note.id} sx={{ alignItems: 'flex-start' }}>
-                    <Card variant="soft" sx={{ flex: 1, p: 2 }}>
-                      <Stack spacing={1}>
-                        <Typography level="body-sm" sx={{ whiteSpace: 'pre-line' }}>{note.text}</Typography>
-                        <Stack direction="row" justifyContent="space-between" alignItems="center">
-                          <Stack spacing={0.5}>
-                            <Typography level="body-xs" color="neutral" sx={{ fontWeight: 600 }}>
-                              {note.createdByName || 'Unknown User'}
-                            </Typography>
-                            <Typography level="body-xs" color="neutral">
-                              {new Date(note.createdAt).toLocaleString()}
-                            </Typography>
+              ) : (
+                <List sx={{ p: 0, gap: 1 }}>
+                  {notes.map(note => (
+                    <ListItem key={note.id} sx={{ alignItems: 'flex-start' }}>
+                      <Card variant="soft" sx={{ flex: 1, p: 2 }}>
+                        <Stack spacing={1}>
+                          <Typography level="body-sm" sx={{ whiteSpace: 'pre-line' }}>{note.text}</Typography>
+                          <Stack direction="row" justifyContent="space-between" alignItems="center">
+                            <Stack spacing={0.5}>
+                              <Typography level="body-xs" color="neutral" sx={{ fontWeight: 600 }}>
+                                {note.createdByName || 'Unknown User'}
+                              </Typography>
+                              <Typography level="body-xs" color="neutral">
+                                {new Date(note.createdAt).toLocaleString()}
+                              </Typography>
+                            </Stack>
+                            <Button size="sm" variant="outlined" color="danger" onClick={() => deleteNote(note.id)}>Delete</Button>
                           </Stack>
-                          <Button size="sm" variant="outlined" color="danger" onClick={() => deleteNote(note.id)}>Delete</Button>
                         </Stack>
-                      </Stack>
-                    </Card>
-                  </ListItem>
-                ))}
-              </List>
+                      </Card>
+                    </ListItem>
+                  ))}
+                </List>
+              )}
             </Stack>
           </Card>
         </Grid>
@@ -403,54 +440,87 @@ function NotesSection({ client }) {
 
 // ---- Tasks Section Component ----
 function TasksSection({ client }) {
-  const { userProfile } = useAuth();
-  const storageKey = `subzero_client_tasks_${client.id}`;
-  const [tasks, setTasks] = useState([]); // {id, title, dueDate, priority, completed, createdAt, createdBy, createdByName}
+  const { userProfile, userCompany } = useAuth();
+  const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [priority, setPriority] = useState('normal');
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
+  // Load tasks from Firestore
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(storageKey);
-      if (raw) setTasks(JSON.parse(raw));
-    } catch (e) {
-      console.warn('Failed to load tasks', e);
-    }
-  }, [storageKey]);
-
-  const persist = (next) => {
-    setTasks(next);
-    localStorage.setItem(storageKey, JSON.stringify(next));
-  };
-
-  const addTask = () => {
-    if (!title.trim()) return;
-    const next = [
-      ...tasks,
-      { 
-        id: crypto.randomUUID(), 
-        title: title.trim(), 
-        dueDate, 
-        priority, 
-        completed: false, 
-        createdAt: Date.now(),
-        createdBy: userProfile?.id || 'unknown',
-        createdByName: userProfile?.fullName || 'Unknown User'
+    const loadTasks = async () => {
+      if (!userCompany?.id) return;
+      
+      try {
+        setLoading(true);
+        const fetchedTasks = await getClientTasks(userCompany.id, client.id);
+        setTasks(fetchedTasks);
+      } catch (error) {
+        console.error('Error loading tasks:', error);
+      } finally {
+        setLoading(false);
       }
-    ];
-    persist(next);
-    setTitle('');
-    setDueDate('');
-    setPriority('normal');
+    };
+
+    loadTasks();
+  }, [client.id, userCompany?.id]);
+
+  const addTask = async () => {
+    if (!title.trim() || !userCompany?.id) return;
+    
+    setSaving(true);
+    try {
+      const taskData = {
+        title: title.trim(),
+        dueDate,
+        priority,
+        completed: false,
+        createdBy: userProfile?.uid || 'unknown',
+        createdByName: userProfile?.fullName || 'Unknown User'
+      };
+      
+      const newTask = await addClientTask(userCompany.id, client.id, taskData);
+      setTasks([...tasks, newTask]);
+      setTitle('');
+      setDueDate('');
+      setPriority('normal');
+    } catch (error) {
+      console.error('Error adding task:', error);
+      alert('Failed to save task. Please try again.');
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const toggleTask = (id) => {
-    persist(tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
+  const toggleTask = async (taskId) => {
+    if (!userCompany?.id) return;
+    
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+    
+    try {
+      await updateClientTask(userCompany.id, client.id, taskId, {
+        completed: !task.completed
+      });
+      setTasks(tasks.map(t => t.id === taskId ? { ...t, completed: !t.completed } : t));
+    } catch (error) {
+      console.error('Error updating task:', error);
+      alert('Failed to update task. Please try again.');
+    }
   };
 
-  const deleteTask = (id) => {
-    persist(tasks.filter(t => t.id !== id));
+  const deleteTask = async (taskId) => {
+    if (!userCompany?.id) return;
+    
+    try {
+      await deleteClientTask(userCompany.id, client.id, taskId);
+      setTasks(tasks.filter(t => t.id !== taskId));
+    } catch (error) {
+      console.error('Error deleting task:', error);
+      alert('Failed to delete task. Please try again.');
+    }
   };
 
   const priorities = {
@@ -460,7 +530,11 @@ function TasksSection({ client }) {
     critical: { label: 'Critical', color: 'danger' }
   };
 
-  const openTasks = tasks.filter(t => !t.completed).sort((a,b) => a.dueDate.localeCompare(b.dueDate));
+  const openTasks = tasks.filter(t => !t.completed).sort((a,b) => {
+    if (!a.dueDate) return 1;
+    if (!b.dueDate) return -1;
+    return a.dueDate.localeCompare(b.dueDate);
+  });
   const completedTasks = tasks.filter(t => t.completed).sort((a,b) => b.createdAt - a.createdAt);
 
   return (
@@ -482,8 +556,23 @@ function TasksSection({ client }) {
                 </Select>
               </Stack>
               <Stack direction="row" justifyContent="flex-end" spacing={1}>
-                <Button variant="outlined" color="neutral" onClick={() => { setTitle(''); setDueDate(''); setPriority('normal'); }}>Clear</Button>
-                <Button variant="solid" color="primary" onClick={addTask}>Add Task</Button>
+                <Button 
+                  variant="outlined" 
+                  color="neutral" 
+                  onClick={() => { setTitle(''); setDueDate(''); setPriority('normal'); }}
+                  disabled={saving}
+                >
+                  Clear
+                </Button>
+                <Button 
+                  variant="solid" 
+                  color="primary" 
+                  onClick={addTask}
+                  loading={saving}
+                  disabled={!title.trim()}
+                >
+                  Add Task
+                </Button>
               </Stack>
             </Stack>
           </Card>
@@ -493,7 +582,13 @@ function TasksSection({ client }) {
             <Card variant="outlined" sx={{ p: 3 }}>
               <Stack spacing={2}>
                 <Typography level="title-md">Open Tasks ({openTasks.length})</Typography>
-                {openTasks.length === 0 && <Typography level="body-sm" color="neutral">No open tasks.</Typography>}
+                {loading ? (
+                  <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+                    <CircularProgress />
+                  </Box>
+                ) : openTasks.length === 0 ? (
+                  <Typography level="body-sm" color="neutral">No open tasks.</Typography>
+                ) : (
                 <List sx={{ p: 0, gap: 1 }}>
                   {openTasks.map(task => (
                     <ListItem key={task.id} sx={{ alignItems: 'flex-start' }}>
@@ -522,12 +617,19 @@ function TasksSection({ client }) {
                     </ListItem>
                   ))}
                 </List>
+                )}
               </Stack>
             </Card>
             <Card variant="outlined" sx={{ p: 3 }}>
               <Stack spacing={2}>
                 <Typography level="title-md">Completed ({completedTasks.length})</Typography>
-                {completedTasks.length === 0 && <Typography level="body-sm" color="neutral">No completed tasks yet.</Typography>}
+                {loading ? (
+                  <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+                    <CircularProgress />
+                  </Box>
+                ) : completedTasks.length === 0 ? (
+                  <Typography level="body-sm" color="neutral">No completed tasks yet.</Typography>
+                ) : (
                 <List sx={{ p: 0, gap: 1 }}>
                   {completedTasks.map(task => (
                     <ListItem key={task.id} sx={{ alignItems: 'flex-start' }}>
@@ -556,6 +658,7 @@ function TasksSection({ client }) {
                     </ListItem>
                   ))}
                 </List>
+                )}
               </Stack>
             </Card>
           </Stack>
