@@ -5,7 +5,7 @@
  * Uses imported client data to calculate renewal dates and pipeline.
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Box, 
@@ -31,12 +31,31 @@ import HelpTooltip from '../components/HelpTooltip.jsx';
 import PageHeader from '../components/PageHeader.jsx';
 import PageContainer from '../components/PageContainer.jsx';
 
+const RENEWALS_STORAGE_KEY = 'subzero_renewals_data';
+
 export default function Renewals() {
   const [activeStage, setActiveStage] = useState('all');
   const navigate = useNavigate();
   
-  // State to track renewal data with stage/probability changes
-  const [renewalsData, setRenewalsData] = useState({});
+  // Load renewals data from localStorage on mount
+  const [renewalsData, setRenewalsData] = useState(() => {
+    try {
+      const stored = localStorage.getItem(RENEWALS_STORAGE_KEY);
+      return stored ? JSON.parse(stored) : {};
+    } catch (e) {
+      console.warn('Failed to load renewals data from localStorage', e);
+      return {};
+    }
+  });
+
+  // Save renewals data to localStorage whenever it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem(RENEWALS_STORAGE_KEY, JSON.stringify(renewalsData));
+    } catch (e) {
+      console.error('Failed to save renewals data to localStorage', e);
+    }
+  }, [renewalsData]);
   
   // Get client data and calculate renewals
   const clients = ImportedData.getClients();
