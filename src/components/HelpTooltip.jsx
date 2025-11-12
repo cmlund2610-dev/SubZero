@@ -61,14 +61,26 @@ export default function HelpTooltip({
   };
 
   const tooltipContent = (
-    <Box sx={{ maxWidth: 280, p: 1 }}>
+    <Box sx={{ maxWidth: 280, p: 1.5 }}>
       <Stack spacing={1.5}>
         {title && (
-          <Typography level="body-sm" sx={{ fontWeight: 600 }}>
+          <Typography 
+            level="body-sm" 
+            sx={{ 
+              fontWeight: 600,
+              color: 'text.primary'
+            }}
+          >
             {title}
           </Typography>
         )}
-        <Typography level="body-xs" sx={{ lineHeight: 1.4, opacity: 0.9 }}>
+        <Typography 
+          level="body-xs" 
+          sx={{ 
+            lineHeight: 1.5,
+            color: 'text.primary'
+          }}
+        >
           {content}
         </Typography>
         {actionLabel && onAction && (
@@ -94,16 +106,20 @@ export default function HelpTooltip({
       <Tooltip
         title={tooltipContent}
         placement={placement}
-        variant="outlined"
-        color={getColor()}
+        variant="solid"
+        color="neutral"
         open={trigger === 'click' ? open : undefined}
         onClose={trigger === 'click' ? () => setOpen(false) : undefined}
         sx={{
           maxWidth: 'none',
-          backgroundColor: 'background.popup',
+          backgroundColor: 'neutral.800',
+          color: 'common.white',
           border: '1px solid',
-          borderColor: 'divider',
+          borderColor: 'neutral.700',
           boxShadow: 'lg',
+          '& .MuiTooltip-arrow': {
+            color: 'neutral.800',
+          }
         }}
       >
         <Box 
@@ -124,16 +140,20 @@ export default function HelpTooltip({
     <Tooltip
       title={tooltipContent}
       placement={placement}
-      variant="outlined"
-      color={getColor()}
+      variant="solid"
+      color="neutral"
       open={trigger === 'click' ? open : undefined}
       onClose={trigger === 'click' ? () => setOpen(false) : undefined}
       sx={{
         maxWidth: 'none',
-        backgroundColor: 'background.popup',
+        backgroundColor: 'neutral.800',
+        color: 'common.white',
         border: '1px solid',
-        borderColor: 'divider',
+        borderColor: 'neutral.700',
         boxShadow: 'lg',
+        '& .MuiTooltip-arrow': {
+          color: 'neutral.800',
+        }
       }}
     >
       <IconButton
