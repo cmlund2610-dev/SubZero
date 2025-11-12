@@ -37,6 +37,8 @@ import {
 } from '@mui/icons-material';
 
 import { ImportedData } from '../lib/persist.js';
+import { upsertClient } from '../lib/clientData.js';
+import { useAuth } from '../context/AuthContext.jsx';
 import { LEGACY_MAPPING_TABLE, getSuggestedMapping, checkFieldPresence, CANONICAL_FIELDS, transformToCanonical } from '../lib/mappers.js';
 import PageHeader from '../components/PageHeader.jsx';
 import PageContainer from '../components/PageContainer.jsx';
@@ -50,6 +52,7 @@ const IMPORT_STEPS = [
 
 export default function DataImport() {
   const navigate = useNavigate();
+  const { userCompany } = useAuth();
   const [activeStep, setActiveStep] = useState(0);
   const [uploadedData, setUploadedData] = useState([]);
   const [originalHeaders, setOriginalHeaders] = useState([]);
@@ -58,6 +61,7 @@ export default function DataImport() {
   const [importProgress, setImportProgress] = useState(0);
   const [isImporting, setIsImporting] = useState(false);
   const [importComplete, setImportComplete] = useState(false);
+  const [importError, setImportError] = useState(null);
 
   const fileInputRef = useRef(null);
 
@@ -164,26 +168,58 @@ export default function DataImport() {
   const executeImport = async () => {
     setIsImporting(true);
     setImportProgress(0);
+    setImportError(null);
     
     try {
       const transformedData = transformData();
       
-      // Simulate import progress
-      for (let i = 0; i <= 100; i += 10) {
-        setImportProgress(i);
-        await new Promise(resolve => setTimeout(resolve, 100));
+      if (!userCompany?.id) {
+        throw new Error('No company ID found. Please sign in again.');
       }
       
-      // Save to localStorage
+      // Save to both Firestore and localStorage
       const existingClients = ImportedData.getClients();
+      const totalClients = transformedData.length;
+      let successCount = 0;
+      let failCount = 0;
+      
+      for (let i = 0; i < transformedData.length; i++) {
+        const client = transformedData[i];
+        
+        try {
+          // Save to Firestore
+          await upsertClient(userCompany.id, client.id, client);
+          successCount++;
+        } catch (error) {
+          console.error(`Failed to import client ${client.id}:`, error);
+          failCount++;
+        }
+        
+        // Update progress
+        setImportProgress(Math.round(((i + 1) / totalClients) * 100));
+        
+        // Small delay to prevent overwhelming Firestore
+        if (i % 10 === 0) {
+          await new Promise(resolve => setTimeout(resolve, 100));
+        }
+      }
+      
+      // Also save to localStorage as backup
       const allClients = [...existingClients, ...transformedData];
       ImportedData.setClients(allClients);
+      
+      if (failCount > 0) {
+        setImportError(`Import completed with ${failCount} failures out of ${totalClients} clients.`);
+      }
       
       setImportComplete(true);
       setActiveStep(3);
       
+      console.log(`✅ Import complete: ${successCount} succeeded, ${failCount} failed`);
+      
     } catch (error) {
-      alert('Import failed: ' + error.message);
+      console.error('Import failed:', error);
+      setImportError('Import failed: ' + error.message);
     } finally {
       setIsImporting(false);
     }
@@ -198,6 +234,7 @@ export default function DataImport() {
     setImportProgress(0);
     setIsImporting(false);
     setImportComplete(false);
+    setImportError(null);
   };
 
   const downloadTemplate = () => {
@@ -446,7 +483,10 @@ export default function DataImport() {
                 <Box sx={{ width: '100%', maxWidth: 400 }}>
                   <LinearProgress determinate value={importProgress} />
                   <Typography level="body-sm" textAlign="center" sx={{ mt: 1 }}>
-                    Importing... {importProgress}%
+                    Importing to Firestore... {importProgress}%
+                  </Typography>
+                  <Typography level="body-xs" textAlign="center" color="neutral" sx={{ mt: 0.5 }}>
+                    Saving {uploadedData.length} clients to cloud database
                   </Typography>
                 </Box>
               </>
@@ -458,12 +498,17 @@ export default function DataImport() {
                     Import Complete!
                   </Typography>
                   <Typography level="body-md" color="neutral" sx={{ mb: 3 }}>
-                    Successfully imported {uploadedData.length} clients. You can now view them in the Clients page.
+                    Successfully imported {uploadedData.length} clients to Firestore. You can now view them in the Clients page.
                   </Typography>
+                  {importError && (
+                    <Alert color="warning" sx={{ mb: 2 }}>
+                      {importError}
+                    </Alert>
+                  )}
                 </Box>
                 
                 <Stack direction="row" spacing={2}>
-                  <Button onClick={() => window.location.href = '/clients'}>
+                  <Button onClick={() => navigate('/clients')}>
                     View Clients
                   </Button>
                   <Button variant="outlined" onClick={resetImport}>
