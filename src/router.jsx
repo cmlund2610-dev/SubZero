@@ -12,6 +12,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import { lazy } from 'react';
 import AppLayout from './layouts/AppLayout.jsx';
 import ProtectedRoute, { PublicRoute, AdminRoute } from './components/auth/ProtectedRoute.jsx';
+import Settings from './components/Settings.jsx';
 
 // Lazy load page components for code splitting
 const Home = lazy(() => import('./pages/Home.jsx'));
@@ -24,7 +25,6 @@ const Account = lazy(() => import('./pages/Account.jsx'));
 const Profile = lazy(() => import('./components/Profile.jsx'));
 const UserManagement = lazy(() => import('./components/UserManagement.jsx'));
 const Billing = lazy(() => import('./components/Billing.jsx'));
-const Settings = lazy(() => import('./components/Settings.jsx'));
 
 // Auth components
 const Signin = lazy(() => import('./components/auth/Signin.jsx'));
