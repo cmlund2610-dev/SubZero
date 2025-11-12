@@ -34,13 +34,13 @@ import PageHeader from '../components/PageHeader.jsx';
 import PageContainer from '../components/PageContainer.jsx';
 
 const Profile = ({ embedded = false }) => {
-  const { user, userProfile, userCompany, updateUserProfile } = useAuth();
+  const { currentUser, userProfile, userCompany, updateUserProfile } = useAuth();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     fullName: userProfile?.fullName || '',
-    email: user?.email || '',
+    email: currentUser?.email || '',
     phoneNumber: userProfile?.phoneNumber || '',
     department: userProfile?.department || '',
     jobTitle: userProfile?.jobTitle || ''
@@ -48,16 +48,16 @@ const Profile = ({ embedded = false }) => {
   
   // Update form data when userProfile changes
   React.useEffect(() => {
-    if (userProfile || user) {
+    if (userProfile || currentUser) {
       setFormData({
         fullName: userProfile?.fullName || '',
-        email: user?.email || '',
+        email: currentUser?.email || '',
         phoneNumber: userProfile?.phoneNumber || '',
         department: userProfile?.department || '',
         jobTitle: userProfile?.jobTitle || ''
       });
     }
-  }, [userProfile, user]);
+  }, [userProfile, currentUser]);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
