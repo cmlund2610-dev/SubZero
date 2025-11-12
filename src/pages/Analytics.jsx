@@ -102,8 +102,8 @@ export default function Analytics() {
     const sixtyDaysFromNow = new Date(now.getTime() + 60 * 24 * 60 * 60 * 1000);
 
     // Basic metrics
-    const totalMRR = clients.reduce((sum, client) => sum + (client.mrr || 0), 0);
-    const totalLTV = clients.reduce((sum, client) => sum + (client.ltv || 0), 0);
+    const totalMRR = clients.reduce((sum, client) => sum + (Number(client.mrr) || 0), 0);
+    const totalLTV = clients.reduce((sum, client) => sum + (Number(client.ltv) || 0), 0);
     const avgMRR = totalMRR / clients.length;
     const avgLTV = totalLTV / clients.length;
     const avgRetentionPeriod = totalLTV / totalMRR;

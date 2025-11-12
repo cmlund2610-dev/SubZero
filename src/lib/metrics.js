@@ -38,7 +38,7 @@ export function calcTotals(clients) {
 
   // Total MRR sum
   const totalMRR = clients.reduce((sum, client) => {
-    return sum + (client.mrr || 0);
+    return sum + (Number(client.mrr) || 0);
   }, 0);
 
   // Average health score (rounded to 0 decimals)

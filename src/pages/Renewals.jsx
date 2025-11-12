@@ -199,11 +199,11 @@ export default function Renewals() {
   });
 
   // Total Pipeline is the sum of ALL current MRR from clients with upcoming renewals
-  const totalPipeline = upcomingRenewals.reduce((sum, renewal) => sum + renewal.currentMRR, 0);
+  const totalPipeline = upcomingRenewals.reduce((sum, renewal) => sum + Number(renewal.currentMRR || 0), 0);
   
   // Weighted Value is probability-adjusted proposed MRR
   const weightedValue = filteredRenewals.reduce((sum, renewal) => 
-    sum + (renewal.proposedMRR * renewal.probability / 100), 0
+    sum + (Number(renewal.proposedMRR || 0) * Number(renewal.probability || 0) / 100), 0
   );
   
   // Average probability across all renewals
