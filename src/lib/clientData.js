@@ -156,10 +156,13 @@ export const deleteClientTask = async (companyId, clientId, taskId) => {
 export const updateClientRenewal = async (companyId, clientId, renewalData) => {
   try {
     const clientRef = doc(db, `companies/${companyId}/clients/${clientId}`);
-    await updateDoc(clientRef, {
-      'renewalTracking': renewalData,
+    
+    // Use setDoc with merge to create if doesn't exist
+    await setDoc(clientRef, {
+      id: clientId,
+      renewalTracking: renewalData,
       updatedAt: serverTimestamp()
-    });
+    }, { merge: true });
   } catch (error) {
     console.error('Error updating renewal data:', error);
     throw error;

@@ -236,9 +236,13 @@ export default function Renewals() {
     if (userCompany?.id) {
       try {
         await updateClientRenewal(userCompany.id, clientId, updatedData);
+        console.log('✅ Stage saved to Firestore:', clientId, newStage);
       } catch (error) {
-        console.error('Error saving stage change:', error);
+        console.error('❌ Error saving stage change:', error);
+        alert('Failed to save stage change. Please try again.');
       }
+    } else {
+      console.warn('⚠️ No company ID - changes only saved locally');
     }
   };
 
@@ -258,13 +262,17 @@ export default function Renewals() {
     if (userCompany?.id) {
       try {
         await updateClientRenewal(userCompany.id, clientId, updatedData);
+        console.log('✅ Probability saved to Firestore:', clientId, newProbability);
       } catch (error) {
-        console.error('Error saving probability change:', error);
+        console.error('❌ Error saving probability change:', error);
+        alert('Failed to save probability change. Please try again.');
       }
+    } else {
+      console.warn('⚠️ No company ID - changes only saved locally');
     }
   };
 
-    // Filter renewals by stage
+  // Filter renewals by stage
   const filteredRenewals = activeStage === 'all' 
     ? upcomingRenewals 
     : upcomingRenewals.filter(renewal => renewal.stage === activeStage);
