@@ -6,6 +6,7 @@
  */
 
 import React, { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Box, 
   Typography, 
@@ -14,7 +15,8 @@ import {
   Card,
   Table,
   Button,
-  Grid
+  Grid,
+  Link
 } from '@mui/joy';
 import { 
   TrendingUp as TrendingUpIcon,
@@ -29,6 +31,7 @@ import PageContainer from '../components/PageContainer.jsx';
 
 export default function Renewals() {
   const [activeStage, setActiveStage] = useState('all');
+  const navigate = useNavigate();
   
   // Get client data and calculate renewals
   const clients = ImportedData.getClients();
@@ -303,11 +306,22 @@ export default function Renewals() {
           </thead>
           <tbody>
             {filteredRenewals.map((renewal) => (
-              <tr key={renewal.id} style={{ cursor: 'pointer' }}>
+              <tr key={renewal.id}>
                 <td>
-                  <Typography level="body-sm" sx={{ fontWeight: 600 }}>
+                  <Link
+                    onClick={() => navigate(`/clients/${renewal.id}`)}
+                    sx={{ 
+                      cursor: 'pointer',
+                      fontWeight: 600,
+                      color: 'primary.500',
+                      '&:hover': {
+                        color: 'primary.700',
+                        textDecoration: 'underline'
+                      }
+                    }}
+                  >
                     {renewal.company}
-                  </Typography>
+                  </Link>
                 </td>
                 <td>
                   <Chip 
