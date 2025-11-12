@@ -180,7 +180,7 @@ export default function Renewals() {
     }).format(value);
   };
 
-  // Filter renewals by stage
+    // Filter renewals by stage
   const filteredRenewals = activeStage === 'all' 
     ? upcomingRenewals 
     : upcomingRenewals.filter(renewal => renewal.stage === activeStage);
@@ -198,10 +198,18 @@ export default function Renewals() {
     };
   });
 
-  const totalValue = filteredRenewals.reduce((sum, renewal) => sum + renewal.proposedMRR, 0);
+  // Total Pipeline is the sum of ALL current MRR from clients with upcoming renewals
+  const totalPipeline = upcomingRenewals.reduce((sum, renewal) => sum + renewal.currentMRR, 0);
+  
+  // Weighted Value is probability-adjusted proposed MRR
   const weightedValue = filteredRenewals.reduce((sum, renewal) => 
     sum + (renewal.proposedMRR * renewal.probability / 100), 0
   );
+  
+  // Average probability across all renewals
+  const avgProbability = filteredRenewals.length > 0
+    ? Math.round(filteredRenewals.reduce((sum, renewal) => sum + renewal.probability, 0) / filteredRenewals.length)
+    : 0;
 
   return (
     <PageContainer>
@@ -221,7 +229,7 @@ export default function Renewals() {
             <Stack spacing={1}>
               <Typography level="body-sm" color="neutral">Total Pipeline</Typography>
               <Typography level="h2" color="primary">
-                {formatCurrency(totalValue)}
+                {formatCurrency(totalPipeline)}
               </Typography>
             </Stack>
           </Card>
@@ -251,7 +259,7 @@ export default function Renewals() {
             <Stack spacing={1}>
               <Typography level="body-sm" color="neutral">Avg Probability</Typography>
               <Typography level="h2">
-                {Math.round(filteredRenewals.reduce((sum, r) => sum + r.probability, 0) / filteredRenewals.length)}%
+                {avgProbability}%
               </Typography>
             </Stack>
           </Card>
@@ -283,27 +291,32 @@ export default function Renewals() {
         <Table hoverRow>
           <thead>
             <tr>
-              <th style={{ width: '25%' }}>Company</th>
-              <th style={{ width: '15%' }}>Renewal Date</th>
-              <th style={{ width: '15%' }}>Current MRR</th>
-              <th style={{ width: '15%' }}>Proposed MRR</th>
+              <th style={{ width: '20%' }}>Company</th>
+              <th style={{ width: '12%' }}>Days Until</th>
+              <th style={{ width: '13%' }}>Renewal Date</th>
+              <th style={{ width: '13%' }}>Current MRR</th>
+              <th style={{ width: '13%' }}>Proposed MRR</th>
               <th style={{ width: '10%' }}>Stage</th>
               <th style={{ width: '10%' }}>Probability</th>
-              <th style={{ width: '10%' }}>CSM</th>
+              <th style={{ width: '9%' }}>CSM</th>
             </tr>
           </thead>
           <tbody>
             {filteredRenewals.map((renewal) => (
               <tr key={renewal.id} style={{ cursor: 'pointer' }}>
                 <td>
-                  <Stack spacing={0.5}>
-                    <Typography level="body-sm" sx={{ fontWeight: 600 }}>
-                      {renewal.company}
-                    </Typography>
-                    <Typography level="body-xs" color="neutral">
-                      {renewal.daysUntil} days until renewal
-                    </Typography>
-                  </Stack>
+                  <Typography level="body-sm" sx={{ fontWeight: 600 }}>
+                    {renewal.company}
+                  </Typography>
+                </td>
+                <td>
+                  <Chip 
+                    size="sm" 
+                    variant="soft" 
+                    color={renewal.daysUntil <= 7 ? 'danger' : renewal.daysUntil <= 30 ? 'warning' : 'neutral'}
+                  >
+                    {renewal.daysUntil} days
+                  </Chip>
                 </td>
                 <td>
                   <Typography level="body-sm">
