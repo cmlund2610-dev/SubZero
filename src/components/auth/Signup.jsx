@@ -163,7 +163,7 @@ export default function Signup() {
         minHeight: '100vh', 
         display: 'flex',
         position: 'relative',
-  background: 'linear-gradient(135deg, #FBFCFF 0%, #EDEFF5 100%)',
+        background: 'linear-gradient(135deg, #FBFCFF 0%, #EDEFF5 100%)',
         '&::before': {
           content: '""',
           position: 'absolute',
@@ -171,7 +171,7 @@ export default function Signup() {
           left: 0,
           right: 0,
           bottom: 0,
-          background: 'radial-gradient(circle at 20% 50%, rgba(67, 56, 202, 0.4), transparent 70%), radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1), transparent 50%), radial-gradient(circle at 40% 80%, rgba(139, 92, 246, 0.3), transparent 60%)',
+          background: 'radial-gradient(circle at 20% 50%, rgba(255, 109, 86, 0.08), transparent 70%), radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1), transparent 50%), radial-gradient(circle at 40% 80%, rgba(255, 109, 86, 0.05), transparent 60%)',
           pointerEvents: 'none'
         },
         '&::after': {
@@ -369,10 +369,7 @@ export default function Signup() {
                 level="h2" 
                 sx={{ 
                   mb: 1,
-                  background: 'linear-gradient(45deg, #4338CA 0%, #312E81 100%)',
-                  backgroundClip: 'text',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
+                  color: '#2E2F33',
                   fontWeight: 800,
                   fontSize: { xs: '1.75rem', md: '2rem' }
                 }}
@@ -428,8 +425,8 @@ export default function Signup() {
                     sx={{ 
                       mb: 2, 
                       borderRadius: '8px',
-                      borderColor: '#4338CA',
-                      bgcolor: 'rgba(67, 56, 202, 0.05)'
+                      borderColor: '#FF6D56',
+                      bgcolor: 'rgba(255, 109, 86, 0.05)'
                     }}
                   >
                     <Typography level="body-sm">
@@ -703,7 +700,7 @@ export default function Signup() {
                     '&:hover': {
                       background: '#E55F4C',
                       transform: 'translateY(-1px)',
-                      boxShadow: '0 10px 25px -5px rgba(67, 56, 202, 0.4)'
+                      boxShadow: '0 10px 25px -5px rgba(255, 109, 86, 0.4)'
                     },
                     '&:disabled': {
                       opacity: 0.7

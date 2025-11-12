@@ -99,7 +99,7 @@ export default function Signin() {
         minHeight: '100vh', 
         display: 'flex',
         position: 'relative',
-  background: 'linear-gradient(135deg, #FBFCFF 0%, #EDEFF5 100%)',
+        background: 'linear-gradient(135deg, #FBFCFF 0%, #EDEFF5 100%)',
         '&::before': {
           content: '""',
           position: 'absolute',
@@ -107,7 +107,7 @@ export default function Signin() {
           left: 0,
           right: 0,
           bottom: 0,
-          background: 'radial-gradient(circle at 20% 50%, rgba(67, 56, 202, 0.4), transparent 70%), radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1), transparent 50%), radial-gradient(circle at 40% 80%, rgba(139, 92, 246, 0.3), transparent 60%)',
+          background: 'radial-gradient(circle at 20% 50%, rgba(255, 109, 86, 0.08), transparent 70%), radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1), transparent 50%), radial-gradient(circle at 40% 80%, rgba(255, 109, 86, 0.05), transparent 60%)',
           pointerEvents: 'none'
         },
         '&::after': {
@@ -187,14 +187,12 @@ export default function Signin() {
               { 
                 icon: '📊', 
                 title: 'Predictive Analytics', 
-                desc: 'AI algorithms identify at-risk customers and growth opportunities',
-                color: '#8B5CF6'
+                desc: 'AI algorithms identify at-risk customers and growth opportunities'
               },
               { 
                 icon: '⚡', 
                 title: 'Automated Workflows', 
-                desc: 'Intelligent automation for onboarding and renewals',
-                color: '#06B6D4'
+                desc: 'Intelligent automation for onboarding and renewals'
               }
             ].map((feature, index) => (
               <Box 
@@ -353,7 +351,7 @@ export default function Signin() {
                     value={formData.email}
                     onChange={(e) => handleChange('email', e.target.value)}
                     disabled={isSubmitting}
-                    startDecorator={<EmailIcon sx={{ color: '#4338CA' }} />}
+                    startDecorator={<EmailIcon sx={{ color: '#FF6D56' }} />}
                     sx={{
                       borderRadius: '12px',
                       border: '1px solid #828392',
@@ -382,7 +380,7 @@ export default function Signin() {
                     value={formData.password}
                     onChange={(e) => handleChange('password', e.target.value)}
                     disabled={isSubmitting}
-                    startDecorator={<LockIcon sx={{ color: '#4338CA' }} />}
+                    startDecorator={<LockIcon sx={{ color: '#FF6D56' }} />}
                     sx={{
                       borderRadius: '12px',
                       border: '1px solid #828392',
@@ -418,7 +416,7 @@ export default function Signin() {
                       '& .MuiCheckbox-checkbox': { 
                         borderRadius: '6px',
                         '&:hover': {
-                          bgcolor: 'rgba(67, 56, 202, 0.1)'
+                          bgcolor: 'rgba(255, 109, 86, 0.1)'
                         }
                       },
                         color: '#2E2F33'
@@ -437,7 +435,7 @@ export default function Signin() {
                       color: '#FF6D56',
                       textDecoration: 'none',
                       '&:hover': {
-                        color: '#312E81'
+                        color: '#E55F4C'
                       }
                     }}
                   >
@@ -458,7 +456,7 @@ export default function Signin() {
                     py: 1.75,
                     fontWeight: 700,
                     fontSize: '1rem',
-                    boxShadow: '0 8px 16px rgba(67, 56, 202, 0.3)',
+                    boxShadow: '0 8px 16px rgba(255, 109, 86, 0.3)',
                     border: 'none',
                     textTransform: 'none',
                     '&:hover': {
@@ -499,21 +497,21 @@ export default function Signin() {
                     size="lg"
                     sx={{
                       borderRadius: '12px',
-                      borderColor: '#4338CA',
-                      color: '#4338CA',
+                      borderColor: '#828392',
+                      color: '#2E2F33',
                       fontWeight: 600,
                       width: '100%',
                       py: 1.5,
                       textTransform: 'none',
                       fontSize: '1rem',
-                      border: '2px solid #4338CA',
+                      border: '2px solid #828392',
                       bgcolor: 'transparent',
                       '&:hover': {
-                        borderColor: '#312E81',
-                        bgcolor: 'rgba(67, 56, 202, 0.05)',
-                        color: '#312E81',
+                        borderColor: '#FF6D56',
+                        bgcolor: 'rgba(255, 109, 86, 0.05)',
+                        color: '#FF6D56',
                         transform: 'translateY(-1px)',
-                        boxShadow: '0 4px 8px rgba(67, 56, 202, 0.2)'
+                        boxShadow: '0 4px 8px rgba(255, 109, 86, 0.2)'
                       },
                       transition: 'all 0.2s ease-in-out'
                     }}
