@@ -40,8 +40,9 @@ import {
 } from '@mui/icons-material';
 
 import NavItem from '../components/NavItem.jsx';
+import CollapsibleNavSection from '../components/CollapsibleNavSection.jsx';
 import ProfilePicture from '../components/ProfilePicture.jsx';
-import { AdminOnly } from '../components/FeatureGate.jsx';
+import AdminOnly from '../components/FeatureGate.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import usePermissions from '../hooks/usePermissions.js';
 
@@ -112,32 +113,40 @@ export default function AppLayout() {
             <NavItem to="/" icon={<Home />}>
               Home
             </NavItem>
-            <NavItem to="/clients" icon={<Diamond />}>
-              Clients
-            </NavItem>
-            <NavItem to="/renewals" icon={<Receipt />}>
-              Contract Renewals
-            </NavItem>
-            <NavItem to="/analytics" icon={<BarChart />}>
-              Analytics
-            </NavItem>
-            <NavItem to="/data" icon={<CloudUpload />}>
-              Data Import
-            </NavItem>
-            <NavItem to="/settings" icon={<Settings />}>
-              Settings
-            </NavItem>
             
-            <AdminOnly>
-              <NavItem to="/users" icon={<People />}>
-                Users
+            <CollapsibleNavSection title="Clients" defaultExpanded={true}>
+              <NavItem to="/clients" icon={<Diamond />}>
+                Clients overview
               </NavItem>
-            </AdminOnly>
-            <AdminOnly>
-              <NavItem to="/billing" icon={<CreditCard />}>
-                Billing
+              <NavItem to="/renewals" icon={<Receipt />}>
+                Contract Renewals
               </NavItem>
-            </AdminOnly>
+            </CollapsibleNavSection>
+            
+            <CollapsibleNavSection title="Analytics" defaultExpanded={true}>
+              <NavItem to="/analytics" icon={<BarChart />}>
+                Metrics & Data
+              </NavItem>
+              <NavItem to="/data" icon={<CloudUpload />}>
+                Data Import
+              </NavItem>
+            </CollapsibleNavSection>
+            
+            <CollapsibleNavSection title="Settings" defaultExpanded={true}>
+              <NavItem to="/settings" icon={<Settings />}>
+                Account settings
+              </NavItem>
+              <AdminOnly>
+                <NavItem to="/users" icon={<People />}>
+                  Users
+                </NavItem>
+              </AdminOnly>
+              <AdminOnly>
+                <NavItem to="/billing" icon={<CreditCard />}>
+                  Billing
+                </NavItem>
+              </AdminOnly>
+            </CollapsibleNavSection>
           </List>
         </Box>
 
