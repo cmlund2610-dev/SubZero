@@ -114,7 +114,7 @@ export default function AppLayout() {
               Home
             </NavItem>
             
-            <CollapsibleNavSection title="Clients" defaultExpanded={true}>
+            <CollapsibleNavSection title="Clients" defaultExpanded={false}>
               <NavItem to="/clients" icon={<Diamond />}>
                 Clients overview
               </NavItem>
@@ -123,7 +123,7 @@ export default function AppLayout() {
               </NavItem>
             </CollapsibleNavSection>
             
-            <CollapsibleNavSection title="Analytics" defaultExpanded={true}>
+            <CollapsibleNavSection title="Analytics" defaultExpanded={false}>
               <NavItem to="/analytics" icon={<BarChart />}>
                 Metrics & Data
               </NavItem>
@@ -132,7 +132,7 @@ export default function AppLayout() {
               </NavItem>
             </CollapsibleNavSection>
             
-            <CollapsibleNavSection title="Settings" defaultExpanded={true}>
+            <CollapsibleNavSection title="Settings" defaultExpanded={false}>
               <NavItem to="/settings" icon={<Settings />}>
                 Account settings
               </NavItem>
