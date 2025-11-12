@@ -1,9 +1,9 @@
 /**
- * SubZero Brand Style Guide (Legacy)
+ * subzero Brand Style Guide (Legacy)
  * 
  * This file contains legacy brand guidelines, colors, typography, gradients,
  * spacing, and component styles. New projects should use subzero.tokens.json
- * and theme.js for the current SubZero brand palette.
+ * and theme.js for the current subzero brand palette.
  * 
  * Last updated: November 12, 2025
  */

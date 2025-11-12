@@ -1,5 +1,5 @@
 /**
- * React Router v6 configuration for SubZero with Authentication
+ * React Router v6 configuration for subzero with Authentication
  * 
  * Defines routes with lazy loading and authentication protection.
  * Public routes: /signin, /signup

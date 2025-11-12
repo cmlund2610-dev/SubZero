@@ -205,7 +205,7 @@ export default function Signup() {
           <Box
             component="img"
             src="/Primary Logo grey : orange.svg"
-            alt="SubZero Logo"
+            alt="subzero Logo"
             sx={{
               width: 180,
               height: 'auto',
@@ -355,7 +355,7 @@ export default function Signup() {
               <Box
                 component="img"
                 src="/Primary Logo grey : orange.svg"
-                alt="SubZero Logo"
+                alt="subzero Logo"
                 sx={{
                   width: 140,
                   height: 'auto'
@@ -385,7 +385,7 @@ export default function Signup() {
                   color: '#5a6169'
                 }}
               >
-                Join SubZero to start managing your customer success
+                Join subzero to start managing your customer success
               </Typography>
             </Box>
 

@@ -1,5 +1,5 @@
 /**
- * SubZero Brand Style Guide - Visual Component
+ * subzero Brand Style Guide - Visual Component
  * 
  * Interactive style guide showcasing all brand elements
  * Access at /styleguide route for reference
@@ -33,7 +33,7 @@ export default function StyleGuide() {
             fontWeight: 800
           }}
         >
-          SubZero Brand Style Guide
+          subzero Brand Style Guide
         </Typography>
         <Typography level="body-lg" color="neutral">
           Design system and brand guidelines for consistent UI/UX
@@ -60,7 +60,7 @@ export default function StyleGuide() {
                 <Box sx={{ mb: 3, display: 'flex', justifyContent: 'center' }}>
                   <img 
                     src="/Logo White.svg" 
-                    alt="SubZero White Logo" 
+                    alt="subzero White Logo" 
                     style={{ 
                       maxWidth: '200px',
                       height: 'auto'
@@ -89,7 +89,7 @@ export default function StyleGuide() {
                 <Box sx={{ mb: 3, display: 'flex', justifyContent: 'center' }}>
                   <img 
                     src="/Primary Logo grey.svg" 
-                    alt="SubZero Colored Logo" 
+                    alt="subzero Colored Logo" 
                     style={{ 
                       maxWidth: '200px',
                       height: 'auto'

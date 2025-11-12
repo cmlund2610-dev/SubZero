@@ -1,8 +1,8 @@
 /**
- * SubZero App - Router, Theme Provider, and Authentication
+ * subzero App - Router, Theme Provider, and Authentication
  * 
  * Main application entry point that:
- * - Provides Joy UI theme using SubZero brand palette (Coral / Slate / Off-White)
+ * - Provides Joy UI theme using subzero brand palette (Coral / Slate / Off-White)
  * - Mounts React Router for navigation
  * - Provides Firebase Authentication context
  * - Enables dark/light mode switching

@@ -1,8 +1,8 @@
-# SubZero Brand Style Guide
+# subzero Brand Style Guide
 
 **Precision in Data. Clarity in Design.**
 
-This guide defines the visual identity, design principles, and usage guidelines for the SubZero brand across all digital touchpoints.
+This guide defines the visual identity, design principles, and usage guidelines for the subzero brand across all digital touchpoints.
 
 ---
 
@@ -112,7 +112,7 @@ font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
 
 ### Logo Variants
 
-SubZero has three logo formats optimized for different contexts:
+subzero has three logo formats optimized for different contexts:
 
 #### 1. Primary Logo (Gray)
 - **File**: `Primary Logo grey.svg`
@@ -150,7 +150,7 @@ SubZero has three logo formats optimized for different contexts:
 
 ## 📐 Spacing System
 
-SubZero uses an 8px base grid for consistent spacing and rhythm.
+subzero uses an 8px base grid for consistent spacing and rhythm.
 
 ### Spacing Scale
 
@@ -176,7 +176,7 @@ SubZero uses an 8px base grid for consistent spacing and rhythm.
 
 ### Border Radius
 
-SubZero uses consistent rounded corners for a modern, approachable feel.
+subzero uses consistent rounded corners for a modern, approachable feel.
 
 - **Small elements** (buttons, inputs, tags): `8px`
 - **Medium elements** (cards, modals): `12px`
@@ -298,4 +298,4 @@ When building new UI components:
 
 ---
 
-**SubZero Brand Style Guide** | Version 1.0 | Last updated: November 12, 2025
+**subzero Brand Style Guide** | Version 1.0 | Last updated: November 12, 2025

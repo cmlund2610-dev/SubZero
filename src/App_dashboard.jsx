@@ -1,5 +1,5 @@
 /**
- * SubZero Dashboard App
+ * subzero Dashboard App
  * 
  * Main dashboard composition displaying:
  * - Sidebar with logo
@@ -77,11 +77,11 @@ export default function App() {
           >
             <Box sx={{ p: 3 }}>
               <Stack spacing={1} alignItems="center">
-                {/* SubZero Logo */}
+                {/* subzero Logo */}
                 <Box
                   component="img"
                   src="/Primary Logo grey : orange.svg"
-                  alt="SubZero Logo"
+                  alt="subzero Logo"
                   sx={{
                     width: 160,
                     height: 'auto',
@@ -145,7 +145,7 @@ export default function App() {
                     <Box
                       component="img"
                       src="/Primary Logo grey : orange.svg"
-                      alt="SubZero Logo"
+                      alt="subzero Logo"
                       sx={{
                         height: 28,
                         width: 'auto'

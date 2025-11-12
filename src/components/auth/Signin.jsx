@@ -141,7 +141,7 @@ export default function Signin() {
           <Box
             component="img"
             src="/Primary Logo grey : orange.svg"
-            alt="SubZero Logo"
+            alt="subzero Logo"
             sx={{
               width: 180,
               height: 'auto',
@@ -289,7 +289,7 @@ export default function Signin() {
               <Box
                 component="img"
                 src="/Primary Logo grey : orange.svg"
-                alt="SubZero Logo"
+                alt="subzero Logo"
                 sx={{
                   width: 140,
                   height: 'auto'
@@ -319,7 +319,7 @@ export default function Signin() {
                   color: '#5a6169'
                 }}
               >
-                Sign in to continue with SubZero insights
+                Sign in to continue with subzero insights
               </Typography>
             </Box>
 
@@ -471,7 +471,7 @@ export default function Signin() {
                   }}
                   startDecorator={!isSubmitting && <LoginIcon />}
                 >
-                  {isSubmitting ? 'Signing in...' : 'Sign In to SubZero'}
+                  {isSubmitting ? 'Signing in...' : 'Sign In to subzero'}
                 </Button>
 
                 <Divider sx={{ my: 2 }}>
@@ -484,7 +484,7 @@ export default function Signin() {
                       fontWeight: 500
                     }}
                   >
-                    New to SubZero?
+                    New to subzero?
                   </Typography>
                 </Divider>
 

@@ -185,7 +185,7 @@ export const EmptyStates = {
   GetStarted: (props) => (
     <EmptyState
       icon="🚀"
-  title="Welcome to SubZero!"
+  title="Welcome to subzero!"
       description="Get started by importing your client data to unlock powerful customer success insights and analytics."
       actionText="Import Client Data"
       secondaryActionText="View Demo"

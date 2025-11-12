@@ -20,7 +20,7 @@ export default function App() {
         }}
       >
         <Stack direction="row" alignItems="center" justifyContent="space-between">
-          <Typography level="h4">SubZero (Legacy)</Typography>
+          <Typography level="h4">subzero (Legacy)</Typography>
           <Button variant="solid" color="primary">Sign in</Button>
         </Stack>
       </Box>

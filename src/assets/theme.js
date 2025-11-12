@@ -1,5 +1,5 @@
 /**
- * Joy UI theme configuration for SubZero
+ * Joy UI theme configuration for subzero
  * Clean, confident, modern, data‑driven
  * 
  * Palette:

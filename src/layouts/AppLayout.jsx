@@ -86,11 +86,11 @@ export default function AppLayout() {
         {/* Logo section */}
         <Box sx={{ p: 3 }}>
           <Stack spacing={2} alignItems="center">
-            {/* SubZero Logo */}
+            {/* subzero Logo */}
             <Box
               component="img"
               src="/Primary Logo grey : orange.svg"
-              alt="SubZero Logo"
+              alt="subzero Logo"
               sx={{
                 width: 160,
                 height: 'auto',

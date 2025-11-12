@@ -1,8 +1,8 @@
-# SubZero
+# subzero
 
 **Precision in Data. Clarity in Design.**
 
-SubZero is a modern SaaS customer success analytics platform built with React, providing real-time insights into client health, MRR trends, churn risk, and contract renewals.
+subzero is a modern SaaS customer success analytics platform built with React, providing real-time insights into client health, MRR trends, churn risk, and contract renewals.
 
 ## 🚀 Features
 
@@ -17,7 +17,7 @@ SubZero is a modern SaaS customer success analytics platform built with React, p
 ## 🛠 Tech Stack
 
 - **Frontend**: React 19 + Vite 7
-- **UI Library**: Joy UI (@mui/joy) with custom SubZero theme
+- **UI Library**: Joy UI (@mui/joy) with custom subzero theme
 - **Routing**: React Router v6
 - **Charts**: Recharts
 - **Backend**: Firebase (Authentication, Firestore, Storage)
@@ -26,7 +26,7 @@ SubZero is a modern SaaS customer success analytics platform built with React, p
 
 ## 🎨 Brand System
 
-SubZero uses a carefully crafted design system with:
+subzero uses a carefully crafted design system with:
 
 - **Primary Coral**: `#FF6D56` - Primary actions, CTAs, key highlights
 - **Neutral Gray**: `#828392` - Borders, secondary text, subtle UI elements
@@ -46,8 +46,8 @@ For comprehensive brand guidelines, see [`BRAND_STYLE_GUIDE.md`](./BRAND_STYLE_G
 
 ```bash
 # Clone the repository
-git clone https://github.com/cmlund2610-dev/SubZero.git
-cd SubZero
+git clone https://github.com/cmlund2610-dev/subzero.git
+cd subzero
 
 # Install dependencies
 npm install
@@ -73,7 +73,7 @@ npm run lint
 
 The app is pre-configured with Firebase. Configuration lives in `src/lib/firebase.js`.
 
-**Note**: Current Firebase project uses legacy `beehive-45129` identifiers (retained for continuity). All frontend branding is SubZero.
+**Note**: Current Firebase project uses legacy `beehive-45129` identifiers (retained for continuity). All frontend branding is subzero.
 
 To use Firebase emulators in development, uncomment the emulator connection code in `firebase.js`.
 
@@ -99,7 +99,7 @@ src/
 
 ## 🎯 Key Files
 
-- **Theme**: `src/assets/theme.js` - Joy UI theme with SubZero palette
+- **Theme**: `src/assets/theme.js` - Joy UI theme with subzero palette
 - **Tokens**: `src/assets/subzero.tokens.json` - Design token reference
 - **Auth**: `src/context/AuthContext.jsx` - Firebase authentication state
 - **Routing**: `src/router.jsx` - All app routes with lazy loading
@@ -145,4 +145,4 @@ Proprietary - All rights reserved.
 
 ---
 
-**SubZero** - Built with precision. Designed for clarity.
+**subzero** - Built with precision. Designed for clarity.

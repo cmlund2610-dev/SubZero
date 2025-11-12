@@ -60,7 +60,7 @@ export default function Home() {
             <Box
               component="img"
               src="/Submark.logo.orange.svg"
-              alt="SubZero Logo"
+              alt="subzero Logo"
               sx={{
                 width: 80,
                 height: 80,
@@ -73,7 +73,7 @@ export default function Home() {
             />
           </Box>
           <Typography level="h1" sx={{ mb: 2, fontWeight: 700 }}>
-            Welcome to SubZero!
+            Welcome to subzero!
           </Typography>
           <Typography level="body-lg" color="neutral" sx={{ maxWidth: '500px', mx: 'auto', mb: 4 }}>
             Precision in Data. Clarity in Design. Import your client data to unlock powerful analytics and health scores.

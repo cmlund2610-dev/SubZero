@@ -1,5 +1,5 @@
 /**
- * localStorage persistence layer for SubZero app
+ * localStorage persistence layer for subzero app
  * 
  * Manages user preferences, widget configuration, data imports, and webhooks
  * with fallback handling for localStorage access issues.
