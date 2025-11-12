@@ -8,6 +8,7 @@
  */
 
 import React, { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   Box, 
   Typography, 
@@ -21,7 +22,7 @@ import {
   LinearProgress,
   Table,
   Alert,
-  Link,
+  Link as JoyLink,
   Tooltip as JoyTooltip,
   IconButton
 } from '@mui/joy';
@@ -778,7 +779,7 @@ export default function Analytics() {
                       <tr key={index}>
                         <td>
                           {customer.id ? (
-                            <Link href={`/clients/${customer.id}`}>
+                            <Link to={`/clients/${customer.id}`} style={{ textDecoration: 'none', color: 'inherit', fontWeight: 500 }}>
                               {customer.name}
                             </Link>
                           ) : (
