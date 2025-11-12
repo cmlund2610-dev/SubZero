@@ -77,26 +77,17 @@ export default function App() {
           >
             <Box sx={{ p: 3 }}>
               <Stack spacing={1} alignItems="center">
-                {/* Logo placeholder - replace with actual Logo.svg */}
+                {/* SubZero Logo */}
                 <Box
+                  component="img"
+                  src="/Primary Logo grey : orange.svg"
+                  alt="SubZero Logo"
                   sx={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: 'lg',
-                    bgcolor: 'primary.500',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white',
-                    fontSize: '1.5rem',
-                    fontWeight: 700
+                    width: 160,
+                    height: 'auto',
+                    mb: 1
                   }}
-                >
-                  B
-                </Box>
-                <Typography level="title-lg" color="primary" sx={{ fontWeight: 700 }}>
-                  SubZero
-                </Typography>
+                />
               </Stack>
             </Box>
 
@@ -151,9 +142,15 @@ export default function App() {
                 <Stack direction="row" alignItems="center" spacing={2}>
                   {/* Mobile logo */}
                   <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
-                    <Typography level="title-lg" color="primary" sx={{ fontWeight: 700 }}>
-                      SubZero
-                    </Typography>
+                    <Box
+                      component="img"
+                      src="/Primary Logo grey : orange.svg"
+                      alt="SubZero Logo"
+                      sx={{
+                        height: 28,
+                        width: 'auto'
+                      }}
+                    />
                   </Box>
                   
                   {/* Analytics unlock badges */}

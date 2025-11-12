@@ -140,10 +140,10 @@ export default function Signin() {
           {/* Brand Logo */}
           <Box
             component="img"
-            src="/Logo White.svg"
+            src="/Primary Logo grey : orange.svg"
             alt="SubZero Logo"
             sx={{
-              width: 140,
+              width: 180,
               height: 'auto',
               mb: 4,
               opacity: 0.95
@@ -288,10 +288,10 @@ export default function Signin() {
             >
               <Box
                 component="img"
-                src="/Primary Logo grey.svg"
+                src="/Primary Logo grey : orange.svg"
                 alt="SubZero Logo"
                 sx={{
-                  width: 120,
+                  width: 140,
                   height: 'auto'
                 }}
               />

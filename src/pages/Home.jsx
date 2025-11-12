@@ -64,7 +64,7 @@ export default function Home() {
               sx={{
                 width: 80,
                 height: 80,
-                filter: 'drop-shadow(0 4px 8px rgba(67, 56, 202, 0.2))',
+                filter: 'drop-shadow(0 4px 8px rgba(255, 109, 86, 0.2))',
                 transition: 'transform 0.3s ease',
                 '&:hover': {
                   transform: 'scale(1.05)',
@@ -86,9 +86,9 @@ export default function Home() {
             sx={{ 
               px: 4, 
               py: 1.5,
-              background: 'linear-gradient(45deg, #4338CA, #7C3AED)',
+              background: '#FF6D56',
               '&:hover': {
-                background: 'linear-gradient(45deg, #3730A3, #6D28D9)',
+                background: '#E55F4C',
               }
             }} 
             onClick={() => navigate('/data')}
