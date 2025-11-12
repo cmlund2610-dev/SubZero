@@ -28,10 +28,12 @@ import {
   Select,
   Option,
   List,
-  ListItem
+  ListItem,
+  Avatar
 } from '@mui/joy';
 import { ArrowBack as ArrowBackIcon } from '@mui/icons-material';
 import { ImportedData } from '../lib/persist.js';
+import { useAuth } from '../context/AuthContext.jsx';
 
 export default function ClientDetail() {
   const { id } = useParams();
@@ -302,8 +304,9 @@ export default function ClientDetail() {
 
 // ---- Notes Section Component ----
 function NotesSection({ client }) {
+  const { userProfile } = useAuth();
   const storageKey = `subzero_client_notes_${client.id}`;
-  const [notes, setNotes] = useState([]); // {id, text, createdAt}
+  const [notes, setNotes] = useState([]); // {id, text, createdAt, createdBy, createdByName}
   const [draft, setDraft] = useState('');
 
   useEffect(() => {
@@ -323,7 +326,13 @@ function NotesSection({ client }) {
   const addNote = () => {
     if (!draft.trim()) return;
     const next = [
-      { id: crypto.randomUUID(), text: draft.trim(), createdAt: Date.now() },
+      { 
+        id: crypto.randomUUID(), 
+        text: draft.trim(), 
+        createdAt: Date.now(),
+        createdBy: userProfile?.id || 'unknown',
+        createdByName: userProfile?.fullName || 'Unknown User'
+      },
       ...notes
     ];
     persist(next);
@@ -369,9 +378,14 @@ function NotesSection({ client }) {
                       <Stack spacing={1}>
                         <Typography level="body-sm" sx={{ whiteSpace: 'pre-line' }}>{note.text}</Typography>
                         <Stack direction="row" justifyContent="space-between" alignItems="center">
-                          <Typography level="body-xs" color="neutral">
-                            {new Date(note.createdAt).toLocaleString()}
-                          </Typography>
+                          <Stack spacing={0.5}>
+                            <Typography level="body-xs" color="neutral" sx={{ fontWeight: 600 }}>
+                              {note.createdByName || 'Unknown User'}
+                            </Typography>
+                            <Typography level="body-xs" color="neutral">
+                              {new Date(note.createdAt).toLocaleString()}
+                            </Typography>
+                          </Stack>
                           <Button size="sm" variant="outlined" color="danger" onClick={() => deleteNote(note.id)}>Delete</Button>
                         </Stack>
                       </Stack>
@@ -389,8 +403,9 @@ function NotesSection({ client }) {
 
 // ---- Tasks Section Component ----
 function TasksSection({ client }) {
+  const { userProfile } = useAuth();
   const storageKey = `subzero_client_tasks_${client.id}`;
-  const [tasks, setTasks] = useState([]); // {id, title, dueDate, priority, completed, createdAt}
+  const [tasks, setTasks] = useState([]); // {id, title, dueDate, priority, completed, createdAt, createdBy, createdByName}
   const [title, setTitle] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [priority, setPriority] = useState('normal');
@@ -413,7 +428,16 @@ function TasksSection({ client }) {
     if (!title.trim()) return;
     const next = [
       ...tasks,
-      { id: crypto.randomUUID(), title: title.trim(), dueDate, priority, completed: false, createdAt: Date.now() }
+      { 
+        id: crypto.randomUUID(), 
+        title: title.trim(), 
+        dueDate, 
+        priority, 
+        completed: false, 
+        createdAt: Date.now(),
+        createdBy: userProfile?.id || 'unknown',
+        createdByName: userProfile?.fullName || 'Unknown User'
+      }
     ];
     persist(next);
     setTitle('');
@@ -483,9 +507,14 @@ function TasksSection({ client }) {
                             <Chip size="sm" variant="soft" color={priorities[task.priority].color}>{priorities[task.priority].label}</Chip>
                           </Stack>
                           <Stack direction="row" justifyContent="space-between" alignItems="center">
-                            <Typography level="body-xs" color="neutral">
-                              {task.dueDate ? `Due ${task.dueDate}` : 'No due date'}
-                            </Typography>
+                            <Stack spacing={0.5}>
+                              <Typography level="body-xs" color="neutral">
+                                {task.dueDate ? `Due ${task.dueDate}` : 'No due date'}
+                              </Typography>
+                              <Typography level="body-xs" color="neutral" sx={{ fontWeight: 600 }}>
+                                Created by {task.createdByName || 'Unknown User'}
+                              </Typography>
+                            </Stack>
                             <Button size="sm" variant="outlined" color="danger" onClick={() => deleteTask(task.id)}>Delete</Button>
                           </Stack>
                         </Stack>
@@ -511,10 +540,17 @@ function TasksSection({ client }) {
                             </Stack>
                             <Chip size="sm" variant="outlined" color={priorities[task.priority].color}>{priorities[task.priority].label}</Chip>
                           </Stack>
-                          <Typography level="body-xs" color="neutral">
-                            Completed {new Date(task.createdAt).toLocaleDateString()}
-                          </Typography>
-                          <Button size="sm" variant="outlined" color="danger" onClick={() => deleteTask(task.id)}>Delete</Button>
+                          <Stack direction="row" justifyContent="space-between" alignItems="center">
+                            <Stack spacing={0.5}>
+                              <Typography level="body-xs" color="neutral">
+                                Completed {new Date(task.createdAt).toLocaleDateString()}
+                              </Typography>
+                              <Typography level="body-xs" color="neutral" sx={{ fontWeight: 600 }}>
+                                Created by {task.createdByName || 'Unknown User'}
+                              </Typography>
+                            </Stack>
+                            <Button size="sm" variant="outlined" color="danger" onClick={() => deleteTask(task.id)}>Delete</Button>
+                          </Stack>
                         </Stack>
                       </Card>
                     </ListItem>
