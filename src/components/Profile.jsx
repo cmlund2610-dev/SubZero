@@ -22,7 +22,11 @@ import {
 import { 
   Save, 
   Person as User, 
-  Security as Shield 
+  Lock,
+  Email,
+  Phone,
+  Work,
+  Badge
 } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext.jsx';
 import ProfilePicture from '../components/ProfilePicture.jsx';
@@ -111,13 +115,21 @@ const Profile = ({ embedded = false }) => {
         sx={{ '& > *': { flex: 1 } }}
       >
         {/* Profile Picture Section */}
-        <Card sx={{ maxWidth: { md: '300px' } }}>
+        <Card 
+          variant="outlined"
+          sx={{ 
+            maxWidth: { md: '350px' },
+            background: 'linear-gradient(135deg, rgba(255, 109, 86, 0.05) 0%, rgba(255, 109, 86, 0.02) 100%)',
+            border: '1px solid',
+            borderColor: 'divider'
+          }}
+        >
           <CardContent>
-            <Typography level="h4" sx={{ mb: 3 }}>
+            <Typography level="title-lg" sx={{ mb: 3, fontWeight: 600 }}>
               Profile Picture
             </Typography>
             
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', py: 2 }}>
               <ProfilePicture 
                 size="xl" 
                 showName={true}
@@ -132,13 +144,13 @@ const Profile = ({ embedded = false }) => {
         </Card>
 
         {/* Profile Information Section */}
-        <Card>
+        <Card variant="outlined">
           <CardContent>
-            <Typography level="h4" sx={{ mb: 3 }}>
+            <Typography level="title-lg" sx={{ mb: 3, fontWeight: 600 }}>
               Personal Information
             </Typography>
 
-            <Stack spacing={3}>
+            <Stack spacing={2.5}>
                 {/* Full Name */}
                 <FormControl>
                   <FormLabel>Full Name *</FormLabel>
@@ -146,6 +158,8 @@ const Profile = ({ embedded = false }) => {
                     value={formData.fullName}
                     onChange={(e) => handleInputChange('fullName', e.target.value)}
                     placeholder="Enter your full name"
+                    startDecorator={<User sx={{ fontSize: 18, color: 'neutral.500' }} />}
+                    size="lg"
                   />
                 </FormControl>
 
@@ -155,9 +169,25 @@ const Profile = ({ embedded = false }) => {
                   <Input
                     value={formData.email}
                     disabled
-                    startDecorator={<Shield size={16} />}
+                    startDecorator={<Email sx={{ fontSize: 18, color: 'neutral.500' }} />}
+                    endDecorator={
+                      <Chip 
+                        size="sm" 
+                        variant="soft" 
+                        color="neutral"
+                        startDecorator={<Lock sx={{ fontSize: 14 }} />}
+                      >
+                        Protected
+                      </Chip>
+                    }
+                    size="lg"
+                    sx={{
+                      '& .MuiInput-input': {
+                        color: 'text.primary'
+                      }
+                    }}
                   />
-                  <Typography level="body-xs" color="neutral" sx={{ mt: 0.5 }}>
+                  <Typography level="body-xs" color="neutral" sx={{ mt: 0.5, ml: 0.5 }}>
                     Email address cannot be changed
                   </Typography>
                 </FormControl>
@@ -169,37 +199,52 @@ const Profile = ({ embedded = false }) => {
                     value={formData.phoneNumber}
                     onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
                     placeholder="+1 (555) 123-4567"
+                    startDecorator={<Phone sx={{ fontSize: 18, color: 'neutral.500' }} />}
+                    size="lg"
                   />
                 </FormControl>
 
-                <Divider />
+                <Divider sx={{ my: 1 }} />
 
                 {/* Work Information */}
-                <Typography level="title-md">Work Information</Typography>
+                <Typography level="title-md" sx={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Work sx={{ fontSize: 20 }} />
+                  Work Information
+                </Typography>
 
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <FormControl>
+                  <FormControl sx={{ flex: 1 }}>
                     <FormLabel>Department</FormLabel>
                     <Input
                       value={formData.department}
                       onChange={(e) => handleInputChange('department', e.target.value)}
-                      placeholder="e.g., Engineering"
+                      placeholder="e.g., sales"
+                      startDecorator={<Work sx={{ fontSize: 18, color: 'neutral.500' }} />}
+                      size="lg"
                     />
                   </FormControl>
-                  <FormControl>
+                  <FormControl sx={{ flex: 1 }}>
                     <FormLabel>Job Title</FormLabel>
                     <Input
                       value={formData.jobTitle}
                       onChange={(e) => handleInputChange('jobTitle', e.target.value)}
-                      placeholder="e.g., Software Engineer"
+                      placeholder="e.g., Sales Supporter"
+                      startDecorator={<Badge sx={{ fontSize: 18, color: 'neutral.500' }} />}
+                      size="lg"
                     />
                   </FormControl>
                 </Stack>
 
                 {/* Department suggestions */}
                 {!formData.department && (
-                  <Box>
-                    <Typography level="body-xs" color="neutral" sx={{ mb: 1 }}>
+                  <Box sx={{ 
+                    p: 2, 
+                    bgcolor: 'background.level1', 
+                    borderRadius: 'sm',
+                    border: '1px solid',
+                    borderColor: 'divider'
+                  }}>
+                    <Typography level="body-xs" color="neutral" sx={{ mb: 1, fontWeight: 600 }}>
                       Popular departments:
                     </Typography>
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
@@ -207,9 +252,15 @@ const Profile = ({ embedded = false }) => {
                         <Chip
                           key={dept}
                           size="sm"
-                          variant="outlined"
+                          variant="soft"
+                          color="neutral"
                           onClick={() => handleInputChange('department', dept)}
-                          sx={{ cursor: 'pointer' }}
+                          sx={{ 
+                            cursor: 'pointer',
+                            '&:hover': {
+                              bgcolor: 'primary.softHoverBg'
+                            }
+                          }}
                         >
                           {dept}
                         </Chip>
@@ -223,14 +274,18 @@ const Profile = ({ embedded = false }) => {
       </Stack>
 
       {/* Action Buttons */}
-      <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center', gap: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
         <Button
           variant="solid"
           color="primary"
           size="lg"
           loading={loading}
-          startDecorator={<Save size={20} />}
+          startDecorator={<Save />}
           onClick={handleSave}
+          sx={{
+            minWidth: '160px',
+            fontWeight: 600
+          }}
         >
           Save Changes
         </Button>
