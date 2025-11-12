@@ -8,7 +8,7 @@
  * To integrate with data: fetch client data based on ID and populate tabs.
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { 
   Box, 
@@ -21,7 +21,14 @@ import {
   Card,
   Chip,
   Button,
-  Grid
+  Grid,
+  Textarea,
+  Input,
+  Checkbox,
+  Select,
+  Option,
+  List,
+  ListItem
 } from '@mui/joy';
 import { ArrowBack as ArrowBackIcon } from '@mui/icons-material';
 import { ImportedData } from '../lib/persist.js';
@@ -154,7 +161,6 @@ export default function ClientDetail() {
         <Tabs defaultValue={0} sx={{ backgroundColor: 'transparent' }}>
           <TabList>
             <Tab>Overview</Tab>
-            <Tab>Usage</Tab>
             <Tab>Notes</Tab>
             <Tab>Tasks</Tab>
           </TabList>
@@ -280,76 +286,245 @@ export default function ClientDetail() {
             </Stack>
           </TabPanel>
           
+          {/* Notes Tab */}
           <TabPanel value={1}>
-            <Stack spacing={3} sx={{ mt: 2 }}>
-              <Typography level="title-lg">Usage Analytics</Typography>
-              <Card variant="outlined" sx={{ p: 3 }}>
-                <Stack spacing={2}>
-                  <Typography level="body-md">
-                    📊 <strong>Usage Tab Placeholder</strong>
-                  </Typography>
-                  <Typography level="body-sm" color="neutral">
-                    This section would contain:
-                  </Typography>
-                  <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                    <li><Typography level="body-sm">Feature adoption charts</Typography></li>
-                    <li><Typography level="body-sm">Login frequency and patterns</Typography></li>
-                    <li><Typography level="body-sm">User engagement metrics</Typography></li>
-                    <li><Typography level="body-sm">API usage statistics</Typography></li>
-                    <li><Typography level="body-sm">Performance benchmarks</Typography></li>
-                  </ul>
-                </Stack>
-              </Card>
-            </Stack>
+            <NotesSection client={client} />
           </TabPanel>
-          
+          {/* Tasks Tab */}
           <TabPanel value={2}>
-            <Stack spacing={3} sx={{ mt: 2 }}>
-              <Typography level="title-lg">Notes & Communications</Typography>
-              <Card variant="outlined" sx={{ p: 3 }}>
-                <Stack spacing={2}>
-                  <Typography level="body-md">
-                    📝 <strong>Notes Tab Placeholder</strong>
-                  </Typography>
-                  <Typography level="body-sm" color="neutral">
-                    This section would contain:
-                  </Typography>
-                  <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                    <li><Typography level="body-sm">Internal notes and observations</Typography></li>
-                    <li><Typography level="body-sm">Meeting summaries and action items</Typography></li>
-                    <li><Typography level="body-sm">Email communication history</Typography></li>
-                    <li><Typography level="body-sm">Support ticket references</Typography></li>
-                    <li><Typography level="body-sm">Strategic recommendations</Typography></li>
-                  </ul>
-                </Stack>
-              </Card>
-            </Stack>
-          </TabPanel>
-          
-          <TabPanel value={3}>
-            <Stack spacing={3} sx={{ mt: 2 }}>
-              <Typography level="title-lg">Tasks & Follow-ups</Typography>
-              <Card variant="outlined" sx={{ p: 3 }}>
-                <Stack spacing={2}>
-                  <Typography level="body-md">
-                    ✅ <strong>Tasks Tab Placeholder</strong>
-                  </Typography>
-                  <Typography level="body-sm" color="neutral">
-                    This section would contain:
-                  </Typography>
-                  <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                    <li><Typography level="body-sm">Open tasks and action items</Typography></li>
-                    <li><Typography level="body-sm">Scheduled follow-ups</Typography></li>
-                    <li><Typography level="body-sm">Renewal preparation checklist</Typography></li>
-                    <li><Typography level="body-sm">Escalation procedures</Typography></li>
-                    <li><Typography level="body-sm">Success milestones tracking</Typography></li>
-                  </ul>
-                </Stack>
-              </Card>
-            </Stack>
+            <TasksSection client={client} />
           </TabPanel>
         </Tabs>
       </Stack>
     </Box>
+  );
+}
+
+// ---- Notes Section Component ----
+function NotesSection({ client }) {
+  const storageKey = `subzero_client_notes_${client.id}`;
+  const [notes, setNotes] = useState([]); // {id, text, createdAt}
+  const [draft, setDraft] = useState('');
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(storageKey);
+      if (raw) setNotes(JSON.parse(raw));
+    } catch (e) {
+      console.warn('Failed to load notes', e);
+    }
+  }, [storageKey]);
+
+  const persist = (next) => {
+    setNotes(next);
+    localStorage.setItem(storageKey, JSON.stringify(next));
+  };
+
+  const addNote = () => {
+    if (!draft.trim()) return;
+    const next = [
+      { id: crypto.randomUUID(), text: draft.trim(), createdAt: Date.now() },
+      ...notes
+    ];
+    persist(next);
+    setDraft('');
+  };
+
+  const deleteNote = (id) => {
+    persist(notes.filter(n => n.id !== id));
+  };
+
+  return (
+    <Stack spacing={3} sx={{ mt: 2 }}>
+      <Typography level="title-lg">Notes & Communications</Typography>
+      <Grid container spacing={2}>
+        <Grid xs={12} md={5}>
+          <Card variant="outlined" sx={{ p: 3, height: '100%' }}>
+            <Stack spacing={2}>
+              <Typography level="title-md">Add Note</Typography>
+              <Textarea
+                minRows={4}
+                value={draft}
+                onChange={(e) => setDraft(e.target.value)}
+                placeholder="Meeting summary, observation, next steps..."
+              />
+              <Stack direction="row" justifyContent="flex-end" spacing={1}>
+                <Button variant="outlined" color="neutral" onClick={() => setDraft('')}>Clear</Button>
+                <Button variant="solid" color="primary" onClick={addNote}>Save Note</Button>
+              </Stack>
+            </Stack>
+          </Card>
+        </Grid>
+        <Grid xs={12} md={7}>
+          <Card variant="outlined" sx={{ p: 3 }}>
+            <Stack spacing={2}>
+              <Typography level="title-md">Recent Notes</Typography>
+              {notes.length === 0 && (
+                <Typography level="body-sm" color="neutral">No notes yet.</Typography>
+              )}
+              <List sx={{ p: 0, gap: 1 }}>
+                {notes.map(note => (
+                  <ListItem key={note.id} sx={{ alignItems: 'flex-start' }}>
+                    <Card variant="soft" sx={{ flex: 1, p: 2 }}>
+                      <Stack spacing={1}>
+                        <Typography level="body-sm" sx={{ whiteSpace: 'pre-line' }}>{note.text}</Typography>
+                        <Stack direction="row" justifyContent="space-between" alignItems="center">
+                          <Typography level="body-xs" color="neutral">
+                            {new Date(note.createdAt).toLocaleString()}
+                          </Typography>
+                          <Button size="sm" variant="outlined" color="danger" onClick={() => deleteNote(note.id)}>Delete</Button>
+                        </Stack>
+                      </Stack>
+                    </Card>
+                  </ListItem>
+                ))}
+              </List>
+            </Stack>
+          </Card>
+        </Grid>
+      </Grid>
+    </Stack>
+  );
+}
+
+// ---- Tasks Section Component ----
+function TasksSection({ client }) {
+  const storageKey = `subzero_client_tasks_${client.id}`;
+  const [tasks, setTasks] = useState([]); // {id, title, dueDate, priority, completed, createdAt}
+  const [title, setTitle] = useState('');
+  const [dueDate, setDueDate] = useState('');
+  const [priority, setPriority] = useState('normal');
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(storageKey);
+      if (raw) setTasks(JSON.parse(raw));
+    } catch (e) {
+      console.warn('Failed to load tasks', e);
+    }
+  }, [storageKey]);
+
+  const persist = (next) => {
+    setTasks(next);
+    localStorage.setItem(storageKey, JSON.stringify(next));
+  };
+
+  const addTask = () => {
+    if (!title.trim()) return;
+    const next = [
+      ...tasks,
+      { id: crypto.randomUUID(), title: title.trim(), dueDate, priority, completed: false, createdAt: Date.now() }
+    ];
+    persist(next);
+    setTitle('');
+    setDueDate('');
+    setPriority('normal');
+  };
+
+  const toggleTask = (id) => {
+    persist(tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
+  };
+
+  const deleteTask = (id) => {
+    persist(tasks.filter(t => t.id !== id));
+  };
+
+  const priorities = {
+    low: { label: 'Low', color: 'neutral' },
+    normal: { label: 'Normal', color: 'primary' },
+    high: { label: 'High', color: 'warning' },
+    critical: { label: 'Critical', color: 'danger' }
+  };
+
+  const openTasks = tasks.filter(t => !t.completed).sort((a,b) => a.dueDate.localeCompare(b.dueDate));
+  const completedTasks = tasks.filter(t => t.completed).sort((a,b) => b.createdAt - a.createdAt);
+
+  return (
+    <Stack spacing={3} sx={{ mt: 2 }}>
+      <Typography level="title-lg">Tasks & Follow-ups</Typography>
+      <Grid container spacing={2}>
+        <Grid xs={12} md={5}>
+          <Card variant="outlined" sx={{ p: 3 }}>
+            <Stack spacing={2}>
+              <Typography level="title-md">Add Task</Typography>
+              <Input placeholder="Task title" value={title} onChange={(e) => setTitle(e.target.value)} />
+              <Stack direction="row" spacing={2}>
+                <Input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} sx={{ flex: 1 }} />
+                <Select value={priority} onChange={(e, val) => setPriority(val)} sx={{ minWidth: 140 }}>
+                  <Option value="low">Low</Option>
+                  <Option value="normal">Normal</Option>
+                  <Option value="high">High</Option>
+                  <Option value="critical">Critical</Option>
+                </Select>
+              </Stack>
+              <Stack direction="row" justifyContent="flex-end" spacing={1}>
+                <Button variant="outlined" color="neutral" onClick={() => { setTitle(''); setDueDate(''); setPriority('normal'); }}>Clear</Button>
+                <Button variant="solid" color="primary" onClick={addTask}>Add Task</Button>
+              </Stack>
+            </Stack>
+          </Card>
+        </Grid>
+        <Grid xs={12} md={7}>
+          <Stack spacing={2}>
+            <Card variant="outlined" sx={{ p: 3 }}>
+              <Stack spacing={2}>
+                <Typography level="title-md">Open Tasks ({openTasks.length})</Typography>
+                {openTasks.length === 0 && <Typography level="body-sm" color="neutral">No open tasks.</Typography>}
+                <List sx={{ p: 0, gap: 1 }}>
+                  {openTasks.map(task => (
+                    <ListItem key={task.id} sx={{ alignItems: 'flex-start' }}>
+                      <Card variant="soft" sx={{ flex: 1, p: 2 }}>
+                        <Stack spacing={1}>
+                          <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
+                            <Stack direction="row" spacing={1} alignItems="center">
+                              <Checkbox checked={task.completed} onChange={() => toggleTask(task.id)} />
+                              <Typography level="body-sm" sx={{ fontWeight: 600 }}>{task.title}</Typography>
+                            </Stack>
+                            <Chip size="sm" variant="soft" color={priorities[task.priority].color}>{priorities[task.priority].label}</Chip>
+                          </Stack>
+                          <Stack direction="row" justifyContent="space-between" alignItems="center">
+                            <Typography level="body-xs" color="neutral">
+                              {task.dueDate ? `Due ${task.dueDate}` : 'No due date'}
+                            </Typography>
+                            <Button size="sm" variant="outlined" color="danger" onClick={() => deleteTask(task.id)}>Delete</Button>
+                          </Stack>
+                        </Stack>
+                      </Card>
+                    </ListItem>
+                  ))}
+                </List>
+              </Stack>
+            </Card>
+            <Card variant="outlined" sx={{ p: 3 }}>
+              <Stack spacing={2}>
+                <Typography level="title-md">Completed ({completedTasks.length})</Typography>
+                {completedTasks.length === 0 && <Typography level="body-sm" color="neutral">No completed tasks yet.</Typography>}
+                <List sx={{ p: 0, gap: 1 }}>
+                  {completedTasks.map(task => (
+                    <ListItem key={task.id} sx={{ alignItems: 'flex-start' }}>
+                      <Card variant="outlined" sx={{ flex: 1, p: 2, opacity: 0.7 }}>
+                        <Stack spacing={1}>
+                          <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
+                            <Stack direction="row" spacing={1} alignItems="center">
+                              <Checkbox checked={task.completed} onChange={() => toggleTask(task.id)} />
+                              <Typography level="body-sm" sx={{ textDecoration: 'line-through' }}>{task.title}</Typography>
+                            </Stack>
+                            <Chip size="sm" variant="outlined" color={priorities[task.priority].color}>{priorities[task.priority].label}</Chip>
+                          </Stack>
+                          <Typography level="body-xs" color="neutral">
+                            Completed {new Date(task.createdAt).toLocaleDateString()}
+                          </Typography>
+                          <Button size="sm" variant="outlined" color="danger" onClick={() => deleteTask(task.id)}>Delete</Button>
+                        </Stack>
+                      </Card>
+                    </ListItem>
+                  ))}
+                </List>
+              </Stack>
+            </Card>
+          </Stack>
+        </Grid>
+      </Grid>
+    </Stack>
   );
 }

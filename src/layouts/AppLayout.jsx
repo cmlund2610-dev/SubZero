@@ -124,10 +124,6 @@ export default function AppLayout() {
             <NavItem to="/data" icon={<CloudUpload />}>
               Data Import
             </NavItem>
-            {/* Account and Settings are separate destinations */}
-            <NavItem to="/account" icon={<Person />}>
-              Account
-            </NavItem>
             <NavItem to="/settings" icon={<Settings />}>
               Settings
             </NavItem>

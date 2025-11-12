@@ -10,7 +10,7 @@ import PageContainer from './PageContainer.jsx';
 import PageHeader from './PageHeader.jsx';
 import UserPreferences from './UserPreferences.jsx';
 import CompanySettings from './CompanySettings.jsx';
-import { Settings as SettingsIcon, Notifications, Security, IntegrationInstructions, Storage, Webhook } from '@mui/icons-material';
+import { Settings as SettingsIcon, Notifications, Security, Storage } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext.jsx';
 
 export default function Settings() {
@@ -30,7 +30,6 @@ export default function Settings() {
           <Tab>Notifications</Tab>
           <Tab>Security</Tab>
           {isAdmin && <Tab>Company Settings</Tab>}
-          {isAdmin && <Tab>Integrations</Tab>}
           {isAdmin && <Tab>Data & Storage</Tab>}
         </TabList>
         
@@ -54,12 +53,6 @@ export default function Settings() {
         
         {isAdmin && (
           <TabPanel value={4} sx={{ p: 3 }}>
-            <IntegrationSettings />
-          </TabPanel>
-        )}
-        
-        {isAdmin && (
-          <TabPanel value={5} sx={{ p: 3 }}>
             <DataStorageSettings />
           </TabPanel>
         )}
@@ -206,92 +199,7 @@ function SecuritySettings() {
   );
 }
 
-// Integration Settings Component
-function IntegrationSettings() {
-  return (
-    <Stack spacing={3}>
-      <Card variant="outlined">
-        <Typography level="title-lg" sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-          <IntegrationInstructions /> API Access
-        </Typography>
-        <Typography level="body-sm" color="neutral" sx={{ mb: 2 }}>
-          Generate and manage API keys for programmatic access to subzero
-        </Typography>
-        <FormControl>
-          <FormLabel>API Key</FormLabel>
-          <Input 
-            value="sk_live_••••••••••••••••••••••••••••" 
-            readOnly 
-            endDecorator={
-              <Button size="sm" variant="outlined">Regenerate</Button>
-            }
-          />
-        </FormControl>
-      </Card>
-
-      <Card variant="outlined">
-        <Typography level="title-lg" sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Webhook /> Webhooks
-        </Typography>
-        <Typography level="body-sm" color="neutral" sx={{ mb: 2 }}>
-          Configure webhooks to receive real-time updates about events
-        </Typography>
-        <FormControl>
-          <FormLabel>Webhook URL</FormLabel>
-          <Input placeholder="https://your-domain.com/webhook" />
-        </FormControl>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-          <Button variant="solid" color="primary">
-            Add Webhook
-          </Button>
-        </Box>
-      </Card>
-
-      <Card variant="outlined">
-        <Typography level="title-lg" sx={{ mb: 2 }}>
-          Third-Party Integrations
-        </Typography>
-        <Stack spacing={2}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Box>
-              <Typography level="title-sm">Slack</Typography>
-              <Typography level="body-sm" color="neutral">
-                Send notifications to Slack channels
-              </Typography>
-            </Box>
-            <Button variant="outlined" color="neutral">
-              Connect
-            </Button>
-          </Box>
-          <Divider />
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Box>
-              <Typography level="title-sm">Salesforce</Typography>
-              <Typography level="body-sm" color="neutral">
-                Sync client data with Salesforce CRM
-              </Typography>
-            </Box>
-            <Button variant="outlined" color="neutral">
-              Connect
-            </Button>
-          </Box>
-          <Divider />
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Box>
-              <Typography level="title-sm">HubSpot</Typography>
-              <Typography level="body-sm" color="neutral">
-                Integrate with HubSpot for marketing automation
-              </Typography>
-            </Box>
-            <Button variant="outlined" color="neutral">
-              Connect
-            </Button>
-          </Box>
-        </Stack>
-      </Card>
-    </Stack>
-  );
-}
+// (Integrations removed per request)
 
 // Data & Storage Settings Component
 function DataStorageSettings() {
