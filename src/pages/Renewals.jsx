@@ -1,0 +1,374 @@
+/**
+ * Renewals Page - Contract renewals tracking with stages
+ * 
+ * Shows renewal pipeline with different stages and upcoming renewals.
+ * Uses imported client data to calculate renewal dates and pipeline.
+ */
+
+import React, { useState, useMemo } from 'react';
+import { 
+  Box, 
+  Typography, 
+  Stack, 
+  Chip, 
+  Card,
+  Table,
+  Button,
+  Grid
+} from '@mui/joy';
+import { 
+  TrendingUp as TrendingUpIcon,
+  CalendarToday as CalendarIcon,
+  Receipt
+} from '@mui/icons-material';
+import { ImportedData } from '../lib/persist.js';
+import EnhancedNavigation from '../components/EnhancedNavigation.jsx';
+import HelpTooltip from '../components/HelpTooltip.jsx';
+import PageHeader from '../components/PageHeader.jsx';
+import PageContainer from '../components/PageContainer.jsx';
+
+export default function Renewals() {
+  const [activeStage, setActiveStage] = useState('all');
+  
+  // Get client data and calculate renewals
+  const clients = ImportedData.getClients();
+  
+  const upcomingRenewals = useMemo(() => {
+    if (clients.length === 0) return [];
+    
+    return clients
+      .filter(client => client.renewal?.date)
+      .map(client => {
+        const renewalDate = new Date(client.renewal.date);
+        const today = new Date();
+        const daysUntil = Math.ceil((renewalDate - today) / (1000 * 60 * 60 * 24));
+        
+        return {
+          id: client.id,
+          company: client.companyName,
+          renewalDate: client.renewal.date,
+          currentMRR: client.mrr || 0,
+          proposedMRR: client.mrr || 0, // In real app, this would be separate
+          stage: 'forecast', // Default stage
+          probability: client.health?.score || 50,
+          csm: client.csm?.owner || 'Unassigned',
+          daysUntil
+        };
+      })
+      .filter(renewal => renewal.daysUntil <= 90 && renewal.daysUntil >= 0)
+      .sort((a, b) => a.daysUntil - b.daysUntil);
+  }, [clients]);
+
+  // Show empty state if no renewals
+  if (upcomingRenewals.length === 0) {
+    return (
+      <PageContainer>
+        <PageHeader
+          title="Contract Renewals"
+          description="Track and manage contract renewals across your client portfolio"
+          icon={Receipt}
+        >
+          <HelpTooltip text="Track renewal timelines, success probability, and revenue impact across your client portfolio" />
+        </PageHeader>
+        
+        {clients.length === 0 ? (
+          <Card 
+            variant="outlined" 
+            sx={{ 
+              p: 4, 
+              textAlign: 'center',
+              border: '2px dashed',
+              borderColor: 'divider'
+            }}
+          >
+            <Typography sx={{ fontSize: '4rem', mb: 2 }}>📋</Typography>
+            <Typography level="title-lg" sx={{ mb: 2 }}>
+              Track Contract Renewals
+            </Typography>
+            <Typography level="body-md" color="neutral" sx={{ mb: 3, maxWidth: 400, mx: 'auto' }}>
+              Import your client data to unlock powerful renewal tracking features:
+            </Typography>
+            
+            <Box sx={{ textAlign: 'left', mb: 4, maxWidth: 300, mx: 'auto' }}>
+              <Stack spacing={1}>
+                <Typography level="body-sm" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  📊 Pipeline forecasting and weighted revenue projections
+                </Typography>
+                <Typography level="body-sm" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  ⏰ Automated renewal alerts and timeline tracking
+                </Typography>
+                <Typography level="body-sm" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  🎯 Success probability scoring and risk assessment
+                </Typography>
+                <Typography level="body-sm" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  📈 Stage-based workflow management
+                </Typography>
+              </Stack>
+            </Box>
+            
+            <Stack direction="row" spacing={2} sx={{ justifyContent: 'center' }}>
+              <Button 
+                size="lg"
+                sx={{
+                  background: 'linear-gradient(45deg, #8B5CF6 0%, #06B6D4 100%)',
+                  color: 'white',
+                  '&:hover': {
+                    background: 'linear-gradient(45deg, #7C3AED 0%, #0891B2 100%)',
+                  }
+                }}
+                onClick={() => window.location.href = '/data'}
+              >
+                Import Client Data
+              </Button>
+              <Button variant="outlined" color="neutral">
+                View Demo
+              </Button>
+            </Stack>
+          </Card>
+        ) : (
+          <Card 
+            variant="outlined" 
+            sx={{ 
+              p: 4, 
+              textAlign: 'center',
+              border: '2px dashed',
+              borderColor: 'divider'
+            }}
+          >
+            <Typography sx={{ fontSize: '3rem', mb: 2 }}>✅</Typography>
+            <Typography level="title-lg" sx={{ mb: 2 }}>
+              All Caught Up!
+            </Typography>
+            <Typography level="body-md" color="neutral" sx={{ mb: 3 }}>
+              No upcoming renewals in the next 90 days. Your renewal pipeline is clear.
+            </Typography>
+            <Button variant="outlined" color="neutral">
+              View All Contracts
+            </Button>
+          </Card>
+        )}
+      </PageContainer>
+    );
+  }
+
+  // Renewal stages configuration
+  const renewalStages = {
+    all: { label: 'All', color: 'neutral' },
+    forecast: { label: 'Forecast', color: 'primary' },
+    tentative: { label: 'Tentative', color: 'warning' },
+    negotiation: { label: 'Negotiation', color: 'warning' },
+    closed_won: { label: 'Closed Won', color: 'success' },
+    closed_lost: { label: 'Closed Lost', color: 'danger' }
+  };
+
+  const getStageColor = (stage) => {
+    return renewalStages[stage]?.color || 'neutral';
+  };
+
+  const getProbabilityColor = (probability) => {
+    if (probability >= 80) return 'success';
+    if (probability >= 60) return 'warning';
+    return 'danger';
+  };
+
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(value);
+  };
+
+  // Filter renewals by stage
+  const filteredRenewals = activeStage === 'all' 
+    ? upcomingRenewals 
+    : upcomingRenewals.filter(renewal => renewal.stage === activeStage);
+
+  // Calculate stage counts
+  const stages = Object.keys(renewalStages).map(key => {
+    const count = key === 'all' 
+      ? upcomingRenewals.length 
+      : upcomingRenewals.filter(r => r.stage === key).length;
+    return {
+      key,
+      label: renewalStages[key].label,
+      color: renewalStages[key].color,
+      count
+    };
+  });
+
+  const totalValue = filteredRenewals.reduce((sum, renewal) => sum + renewal.proposedMRR, 0);
+  const weightedValue = filteredRenewals.reduce((sum, renewal) => 
+    sum + (renewal.proposedMRR * renewal.probability / 100), 0
+  );
+
+  return (
+    <PageContainer>
+      {/* Page header */}
+      <PageHeader
+        title="Contract Renewals"
+        description="Track and manage your renewal pipeline"
+        icon={Receipt}
+      >
+        <HelpTooltip text="Track renewal timelines, success probability, and revenue impact across your client portfolio" />
+      </PageHeader>
+
+      {/* Summary metrics */}
+      <Grid container spacing={2} sx={{ mb: 4 }}>
+        <Grid xs={12} sm={6} md={3}>
+          <Card variant="outlined" sx={{ p: 2 }}>
+            <Stack spacing={1}>
+              <Typography level="body-sm" color="neutral">Total Pipeline</Typography>
+              <Typography level="h2" color="primary">
+                {formatCurrency(totalValue)}
+              </Typography>
+            </Stack>
+          </Card>
+        </Grid>
+        <Grid xs={12} sm={6} md={3}>
+          <Card variant="outlined" sx={{ p: 2 }}>
+            <Stack spacing={1}>
+              <Typography level="body-sm" color="neutral">Weighted Value</Typography>
+              <Typography level="h2" color="success">
+                {formatCurrency(weightedValue)}
+              </Typography>
+            </Stack>
+          </Card>
+        </Grid>
+        <Grid xs={12} sm={6} md={3}>
+          <Card variant="outlined" sx={{ p: 2 }}>
+            <Stack spacing={1}>
+              <Typography level="body-sm" color="neutral">Active Renewals</Typography>
+              <Typography level="h2">
+                {filteredRenewals.length}
+              </Typography>
+            </Stack>
+          </Card>
+        </Grid>
+        <Grid xs={12} sm={6} md={3}>
+          <Card variant="outlined" sx={{ p: 2 }}>
+            <Stack spacing={1}>
+              <Typography level="body-sm" color="neutral">Avg Probability</Typography>
+              <Typography level="h2">
+                {Math.round(filteredRenewals.reduce((sum, r) => sum + r.probability, 0) / filteredRenewals.length)}%
+              </Typography>
+            </Stack>
+          </Card>
+        </Grid>
+      </Grid>
+
+      {/* Stage filters */}
+      <Box sx={{ mb: 3 }}>
+        <Typography level="title-md" sx={{ mb: 2 }}>
+          Renewal Stages
+        </Typography>
+        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
+          {stages.map((stage) => (
+            <Chip
+              key={stage.key}
+              variant={activeStage === stage.key ? 'solid' : 'outlined'}
+              color={stage.color}
+              onClick={() => setActiveStage(stage.key)}
+              sx={{ cursor: 'pointer' }}
+            >
+              {stage.label} ({stage.count})
+            </Chip>
+          ))}
+        </Stack>
+      </Box>
+
+      {/* Renewals table */}
+      <Card variant="outlined">
+        <Table hoverRow>
+          <thead>
+            <tr>
+              <th style={{ width: '25%' }}>Company</th>
+              <th style={{ width: '15%' }}>Renewal Date</th>
+              <th style={{ width: '15%' }}>Current MRR</th>
+              <th style={{ width: '15%' }}>Proposed MRR</th>
+              <th style={{ width: '10%' }}>Stage</th>
+              <th style={{ width: '10%' }}>Probability</th>
+              <th style={{ width: '10%' }}>CSM</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredRenewals.map((renewal) => (
+              <tr key={renewal.id} style={{ cursor: 'pointer' }}>
+                <td>
+                  <Stack spacing={0.5}>
+                    <Typography level="body-sm" sx={{ fontWeight: 600 }}>
+                      {renewal.company}
+                    </Typography>
+                    <Typography level="body-xs" color="neutral">
+                      {renewal.daysUntil} days until renewal
+                    </Typography>
+                  </Stack>
+                </td>
+                <td>
+                  <Typography level="body-sm">
+                    {new Date(renewal.renewalDate).toLocaleDateString()}
+                  </Typography>
+                </td>
+                <td>
+                  <Typography level="body-sm">
+                    {formatCurrency(renewal.currentMRR)}
+                  </Typography>
+                </td>
+                <td>
+                  <Stack spacing={0.5}>
+                    <Typography level="body-sm" sx={{ fontWeight: 600 }}>
+                      {formatCurrency(renewal.proposedMRR)}
+                    </Typography>
+                    {renewal.proposedMRR !== renewal.currentMRR && (
+                      <Typography 
+                        level="body-xs" 
+                        color={renewal.proposedMRR > renewal.currentMRR ? 'success' : 'danger'}
+                      >
+                        {renewal.proposedMRR > renewal.currentMRR ? '+' : ''}
+                        {formatCurrency(renewal.proposedMRR - renewal.currentMRR)}
+                      </Typography>
+                    )}
+                  </Stack>
+                </td>
+                <td>
+                  <Chip 
+                    size="sm" 
+                    variant="soft" 
+                    color={getStageColor(renewal.stage)}
+                  >
+                    {stages.find(s => s.key === renewal.stage)?.label}
+                  </Chip>
+                </td>
+                <td>
+                  <Chip 
+                    size="sm" 
+                    variant="soft" 
+                    color={getProbabilityColor(renewal.probability)}
+                  >
+                    {renewal.probability}%
+                  </Chip>
+                </td>
+                <td>
+                  <Typography level="body-sm">
+                    {renewal.csm}
+                  </Typography>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </Card>
+
+      {/* Actions */}
+      <Stack direction="row" spacing={2} sx={{ mt: 3 }}>
+        <Button variant="outlined" color="neutral" startDecorator={<CalendarIcon />}>
+          Export Calendar
+        </Button>
+        <Button variant="outlined" color="neutral" startDecorator={<TrendingUpIcon />}>
+          View Analytics
+        </Button>
+      </Stack>
+    </PageContainer>
+  );
+}

@@ -1,0 +1,30 @@
+{
+  "colors": {
+    "primary": "#FF6D56",
+    "neutral": "#828392",
+    "surface": "#FBFCFF",
+    "text": {
+      "dark": "#2E2F33",
+      "light": "#FFFFFF"
+    }
+  },
+  "font": {
+    "family": "Inter",
+    "weights": {
+      "regular": 400,
+      "medium": 500,
+      "bold": 700
+    }
+  },
+  "radii": {
+    "card": "12px",
+    "button": "12px"
+  },
+  "spacing": {
+    "base": "8px",
+    "cardPadding": "24px",
+    "sectionPadding": "48px"
+  },
+  "shadow": "0 2px 10px rgba(130,131,146,0.15)",
+  "tagline": "Precision in Data. Clarity in Design."
+}

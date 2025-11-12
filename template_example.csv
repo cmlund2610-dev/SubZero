@@ -1,0 +1,2 @@
+client_id,company_name,contact_name,contact_email,contract_start_date,contract_end_date,renewal_date,mrr,ltv,subscribed_months
+CLIENT_001,Example Company Inc,John Doe,john@example.com,2023-01-01,2024-01-01,2024-01-01,5000,60000,12
