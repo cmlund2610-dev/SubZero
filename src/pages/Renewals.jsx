@@ -48,7 +48,7 @@ export default function Renewals() {
         
         return {
           id: client.id,
-          company: client.companyName,
+          company: client.company?.name || 'Unknown Company',
           renewalDate: client.renewal.date,
           currentMRR: client.mrr || 0,
           proposedMRR: client.mrr || 0, // In real app, this would be separate
