@@ -5,10 +5,9 @@
  */
 
 import React, { useState } from 'react';
-import { Box, Typography, List, ListItemButton, ListItem } from '@mui/joy';
+import { Box, Typography, ListItemButton, ListItem } from '@mui/joy';
 import { KeyboardArrowDown } from '@mui/icons-material';
 import { navRowButtonSx, navIconBoxSx, navIconSx, navItemLabelSx } from './navStyles.js';
-import NavItem from './NavItem.jsx';
 
 export default function CollapsibleNavSection({ 
   title, 
@@ -19,7 +18,7 @@ export default function CollapsibleNavSection({
   const [expanded, setExpanded] = useState(defaultExpanded);
 
   return (
-    <Box sx={{ mb: 1 }}>
+    <>
       {/* Section Header */}
       <ListItem sx={{ p: 0 }}>
         <ListItemButton 
@@ -48,19 +47,8 @@ export default function CollapsibleNavSection({
         </ListItemButton>
       </ListItem>
 
-      {/* Child Items */}
-      {expanded && (
-        <List
-          sx={{
-            gap: 0.5,
-            mt: 0.5,
-            '--List-nestedInsetStart': '0px',
-            '--ListItem-paddingY': '8px',
-          }}
-        >
-          {children}
-        </List>
-      )}
-    </Box>
+      {/* Child Items - render directly as siblings in parent List */}
+      {expanded && children}
+    </>
   );
 }

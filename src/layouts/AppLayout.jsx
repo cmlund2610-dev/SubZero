@@ -1,222 +1,28 @@
 /**
- * AppLayout - Main application shell with sidebar navigation
+ * AppLayout - Main application layout with CoreUI sidebar
  * 
- * Joy UI layout with fixed sidebar, topbar, and content area.
- * Contains navigation items and renders child routes via Outlet.
- * Integrates with Firebase authentication for user profile display.
- * 
- * Features:
- * - Fixed left sidebar (240px width on desktop, hidden on mobile)
- * - Topbar with logo and actions
- * - Responsive content area with max-width container
- * - Active route highlighting
- * - Firebase auth integration
+ * Features unfoldable sidebar navigation with categories and items
+ * Uses CoreUI React components for robust sidebar functionality
  */
 
 import React, { Suspense } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
-import { 
-  Box, 
-  Stack, 
-  Typography, 
-  Button, 
-  Sheet,
-  List,
-  CircularProgress,
-  Divider,
-  Card
-} from '@mui/joy';
-import {
-  Home,
-  People,
-  Receipt,
-  Settings,
-  BarChart,
-  CloudUpload,
-  Logout,
-  Person,
-  CreditCard,
-  Diamond,
-  AccessibilityNew,
-  PieChartOutline,
-  ManageAccounts
-} from '@mui/icons-material';
-
-import NavItem from '../components/NavItem.jsx';
-import CollapsibleNavSection from '../components/CollapsibleNavSection.jsx';
-import ProfilePicture from '../components/ProfilePicture.jsx';
-import AdminOnly from '../components/FeatureGate.jsx';
-import { useAuth } from '../context/AuthContext.jsx';
-import usePermissions from '../hooks/usePermissions.js';
+import { Outlet } from 'react-router-dom';
+import { Box, CircularProgress } from '@mui/joy';
+import Sidebar from '../components/Sidebar.jsx';
+import '@coreui/coreui/dist/css/coreui.min.css';
 
 export default function AppLayout() {
-  const navigate = useNavigate();
-  const { currentUser, userProfile, userCompany, logout, isAdmin } = useAuth();
-  const { getRoleDisplayName } = usePermissions();
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate('/signin');
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
-  };
-
-  // Get user display info
-  const displayName = userProfile?.fullName || currentUser?.displayName || 'User';
-  const jobTitle = userProfile?.jobTitle || 'Team Member';
-  const companyName = userCompany?.name || 'Company';
-  const roleDisplay = getRoleDisplayName();
-
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-      {/* Sidebar */}
-      <Sheet
-        sx={{
-          width: { xs: 0, sm: 240 },
-          display: { xs: 'none', sm: 'flex' },
-          flexDirection: 'column',
-          borderRight: '1px solid',
-          borderColor: 'divider',
-          bgcolor: 'background.surface',
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          height: '100vh',
-          zIndex: 1000
-        }}
-      >
-        {/* Logo section */}
-        <Box sx={{ p: 3 }}>
-          <Stack spacing={2} alignItems="center">
-            {/* subzero Logo */}
-            <Box
-              component="img"
-              src="/Primary Logo grey : orange.svg"
-              alt="subzero Logo"
-              sx={{
-                width: 160,
-                height: 'auto',
-                maxWidth: '100%'
-              }}
-            />
-          </Stack>
-        </Box>
-
-        {/* Navigation */}
-        <Box sx={{ flex: 1, px: 2 }}>
-          <List
-            sx={{
-              gap: 0.5,
-              '--List-nestedInsetStart': '0px',
-              '--ListItem-paddingY': '8px',
-            }}
-          >
-            <NavItem to="/" icon={<Home />}>
-              Home
-            </NavItem>
-            
-            <CollapsibleNavSection title="Clients" defaultExpanded={false} icon={AccessibilityNew}>
-              <NavItem to="/clients" icon={<Diamond />}>
-                Client overview
-              </NavItem>
-              <NavItem to="/renewals" icon={<Receipt />}>
-                Contract renewals
-              </NavItem>
-            </CollapsibleNavSection>
-            
-            <CollapsibleNavSection title="Analytics" defaultExpanded={false} icon={PieChartOutline}>
-              <NavItem to="/analytics" icon={<BarChart />}>
-                Metrics
-              </NavItem>
-              <NavItem to="/data" icon={<CloudUpload />}>
-                Data import
-              </NavItem>
-            </CollapsibleNavSection>
-            
-            <CollapsibleNavSection title="Settings" defaultExpanded={false} icon={Settings}>
-              <NavItem to="/settings" icon={<ManageAccounts />}>
-                Account settings
-              </NavItem>
-              <AdminOnly>
-                <NavItem to="/users" icon={<People />}>
-                  Users
-                </NavItem>
-              </AdminOnly>
-              <AdminOnly>
-                <NavItem to="/billing" icon={<CreditCard />}>
-                  Billing
-                </NavItem>
-              </AdminOnly>
-            </CollapsibleNavSection>
-          </List>
-        </Box>
-
-        {/* User section at bottom */}
-        <Box sx={{ p: 2 }}>
-          <Divider sx={{ mb: 2 }} />
-          
-          {/* User avatar and info */}
-          <Card 
-            variant="soft" 
-            sx={{ 
-              p: 2, 
-              mb: 2,
-              background: 'linear-gradient(135deg, rgba(255, 109, 86, 0.10) 0%, rgba(255, 109, 86, 0.15) 100%)',
-              cursor: 'pointer',
-              '&:hover': {
-                background: 'linear-gradient(135deg, rgba(255, 109, 86, 0.15) 0%, rgba(255, 109, 86, 0.20) 100%)'
-              }
-            }}
-            onClick={() => navigate('/profile')}
-          >
-            <Stack spacing={2} alignItems="center">
-              <ProfilePicture 
-                size="md"
-                user={userProfile}
-              />
-              <Stack alignItems="center" spacing={0.5}>
-                <Typography level="body-sm" sx={{ fontWeight: 600 }}>
-                  {displayName}
-                </Typography>
-                <Typography level="body-xs" color="neutral">
-                  {jobTitle}
-                </Typography>
-                <Typography level="body-xs" sx={{ color: '#FF6D56', fontWeight: 500 }}>
-                  {companyName} • {roleDisplay}
-                </Typography>
-              </Stack>
-            </Stack>
-          </Card>
-
-          {/* Logout button */}
-          <Button
-            variant="outlined"
-            color="neutral"
-            size="sm"
-            startDecorator={<Logout />}
-            onClick={handleLogout}
-            sx={{
-              width: '100%',
-              fontWeight: 500,
-              '&:hover': {
-                borderColor: 'danger.300',
-                color: 'danger.600',
-              },
-            }}
-          >
-            Logout
-          </Button>
-        </Box>
-      </Sheet>
+      {/* CoreUI Sidebar */}
+      <Sidebar />
 
       {/* Main content area */}
       <Box sx={{ 
         flex: 1, 
         display: 'flex', 
         flexDirection: 'column',
-        marginLeft: { xs: 0, sm: '240px' } // Add left margin for fixed sidebar
+        ml: 'auto'
       }}>
         {/* Page content with suspense for lazy loading */}
         <Box

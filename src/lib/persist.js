@@ -10,7 +10,8 @@ const STORAGE_KEYS = {
   WIDGET_CONFIG: 'subzero_widget_config', 
   IMPORTED_DATA: 'subzero_imported_data',
   WEBHOOKS: 'subzero_webhooks',
-  ANALYTICS_SETTINGS: 'subzero_analytics_settings'
+  ANALYTICS_SETTINGS: 'subzero_analytics_settings',
+  AUTOMATIONS: 'subzero_automations'
 };
 
 /**
@@ -275,6 +276,58 @@ export const Webhooks = {
 };
 
 /**
+ * Automations configuration management
+ */
+export const Automations = {
+  getAll() {
+    return Storage.get(STORAGE_KEYS.AUTOMATIONS, []);
+  },
+
+  add(automation) {
+    const automations = this.getAll();
+    const newAutomation = {
+      ...automation,
+      id: this.generateId(),
+      createdAt: new Date().toISOString(),
+      enabled: true,
+      lastRun: null
+    };
+    automations.push(newAutomation);
+    Storage.set(STORAGE_KEYS.AUTOMATIONS, automations);
+    return newAutomation;
+  },
+
+  update(automationId, updates) {
+    const automations = this.getAll();
+    const index = automations.findIndex(a => a.id === automationId);
+    if (index !== -1) {
+      automations[index] = { ...automations[index], ...updates };
+      return Storage.set(STORAGE_KEYS.AUTOMATIONS, automations);
+    }
+    return false;
+  },
+
+  remove(automationId) {
+    const automations = this.getAll();
+    const filtered = automations.filter(a => a.id !== automationId);
+    return Storage.set(STORAGE_KEYS.AUTOMATIONS, filtered);
+  },
+
+  toggle(automationId) {
+    const automations = this.getAll();
+    const automation = automations.find(a => a.id === automationId);
+    if (automation) {
+      automation.enabled = !automation.enabled;
+      return Storage.set(STORAGE_KEYS.AUTOMATIONS, automations);
+    }
+    return false;
+  },
+
+  generateId() {
+    return 'automation_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+  }
+};
+/**
  * Analytics settings management
  */
 export const AnalyticsSettings = {
@@ -306,6 +359,65 @@ export const AnalyticsSettings = {
 };
 
 /**
+ * Email templates management
+ */
+export const EmailTemplates = {
+  getAll() {
+    return Storage.get(STORAGE_KEYS.EMAIL_TEMPLATES, []);
+  },
+
+  ensureDefaults() {
+    const existing = this.getAll();
+    if (existing && existing.length > 0) return existing;
+    const defaults = [
+      {
+        id: this.generateId(),
+        name: 'Renewal Reminder',
+        subject: 'Upcoming renewal for {{client.name}}',
+        body: 'Hi {{csm.name}},\n\n{{client.name}} is due for renewal on {{renewal.date}}. Current MRR: {{mrr}}.\n\nThanks,\nSubZero',
+        createdAt: new Date().toISOString()
+      },
+      {
+        id: this.generateId(),
+        name: 'Welcome New Client',
+        subject: 'Welcome aboard, {{client.name}}!',
+        body: 'Hi {{client.contact.name}},\n\nWelcome to {{company.name}}! We are excited to partner with you.\n\nBest,\n{{csm.name}}',
+        createdAt: new Date().toISOString()
+      }
+    ];
+    Storage.set(STORAGE_KEYS.EMAIL_TEMPLATES, defaults);
+    return defaults;
+  },
+
+  add(template) {
+    const templates = this.getAll();
+    const newT = { id: this.generateId(), createdAt: new Date().toISOString(), ...template };
+    templates.push(newT);
+    Storage.set(STORAGE_KEYS.EMAIL_TEMPLATES, templates);
+    return newT;
+  },
+
+  update(templateId, updates) {
+    const templates = this.getAll();
+    const index = templates.findIndex(t => t.id === templateId);
+    if (index !== -1) {
+      templates[index] = { ...templates[index], ...updates };
+      return Storage.set(STORAGE_KEYS.EMAIL_TEMPLATES, templates);
+    }
+    return false;
+  },
+
+  remove(templateId) {
+    const templates = this.getAll();
+    const filtered = templates.filter(t => t.id !== templateId);
+    return Storage.set(STORAGE_KEYS.EMAIL_TEMPLATES, filtered);
+  },
+
+  generateId() {
+    return 'template_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+  }
+};
+/**
  * Export all storage utilities
  */
 export default {
@@ -314,5 +426,7 @@ export default {
   ImportedData,
   Webhooks,
   AnalyticsSettings,
+  Automations,
+  EmailTemplates,
   Storage
 };

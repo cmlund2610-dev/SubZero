@@ -7,7 +7,8 @@ export const navRowButtonSx = {
   py: 1,
   borderRadius: 'sm',
   alignItems: 'center',
-  minHeight: 40, // enforce consistent row height
+  minHeight: 40,
+  maxHeight: 40, // prevent stretching taller
   '&:hover': { bgcolor: 'background.level1' },
   '&.active': {
     bgcolor: 'primary.softBg',

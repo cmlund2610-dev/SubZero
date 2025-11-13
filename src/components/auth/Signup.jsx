@@ -32,7 +32,12 @@ import {
   Business as BusinessIcon,
   Email as EmailIcon,
   Lock as LockIcon,
-  CheckCircle as CheckIcon
+  CheckCircle as CheckIcon,
+  ShieldOutlined,
+  VerifiedRounded,
+  CreditCardOffRounded,
+  TimelineRounded,
+  GroupWorkOutlined
 } from '@mui/icons-material';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
@@ -195,9 +200,12 @@ export default function Signup() {
           justifyContent: 'center',
           alignItems: 'center',
           p: 6,
-          color: 'white',
+          color: '#2E2F33',
           position: 'relative',
-          zIndex: 1
+          zIndex: 1,
+          background: 'linear-gradient(180deg, #FFF4F2 0%, #FFEDE9 100%)',
+          borderRight: '1px solid rgba(255, 109, 86, 0.15)',
+          boxShadow: 'inset -1px 0 0 rgba(255, 109, 86, 0.05)'
         }}
       >
         <Box sx={{ maxWidth: 480, textAlign: 'center' }}>
@@ -249,16 +257,16 @@ export default function Signup() {
           <Stack spacing={2.5}>
             {[
               { 
-                icon: '🚀', 
+                Icon: TimelineRounded, 
                 title: 'Quick Onboarding', 
-                desc: 'Get started in minutes with guided setup and smart defaults'
+                desc: 'Start in minutes with guided setup and smart defaults'
               },
               { 
-                icon: '🤝', 
+                Icon: GroupWorkOutlined, 
                 title: 'Team Collaboration', 
-                desc: 'Built for teams with role-based access and real-time updates'
+                desc: 'Built for teams with roles and real-time updates'
               }
-            ].map((feature, index) => (
+            ].map(({ Icon, title, desc }, index) => (
               <Box 
                 key={index}
                 sx={{ 
@@ -268,39 +276,25 @@ export default function Signup() {
                   textAlign: 'left',
                   p: 2.5,
                   borderRadius: '12px',
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  background: 'rgba(255, 109, 86, 0.06)',
+                  backdropFilter: 'blur(6px)',
+                  border: '1px solid rgba(255, 109, 86, 0.18)',
                   transition: 'all 0.3s ease',
                   '&:hover': {
-                    background: 'rgba(255, 255, 255, 0.1)',
+                    background: 'rgba(255, 109, 86, 0.1)',
                     transform: 'translateY(-1px)'
                   }
                 }}
               >
-                <Typography sx={{ fontSize: '1.5rem', minWidth: 'auto' }}>
-                  {feature.icon}
-                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 36, height: 36, borderRadius: '10px', background: '#FF6D5614' }}>
+                  <Icon sx={{ color: '#FF6D56' }} fontSize="small" />
+                </Box>
                 <Box>
-                  <Typography 
-                    level="title-sm" 
-                    sx={{ 
-                      mb: 0.5, 
-                      color: 'white',
-                      fontWeight: 600
-                    }}
-                  >
-                    {feature.title}
+                  <Typography level="title-sm" sx={{ mb: 0.5, color: '#2E2F33', fontWeight: 600 }}>
+                    {title}
                   </Typography>
-                  <Typography 
-                    level="body-xs" 
-                    sx={{ 
-                      opacity: 0.85,
-                      lineHeight: 1.4,
-                      color: '#cbd5e1'
-                    }}
-                  >
-                    {feature.desc}
+                  <Typography level="body-xs" sx={{ lineHeight: 1.4, color: '#49505A' }}>
+                    {desc}
                   </Typography>
                 </Box>
               </Box>
@@ -309,7 +303,7 @@ export default function Signup() {
 
           {/* Social Proof */}
           <Box sx={{ mt: 4, textAlign: 'center' }}>
-            <Typography level="body-xs" sx={{ opacity: 0.7 }}>
+            <Typography level="body-xs" sx={{ color: '#6b7280' }}>
               ⭐⭐⭐⭐⭐ Trusted by 500+ teams • 4.9/5 rating
             </Typography>
           </Box>
@@ -326,7 +320,11 @@ export default function Signup() {
           p: { xs: 2, md: 4 },
           position: 'relative',
           zIndex: 1,
-          overflow: 'auto'
+          overflow: 'auto',
+          backgroundColor: '#F6F5F8',
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='493' height='493' viewBox='0 0 800 800'%3E%3Cg fill='none' stroke='%23EAE9EC' stroke-width='1'%3E%3Cpath d='M769 229L1037 260.9M927 880L731 737 520 660 309 538 40 599 295 764 126.5 879.5 40 599-197 493 102 382-31 229 126.5 79.5-69-63'/%3E%3Cpath d='M-31 229L237 261 390 382 603 493 308.5 537.5 101.5 381.5M370 905L295 764'/%3E%3Cpath d='M520 660L578 842 731 737 840 599 603 493 520 660 295 764 309 538 390 382 539 269 769 229 577.5 41.5 370 105 295 -36 126.5 79.5 237 261 102 382 40 599 -69 737 127 880'/%3E%3Cpath d='M520-140L578.5 42.5 731-63M603 493L539 269 237 261 370 105M902 382L539 269M390 382L102 382'/%3E%3Cpath d='M-222 42L126.5 79.5 370 105 539 269 577.5 41.5 927 80 769 229 902 382 603 493 731 737M295-36L577.5 41.5M578 842L295 764M40-201L127 80M102 382L-261 269'/%3E%3C/g%3E%3Cg fill='%23FF6D56'%3E%3Ccircle cx='769' cy='229' r='5'/%3E%3Ccircle cx='539' cy='269' r='5'/%3E%3Ccircle cx='603' cy='493' r='5'/%3E%3Ccircle cx='731' cy='737' r='5'/%3E%3Ccircle cx='520' cy='660' r='5'/%3E%3Ccircle cx='309' cy='538' r='5'/%3E%3Ccircle cx='295' cy='764' r='5'/%3E%3Ccircle cx='40' cy='599' r='5'/%3E%3Ccircle cx='102' cy='382' r='5'/%3E%3Ccircle cx='127' cy='80' r='5'/%3E%3Ccircle cx='370' cy='105' r='5'/%3E%3Ccircle cx='578' cy='42' r='5'/%3E%3Ccircle cx='237' cy='261' r='5'/%3E%3Ccircle cx='390' cy='382' r='5'/%3E%3C/g%3E%3C/svg%3E")`,
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'cover'
         }}
       >
         <Card 
@@ -693,7 +691,7 @@ export default function Signup() {
                     background: '#FF6D56',
                     color: 'white',
                     borderRadius: '12px',
-                    py: 1.5,
+                    py: 1.2,
                     fontSize: '1rem',
                     fontWeight: 600,
                     mt: 2,

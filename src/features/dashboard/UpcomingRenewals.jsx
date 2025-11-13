@@ -12,10 +12,13 @@
  */
 
 import { Card, Typography, Stack, Box, Chip, Divider } from '@mui/joy';
+import { useNavigate } from 'react-router-dom';
 import { nextRenewals, formatCurrency, formatRelativeDate } from '../../lib/metrics.js';
 
 export default function UpcomingRenewals({ clients = [] }) {
-  const renewals = nextRenewals(clients, 90);
+  const navigate = useNavigate();
+  const allRenewals = nextRenewals(clients, 90); // full list
+  const renewals = allRenewals.slice(0, 5); // display first 5
 
   const getRiskColor = (risk) => {
     switch (risk) {
@@ -43,7 +46,7 @@ export default function UpcomingRenewals({ clients = [] }) {
       sx={{
         p: 3,
         height: '100%',
-        minHeight: '280px',
+        minHeight: '400px',
         display: 'flex',
         flexDirection: 'column'
       }}
@@ -52,78 +55,122 @@ export default function UpcomingRenewals({ clients = [] }) {
         <Stack spacing={1}>
           <Typography
             level="title-lg"
-            color="primary"
-            sx={{ fontWeight: 600 }}
+            sx={{ fontWeight: 700 }}
           >
-            Upcoming Renewals
+            Contract Renewals
           </Typography>
           
           <Typography level="body-sm" color="neutral">
-            {renewals.length > 0 
-              ? `${renewals.length} renewal${renewals.length === 1 ? '' : 's'} in the next 90 days`
+            {allRenewals.length > 0 
+              ? `${allRenewals.length} renewal${allRenewals.length === 1 ? '' : 's'} in the next 90 days` + (allRenewals.length > 5 ? ` • showing first 5` : '')
               : 'No upcoming renewals in the next 90 days'
             }
           </Typography>
         </Stack>
 
         {renewals.length > 0 ? (
-          <Stack spacing={2} sx={{ flex: 1, overflow: 'auto' }}>
+          <Stack spacing={2} sx={{ flex: 1, overflow: 'auto', maxHeight: '500px' }}>
             {renewals.map((renewal, index) => (
               <Box key={renewal.id}>
-                <Stack spacing={1.5}>
-                  {/* Client name and renewal date */}
-                  <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
-                    <Stack spacing={0.5} sx={{ flex: 1, minWidth: 0 }}>
+                <Card 
+                  variant="soft" 
+                  sx={{ 
+                    p: 2,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    '&:hover': {
+                      transform: 'translateY(-2px)',
+                      boxShadow: 'md'
+                    }
+                  }}
+                  onClick={() => navigate(`/clients/${renewal.id}`)}
+                >
+                  <Stack spacing={1.5}>
+                    {/* Client name and dates */}
+                    <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+                      <Stack spacing={0.5} sx={{ flex: 1, minWidth: 0 }}>
+                        <Typography
+                          level="title-sm"
+                          sx={{
+                            fontWeight: 600,
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap'
+                          }}
+                        >
+                          {renewal.companyName}
+                        </Typography>
+                        
+                        <Typography level="body-xs" color="neutral">
+                          {formatRelativeDate(renewal.renewalDate)}
+                        </Typography>
+
+                        <Typography level="body-xs" sx={{ color: 'text.secondary', fontWeight: 'md' }}>
+                          {new Date(renewal.renewalDate).toLocaleDateString('en-US', { 
+                            month: 'short', 
+                            day: 'numeric', 
+                            year: 'numeric' 
+                          })}
+                        </Typography>
+                      </Stack>
+
                       <Typography
-                        level="body-md"
-                        sx={{
-                          fontWeight: 600,
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap'
-                        }}
+                        level="title-sm"
+                        sx={{ fontWeight: 700, whiteSpace: 'nowrap', color: '#FF6D56' }}
                       >
-                        {renewal.companyName}
-                      </Typography>
-                      
-                      <Typography level="body-sm" color="neutral">
-                        {formatRelativeDate(renewal.renewalDate)}
+                        {formatCurrency(renewal.mrr)}
                       </Typography>
                     </Stack>
 
-                    <Typography
-                      level="body-sm"
-                      color="primary"
-                      sx={{ fontWeight: 600, whiteSpace: 'nowrap' }}
-                    >
-                      {formatCurrency(renewal.mrr)}
-                    </Typography>
-                  </Stack>
+                    {/* Additional details and risk */}
+                    <Stack spacing={1}>
+                      {renewal.contractValue > 0 && (
+                        <Stack direction="row" justifyContent="space-between" alignItems="center">
+                          <Typography level="body-xs" color="neutral">
+                            Contract Value
+                          </Typography>
+                          <Typography level="body-sm" sx={{ fontWeight: 'md' }}>
+                            {formatCurrency(renewal.contractValue)}
+                          </Typography>
+                        </Stack>
+                      )}
 
-                  {/* Health and risk indicators */}
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <Chip
-                      size="sm"
-                      variant="soft"
-                      color={getHealthColor(renewal.healthScore)}
-                    >
-                      Health: {renewal.healthScore}%
-                    </Chip>
-                    
-                    <Chip
-                      size="sm"
-                      variant="soft"
-                      color={getRiskColor(renewal.churnRisk)}
-                    >
-                      {renewal.churnRisk} risk
-                    </Chip>
-                  </Stack>
-                </Stack>
+                      {renewal.contactName && (
+                        <Stack direction="row" justifyContent="space-between" alignItems="center">
+                          <Typography level="body-xs" color="neutral">
+                            Contact
+                          </Typography>
+                          <Typography level="body-sm">
+                            {renewal.contactName}
+                          </Typography>
+                        </Stack>
+                      )}
 
-                {/* Divider between items (not after last item) */}
-                {index < renewals.length - 1 && (
-                  <Divider sx={{ my: 2 }} />
-                )}
+                      {renewal.csmOwner && (
+                        <Stack direction="row" justifyContent="space-between" alignItems="center">
+                          <Typography level="body-xs" color="neutral">
+                            CSM
+                          </Typography>
+                          <Typography level="body-sm">
+                            {renewal.csmOwner}
+                          </Typography>
+                        </Stack>
+                      )}
+
+                      {renewal.churnRisk && renewal.churnRisk !== 'unknown' && (
+                        <Stack direction="row" spacing={1} alignItems="center">
+                          <Chip
+                            size="sm"
+                            variant="soft"
+                            color={getRiskColor(renewal.churnRisk)}
+                          >
+                            {renewal.churnRisk} risk
+                          </Chip>
+                        </Stack>
+                      )}
+                    </Stack>
+                  </Stack>
+                </Card>
               </Box>
             ))}
           </Stack>
@@ -143,21 +190,6 @@ export default function UpcomingRenewals({ clients = [] }) {
               </Typography>
             </Box>
           </Stack>
-        )}
-
-        {/* Footer with action hint */}
-        {renewals.length > 0 && (
-          <Box
-            sx={{
-              pt: 2,
-              borderTop: '1px solid',
-              borderColor: 'divider'
-            }}
-          >
-            <Typography level="body-xs" color="neutral" textAlign="center">
-              💡 Click on any client to view detailed renewal information
-            </Typography>
-          </Box>
         )}
       </Stack>
     </Card>

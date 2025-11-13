@@ -18,18 +18,17 @@ import {
   Grid,
   Link,
   Select,
-  Option
+  Option,
+  CircularProgress
 } from '@mui/joy';
 import { 
   TrendingUp as TrendingUpIcon,
   CalendarToday as CalendarIcon,
-  Receipt
+  DescriptionOutlined as RenewalsIcon
 } from '@mui/icons-material';
-import { ImportedData } from '../lib/persist.js';
 import { useAuth } from '../context/AuthContext.jsx';
-import { updateClientRenewal, getCompanyRenewalsData } from '../lib/clientData.js';
+import { updateClientRenewal, getCompanyRenewalsData, getCompanyClients } from '../lib/clientData.js';
 import EnhancedNavigation from '../components/EnhancedNavigation.jsx';
-import HelpTooltip from '../components/HelpTooltip.jsx';
 import PageHeader from '../components/PageHeader.jsx';
 import PageContainer from '../components/PageContainer.jsx';
 
@@ -38,26 +37,28 @@ export default function Renewals() {
   const navigate = useNavigate();
   const { userCompany } = useAuth();
   const [renewalsData, setRenewalsData] = useState({});
+  const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Load renewals data from Firestore on mount
   useEffect(() => {
     const loadRenewalsData = async () => {
-      if (!userCompany?.id) return;
+      if (!userCompany?.id) {
+        setLoading(false);
+        return;
+      }
       
       try {
         setLoading(true);
         const data = await getCompanyRenewalsData(userCompany.id);
         setRenewalsData(data);
+        
+        // Load clients
+        const firestoreClients = await getCompanyClients(userCompany.id);
+        setClients(firestoreClients || []);
       } catch (error) {
         console.error('Error loading renewals data:', error);
-        // Fall back to localStorage if Firestore fails
-        try {
-          const stored = localStorage.getItem('subzero_renewals_data');
-          if (stored) setRenewalsData(JSON.parse(stored));
-        } catch (e) {
-          console.warn('Failed to load renewals data from localStorage', e);
-        }
+        setClients([]);
       } finally {
         setLoading(false);
       }
@@ -65,9 +66,6 @@ export default function Renewals() {
 
     loadRenewalsData();
   }, [userCompany?.id]);
-  
-  // Get client data and calculate renewals
-  const clients = ImportedData.getClients();
   
   const upcomingRenewals = useMemo(() => {
     if (clients.length === 0) return [];
@@ -98,6 +96,22 @@ export default function Renewals() {
       .sort((a, b) => a.daysUntil - b.daysUntil);
   }, [clients, renewalsData]);
 
+  // Loading indicator while fetching from Firestore
+  if (loading) {
+    return (
+      <PageContainer>
+        <PageHeader
+          title="Contract Renewals"
+          description="Track and manage contract renewals across your client portfolio"
+          icon={RenewalsIcon}
+        />
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 8 }}>
+          <CircularProgress size="sm" />
+        </Box>
+      </PageContainer>
+    );
+  }
+
   // Show empty state if no renewals
   if (upcomingRenewals.length === 0) {
     return (
@@ -105,10 +119,8 @@ export default function Renewals() {
         <PageHeader
           title="Contract Renewals"
           description="Track and manage contract renewals across your client portfolio"
-          icon={Receipt}
-        >
-          <HelpTooltip text="Track renewal timelines, success probability, and revenue impact across your client portfolio" />
-        </PageHeader>
+          icon={RenewalsIcon}
+        />
         
         {clients.length === 0 ? (
           <Card 
@@ -317,10 +329,8 @@ export default function Renewals() {
       <PageHeader
         title="Contract Renewals"
         description="Track and manage your renewal pipeline"
-        icon={Receipt}
-      >
-        <HelpTooltip text="Track renewal timelines, success probability, and revenue impact across your client portfolio" />
-      </PageHeader>
+        icon={RenewalsIcon}
+      />
 
       {/* Summary metrics */}
       <Grid container spacing={2} sx={{ mb: 4 }}>

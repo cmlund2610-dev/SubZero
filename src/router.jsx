@@ -20,11 +20,13 @@ const Clients = lazy(() => import('./pages/Clients.jsx'));
 const ClientDetail = lazy(() => import('./pages/ClientDetail.jsx'));
 const Renewals = lazy(() => import('./pages/Renewals.jsx'));
 const Analytics = lazy(() => import('./pages/Analytics.jsx'));
+const Automations = lazy(() => import('./pages/Automations.jsx'));
 const DataImport = lazy(() => import('./pages/DataImport.jsx'));
 const Account = lazy(() => import('./pages/Account.jsx'));
 const Profile = lazy(() => import('./components/Profile.jsx'));
 const UserManagement = lazy(() => import('./components/UserManagement.jsx'));
 const Billing = lazy(() => import('./components/Billing.jsx'));
+const EmailTemplates = lazy(() => import('./pages/EmailTemplates.jsx'));
 
 // Auth components
 const Signin = lazy(() => import('./components/auth/Signin.jsx'));
@@ -81,6 +83,10 @@ export const router = createBrowserRouter([
         element: <Analytics />
       },
       {
+        path: 'automations',
+        element: <Automations />
+      },
+      {
         path: 'data',
         element: <DataImport />
       },
@@ -109,6 +115,14 @@ export const router = createBrowserRouter([
         element: (
           <AdminRoute>
             <Billing />
+          </AdminRoute>
+        )
+      },
+      {
+        path: 'email-templates',
+        element: (
+          <AdminRoute>
+            <EmailTemplates />
           </AdminRoute>
         )
       },

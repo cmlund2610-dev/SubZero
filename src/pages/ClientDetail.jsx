@@ -33,9 +33,9 @@ import {
   CircularProgress
 } from '@mui/joy';
 import { ArrowBack as ArrowBackIcon } from '@mui/icons-material';
-import { ImportedData } from '../lib/persist.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import {
+  getClient,
   addClientNote,
   getClientNotes,
   deleteClientNote,
@@ -48,10 +48,41 @@ import {
 export default function ClientDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  
-  // Get real client data from localStorage
-  const clients = ImportedData.getClients();
-  const client = clients.find(c => c.id === id);
+  const { userCompany } = useAuth();
+  const [client, setClient] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Load client data from Firestore
+  useEffect(() => {
+    loadClient();
+  }, [id, userCompany]);
+
+  const loadClient = async () => {
+    if (!userCompany?.id || !id) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const clientData = await getClient(userCompany.id, id);
+      setClient(clientData);
+    } catch (error) {
+      console.error('Error loading client:', error);
+      setClient(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Show loading state
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 8, minHeight: '60vh' }}>
+        <CircularProgress size="sm" />
+      </Box>
+    );
+  }
 
   // If client not found, show not found message
   if (!client) {

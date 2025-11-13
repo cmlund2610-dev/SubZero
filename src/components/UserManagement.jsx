@@ -40,7 +40,8 @@ import {
   Security as Shield,
   PersonOff as UserX,
   Star as Crown,
-  Settings
+  Settings,
+  PersonOutlined
 } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext.jsx';
 import { 
@@ -259,7 +260,7 @@ const UserManagement = () => {
         <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
           <Box>
             <Typography level="h2" sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
-              <Users size={32} />
+              <PersonOutlined sx={{ fontSize: 32 }} />
               User Management
             </Typography>
             <Typography level="body-lg" color="neutral">

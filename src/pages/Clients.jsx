@@ -1,14 +1,106 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Typography, Stack, Table, Button, Chip, Input, Card } from '@mui/joy';
-import { Diamond } from '@mui/icons-material';
-import { ImportedData } from '../lib/persist.js';
+import { Box, Typography, Stack, Table, Button, Chip, Input, Card, Select, Option, FormControl, FormLabel, CircularProgress } from '@mui/joy';
+import { GroupsOutlined as ClientsIcon, Search, FilterAlt, TrendingUp, TrendingDown } from '@mui/icons-material';
+import { getCompanyClients } from '../lib/clientData.js';
+import { useAuth } from '../context/AuthContext.jsx';
 import PageHeader from '../components/PageHeader.jsx';
 import PageContainer from '../components/PageContainer.jsx';
 
 export default function Clients() {
   const navigate = useNavigate();
-  const clients = ImportedData.getClients();
+  const { userCompany } = useAuth();
+  const [clients, setClients] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState('company');
+  const [filterMRR, setFilterMRR] = useState('all');
+  const [sortOrder, setSortOrder] = useState('asc');
+
+  useEffect(() => {
+    loadClients();
+  }, [userCompany]);
+
+  const loadClients = async () => {
+    if (!userCompany?.id) {
+      setClients([]);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const firestoreClients = await getCompanyClients(userCompany.id);
+      setClients(firestoreClients || []);
+    } catch (error) {
+      console.error('Error loading clients:', error);
+      setClients([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Filter and sort clients
+  const getFilteredAndSortedClients = () => {
+    let filtered = clients;
+
+    // Search filter
+    if (searchTerm) {
+      const search = searchTerm.toLowerCase();
+      filtered = filtered.filter(client => 
+        client.company?.name?.toLowerCase().includes(search) ||
+        client.contact?.name?.toLowerCase().includes(search) ||
+        client.contact?.email?.toLowerCase().includes(search) ||
+        client.client?.id?.toLowerCase().includes(search) ||
+        client.id?.toLowerCase().includes(search)
+      );
+    }
+
+    // MRR filter
+    if (filterMRR !== 'all') {
+      filtered = filtered.filter(client => {
+        const mrr = client.mrr || 0;
+        switch (filterMRR) {
+          case 'high': return mrr >= 10000;
+          case 'medium': return mrr >= 1000 && mrr < 10000;
+          case 'low': return mrr < 1000;
+          default: return true;
+        }
+      });
+    }
+
+    // Sort
+    filtered.sort((a, b) => {
+      let aVal, bVal;
+      
+      switch (sortBy) {
+        case 'company':
+          aVal = a.company?.name || '';
+          bVal = b.company?.name || '';
+          break;
+        case 'mrr':
+          aVal = a.mrr || 0;
+          bVal = b.mrr || 0;
+          break;
+        case 'renewal':
+          aVal = a.renewal?.date ? new Date(a.renewal.date).getTime() : 0;
+          bVal = b.renewal?.date ? new Date(b.renewal.date).getTime() : 0;
+          break;
+        default:
+          return 0;
+      }
+
+      if (sortOrder === 'asc') {
+        return aVal > bVal ? 1 : -1;
+      } else {
+        return aVal < bVal ? 1 : -1;
+      }
+    });
+
+    return filtered;
+  };
+
+  const filteredClients = getFilteredAndSortedClients();
 
   const formatMRR = (value) => {
     return new Intl.NumberFormat('en-US', {
@@ -18,14 +110,30 @@ export default function Clients() {
     }).format(value);
   };
 
-  // Show empty state if no clients
+  // Top-level loader
+  if (loading) {
+    return (
+      <PageContainer>
+        <PageHeader
+          title="Clients"
+          description="Manage your client portfolio and track health scores across your customer base"
+          icon={ClientsIcon}
+        />
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 8 }}>
+          <CircularProgress size="sm" />
+        </Box>
+      </PageContainer>
+    );
+  }
+
+  // Empty state
   if (clients.length === 0) {
     return (
       <PageContainer>
         <PageHeader
           title="Clients"
           description="Manage your client portfolio and track health scores across your customer base"
-          icon={Diamond}
+          icon={ClientsIcon}
         />
 
         {/* Enhanced empty state */}
@@ -114,22 +222,89 @@ export default function Clients() {
       <PageHeader
         title="Clients"
         description="Manage your client portfolio and track health scores across your customer base"
-        icon={Diamond}
+        icon={ClientsIcon}
       />
 
+      {/* Search and Filter Bar */}
+      <Card variant="outlined" sx={{ mb: 2 }}>
+        <Stack spacing={2}>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+            <Input
+              placeholder="Search by company, contact, or client ID..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              startDecorator={<Search />}
+              sx={{ flex: 1 }}
+            />
+            <Button
+              variant="outlined"
+              startDecorator={<FilterAlt />}
+              color="neutral"
+            >
+              Filters
+            </Button>
+          </Stack>
+
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+            <FormControl sx={{ minWidth: 180 }}>
+              <FormLabel>Sort by</FormLabel>
+              <Select value={sortBy} onChange={(e, newValue) => setSortBy(newValue)}>
+                <Option value="company">Company Name</Option>
+                <Option value="mrr">MRR</Option>
+                <Option value="renewal">Renewal Date</Option>
+              </Select>
+            </FormControl>
+
+            <FormControl sx={{ minWidth: 140 }}>
+              <FormLabel>Order</FormLabel>
+              <Select value={sortOrder} onChange={(e, newValue) => setSortOrder(newValue)}>
+                <Option value="asc" startDecorator={<TrendingUp />}>Ascending</Option>
+                <Option value="desc" startDecorator={<TrendingDown />}>Descending</Option>
+              </Select>
+            </FormControl>
+
+            <FormControl sx={{ minWidth: 180 }}>
+              <FormLabel>MRR Range</FormLabel>
+              <Select value={filterMRR} onChange={(e, newValue) => setFilterMRR(newValue)}>
+                <Option value="all">All Clients</Option>
+                <Option value="high">High ($10k+)</Option>
+                <Option value="medium">Medium ($1k-$10k)</Option>
+                <Option value="low">Low (&lt;$1k)</Option>
+              </Select>
+            </FormControl>
+
+            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+              <Typography level="body-sm" color="neutral">
+                Showing {filteredClients.length} of {clients.length} clients
+              </Typography>
+            </Box>
+          </Stack>
+        </Stack>
+      </Card>
+
+      {/* Clients Table */}
       <Card variant="outlined">
-        <Table hoverRow>
-          <thead>
-            <tr>
-              <th>Client ID</th>
-              <th>Company</th>
-              <th>Contact</th>
-              <th>MRR</th>
-              <th>Renewal Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {clients.map((client) => (
+        {loading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 8 }}>
+            <CircularProgress size="sm" />
+          </Box>
+        ) : filteredClients.length === 0 ? (
+          <Box sx={{ textAlign: 'center', py: 8 }}>
+            <Typography level="body-md" color="neutral">No clients match your search criteria</Typography>
+          </Box>
+        ) : (
+          <Table hoverRow>
+            <thead>
+              <tr>
+                <th>Client ID</th>
+                <th>Company</th>
+                <th>Contact</th>
+                <th>MRR</th>
+                <th>Renewal Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredClients.map((client) => (
               <tr 
                 key={client.id}
                 style={{ cursor: 'pointer' }}
@@ -169,6 +344,7 @@ export default function Clients() {
             ))}
           </tbody>
         </Table>
+        )}
       </Card>
     </PageContainer>
   );

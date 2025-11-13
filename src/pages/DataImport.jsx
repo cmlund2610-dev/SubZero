@@ -26,18 +26,16 @@ import {
   LinearProgress,
   Chip
 } from '@mui/joy';
-import { 
-  CloudUpload, 
-  TableChart, 
-  CheckCircle, 
-  Warning, 
+import {
+  CloudUpload,
+  CloudUploadRounded as DataImportIcon,
+  TableChart,
+  CheckCircle,
+  Warning,
   Download,
   GetApp,
   Refresh
 } from '@mui/icons-material';
-
-import { ImportedData } from '../lib/persist.js';
-import { upsertClient } from '../lib/clientData.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import { LEGACY_MAPPING_TABLE, getSuggestedMapping, checkFieldPresence, CANONICAL_FIELDS, transformToCanonical } from '../lib/mappers.js';
 import PageHeader from '../components/PageHeader.jsx';
@@ -157,11 +155,17 @@ export default function DataImport() {
   const transformData = () => {
     const transformedData = transformToCanonical(uploadedData, fieldMappings);
     
-    return transformedData.map((row, index) => ({
-      ...row,
-      id: `imported_${Date.now()}_${index}`,
-      importedAt: new Date().toISOString()
-    }));
+    return transformedData.map((row, index) => {
+      // Use the client's actual ID from the data (client.id field)
+      // Fall back to generated ID only if client.id is missing
+      const clientId = row.client?.id || row.id || `imported_${Date.now()}_${index}`;
+      
+      return {
+        ...row,
+        id: clientId,
+        importedAt: new Date().toISOString()
+      };
+    });
   };
 
   // Step 4: Import
@@ -177,8 +181,7 @@ export default function DataImport() {
         throw new Error('No company ID found. Please sign in again.');
       }
       
-      // Save to both Firestore and localStorage
-      const existingClients = ImportedData.getClients();
+      // Save to Firestore
       const totalClients = transformedData.length;
       let successCount = 0;
       let failCount = 0;
@@ -203,10 +206,6 @@ export default function DataImport() {
           await new Promise(resolve => setTimeout(resolve, 100));
         }
       }
-      
-      // Also save to localStorage as backup
-      const allClients = [...existingClients, ...transformedData];
-      ImportedData.setClients(allClients);
       
       if (failCount > 0) {
         setImportError(`Import completed with ${failCount} failures out of ${totalClients} clients.`);
@@ -531,7 +530,7 @@ export default function DataImport() {
       <PageHeader
         title="Data Import"
         description="Import your client data from CSV or JSON files with guided field mapping"
-        icon={CloudUpload}
+        icon={DataImportIcon}
       />
 
       {/* Stepper */}

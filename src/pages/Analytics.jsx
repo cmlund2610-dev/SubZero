@@ -7,7 +7,7 @@
  * 3. Churn & Retention - Retention analytics and risk assessment
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Box, 
@@ -20,6 +20,7 @@ import {
   TabPanel,
   Chip,
   LinearProgress,
+  CircularProgress,
   Table,
   Alert,
   Link as JoyLink,
@@ -27,7 +28,7 @@ import {
   IconButton
 } from '@mui/joy';
 import { 
-  BarChart, 
+  MultilineChartRounded, 
   TrendingUp, 
   TrendingDown,
   Assessment,
@@ -61,7 +62,8 @@ import {
 } from 'recharts';
 import PageHeader from '../components/PageHeader.jsx';
 import PageContainer from '../components/PageContainer.jsx';
-import { ImportedData } from '../lib/persist.js';
+import { getCompanyClients } from '../lib/clientData.js';
+import { useAuth } from '../context/AuthContext.jsx';
 
 // Helper component for metric tooltips
 const MetricTooltip = ({ title, description }) => (
@@ -103,7 +105,31 @@ const MetricTooltip = ({ title, description }) => (
 
 export default function Analytics() {
   const [activeTab, setActiveTab] = useState(0);
-  const clients = ImportedData.getClients();
+  const [clients, setClients] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { userCompany } = useAuth();
+
+  useEffect(() => {
+    loadClients();
+  }, [userCompany]);
+
+  const loadClients = async () => {
+    if (!userCompany?.id) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const firestoreClients = await getCompanyClients(userCompany.id);
+      setClients(firestoreClients || []);
+    } catch (error) {
+      console.error('Error loading clients:', error);
+      setClients([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Enhanced analytics calculations with chart data
   const analytics = useMemo(() => {
@@ -355,14 +381,30 @@ export default function Analytics() {
 
   const COLORS = ['#22c55e', '#ef4444', '#3b82f6', '#f59e0b', '#8b5cf6'];
 
-  // Show empty state if no data
+  // Show loader while fetching from Firestore
+  if (loading) {
+    return (
+      <PageContainer>
+        <PageHeader
+          title="KPIs and Metrics"
+          description="Comprehensive business intelligence dashboard"
+          icon={MultilineChartRounded}
+        />
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 8 }}>
+          <CircularProgress size="sm" />
+        </Box>
+      </PageContainer>
+    );
+  }
+
+  // Show empty state if no data after loading
   if (!clients.length || !analytics) {
     return (
       <PageContainer>
         <PageHeader
-          title="Analytics"
+          title="KPIs and Metrics"
           description="Comprehensive business intelligence dashboard"
-          icon={BarChart}
+          icon={MultilineChartRounded}
         />
         <Alert color="primary" sx={{ mt: 3 }}>
           <Typography level="title-sm" sx={{ mb: 1 }}>
@@ -379,9 +421,9 @@ export default function Analytics() {
   return (
     <PageContainer>
       <PageHeader
-        title="Analytics"
+        title="KPIs and Metrics"
         description="Comprehensive business intelligence dashboard with data visualizations"
-        icon={BarChart}
+        icon={MultilineChartRounded}
       />
 
       <Tabs value={activeTab} onChange={(_, newValue) => setActiveTab(newValue)}>

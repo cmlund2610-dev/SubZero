@@ -65,7 +65,7 @@ export function calcTotals(clients) {
  * @param {number} days - Number of days to look ahead (default: 90)
  * @returns {Array<Object>} Sorted array of upcoming renewals
  */
-export function nextRenewals(clients, days = 90) {
+export function nextRenewals(clients, days = 90, limit) {
   if (!Array.isArray(clients)) {
     return [];
   }
@@ -75,16 +75,26 @@ export function nextRenewals(clients, days = 90) {
   futureDate.setDate(today.getDate() + days);
 
   const renewals = clients
-    .filter(client => client.renewal?.date)
+    .filter(client => {
+      // Support both nested and flat structures
+      const renewalDate = client.renewal?.date || client.renewal_date || client.contract_end_date;
+      return renewalDate;
+    })
     .map(client => {
-      const renewalDate = new Date(client.renewal.date);
+      // Support both nested and flat structures
+      const renewalDateStr = client.renewal?.date || client.renewal_date || client.contract_end_date;
+      const renewalDate = new Date(renewalDateStr);
+      
       return {
         id: client.id,
-        companyName: client.companyName,
-        renewalDate: client.renewal.date,
+        companyName: client.company?.name || client.companyName || client.company_name || client.client_name,
+        renewalDate: renewalDateStr,
+        contractValue: client.contract?.value || client.contract_value || 0,
         mrr: client.mrr || 0,
-        healthScore: client.health?.score || 0,
-        churnRisk: client.churn?.risk || 'unknown',
+        healthScore: client.health?.score || client.health_score || 0,
+        churnRisk: client.churn?.risk || client.churn_risk || 'unknown',
+        contactName: client.contact?.name || client.contact_name,
+        csmOwner: client.csm?.owner || client.csm_owner,
         daysUntilRenewal: Math.ceil((renewalDate - today) / (1000 * 60 * 60 * 24))
       };
     })
@@ -94,7 +104,10 @@ export function nextRenewals(clients, days = 90) {
     })
     .sort((a, b) => new Date(a.renewalDate) - new Date(b.renewalDate));
 
-  return renewals.slice(0, 5); // Return top 5
+  if (typeof limit === 'number' && limit > 0) {
+    return renewals.slice(0, limit);
+  }
+  return renewals; // full list when no limit specified
 }
 
 /**
