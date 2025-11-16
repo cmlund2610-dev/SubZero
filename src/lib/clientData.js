@@ -13,12 +13,21 @@ import {
   updateDoc,
   deleteDoc,
   query,
-  where,
   orderBy,
   serverTimestamp,
   Timestamp
 } from 'firebase/firestore';
 import { db } from './firebase.js';
+import { LRUCache } from 'lru-cache';
+
+// Initialize LRU cache
+const cache = new LRUCache({
+  max: 100, // Maximum number of items in the cache
+  ttl: 1000 * 60 * 5, // Time-to-live: 5 minutes
+});
+
+// Cache wrapper for Firestore operations
+const cacheKey = (operation, companyId, clientId) => `${operation}-${companyId}-${clientId}`;
 
 // ============================================
 // NOTES OPERATIONS
@@ -37,6 +46,7 @@ export const addClientNote = async (companyId, clientId, noteData) => {
       updatedAt: serverTimestamp()
     };
     await setDoc(noteRef, note);
+    cache.delete(cacheKey('getClientNotes', companyId, clientId)); // Invalidate cache
     return { ...note, createdAt: Date.now(), updatedAt: Date.now() }; // Return with temp timestamps for immediate UI update
   } catch (error) {
     console.error('Error adding note:', error);
@@ -48,15 +58,22 @@ export const addClientNote = async (companyId, clientId, noteData) => {
  * Get all notes for a client
  */
 export const getClientNotes = async (companyId, clientId) => {
+  const key = cacheKey('getClientNotes', companyId, clientId);
+  if (cache.has(key)) {
+    return cache.get(key);
+  }
+
   try {
     const notesRef = collection(db, `companies/${companyId}/clients/${clientId}/notes`);
     const q = query(notesRef, orderBy('createdAt', 'desc'));
     const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => ({
+    const notes = snapshot.docs.map(doc => ({
       ...doc.data(),
       id: doc.id,
       createdAt: doc.data().createdAt?.toMillis() || Date.now()
     }));
+    cache.set(key, notes);
+    return notes;
   } catch (error) {
     console.error('Error getting notes:', error);
     throw error;
@@ -92,6 +109,7 @@ export const addClientTask = async (companyId, clientId, taskData) => {
       updatedAt: serverTimestamp()
     };
     await setDoc(taskRef, task);
+    cache.delete(cacheKey('getClientTasks', companyId, clientId)); // Invalidate cache
     return { ...task, createdAt: Date.now(), updatedAt: Date.now() }; // Return with temp timestamps for immediate UI update
   } catch (error) {
     console.error('Error adding task:', error);
@@ -103,15 +121,22 @@ export const addClientTask = async (companyId, clientId, taskData) => {
  * Get all tasks for a client
  */
 export const getClientTasks = async (companyId, clientId) => {
+  const key = cacheKey('getClientTasks', companyId, clientId);
+  if (cache.has(key)) {
+    return cache.get(key);
+  }
+
   try {
     const tasksRef = collection(db, `companies/${companyId}/clients/${clientId}/tasks`);
     const q = query(tasksRef, orderBy('createdAt', 'asc'));
     const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => ({
+    const tasks = snapshot.docs.map(doc => ({
       ...doc.data(),
       id: doc.id,
       createdAt: doc.data().createdAt?.toMillis() || Date.now()
     }));
+    cache.set(key, tasks);
+    return tasks;
   } catch (error) {
     console.error('Error getting tasks:', error);
     throw error;
@@ -282,3 +307,6 @@ export const getCompanyClients = async (companyId) => {
     throw error;
   }
 };
+
+// Export the cache instance for testing
+export { cache };

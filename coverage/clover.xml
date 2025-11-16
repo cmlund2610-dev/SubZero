@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1763324828410" clover="3.2.0">
+  <project timestamp="1763324828410" name="All files">
+    <metrics statements="121" coveredstatements="37" conditionals="24" coveredconditionals="6" methods="17" coveredmethods="4" elements="162" coveredelements="47" complexity="0" loc="121" ncloc="121" packages="1" files="2" classes="2"/>
+    <file name="clientData.js" path="/Users/christianml/Projects/beehive-io/src/lib/clientData.js">
+      <metrics statements="112" coveredstatements="30" conditionals="18" coveredconditionals="3" methods="17" coveredmethods="4"/>
+      <line num="25" count="1" type="stmt"/>
+      <line num="31" count="4" type="stmt"/>
+      <line num="40" count="1" type="stmt"/>
+      <line num="41" count="1" type="stmt"/>
+      <line num="42" count="1" type="stmt"/>
+      <line num="43" count="1" type="stmt"/>
+      <line num="49" count="1" type="stmt"/>
+      <line num="50" count="1" type="stmt"/>
+      <line num="51" count="1" type="stmt"/>
+      <line num="53" count="0" type="stmt"/>
+      <line num="54" count="0" type="stmt"/>
+      <line num="61" count="1" type="stmt"/>
+      <line num="62" count="3" type="stmt"/>
+      <line num="63" count="3" type="cond" truecount="2" falsecount="0"/>
+      <line num="64" count="1" type="stmt"/>
+      <line num="67" count="2" type="stmt"/>
+      <line num="68" count="2" type="stmt"/>
+      <line num="69" count="2" type="stmt"/>
+      <line num="70" count="2" type="stmt"/>
+      <line num="71" count="2" type="stmt"/>
+      <line num="76" count="2" type="stmt"/>
+      <line num="77" count="2" type="stmt"/>
+      <line num="79" count="0" type="stmt"/>
+      <line num="80" count="0" type="stmt"/>
+      <line num="87" count="1" type="stmt"/>
+      <line num="88" count="0" type="stmt"/>
+      <line num="89" count="0" type="stmt"/>
+      <line num="91" count="0" type="stmt"/>
+      <line num="92" count="0" type="stmt"/>
+      <line num="103" count="1" type="stmt"/>
+      <line num="104" count="0" type="stmt"/>
+      <line num="105" count="0" type="stmt"/>
+      <line num="106" count="0" type="stmt"/>
+      <line num="112" count="0" type="stmt"/>
+      <line num="113" count="0" type="stmt"/>
+      <line num="114" count="0" type="stmt"/>
+      <line num="116" count="0" type="stmt"/>
+      <line num="117" count="0" type="stmt"/>
+      <line num="124" count="1" type="stmt"/>
+      <line num="125" count="0" type="stmt"/>
+      <line num="126" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="127" count="0" type="stmt"/>
+      <line num="130" count="0" type="stmt"/>
+      <line num="131" count="0" type="stmt"/>
+      <line num="132" count="0" type="stmt"/>
+      <line num="133" count="0" type="stmt"/>
+      <line num="134" count="0" type="stmt"/>
+      <line num="139" count="0" type="stmt"/>
+      <line num="140" count="0" type="stmt"/>
+      <line num="142" count="0" type="stmt"/>
+      <line num="143" count="0" type="stmt"/>
+      <line num="150" count="1" type="stmt"/>
+      <line num="151" count="0" type="stmt"/>
+      <line num="152" count="0" type="stmt"/>
+      <line num="153" count="0" type="stmt"/>
+      <line num="158" count="0" type="stmt"/>
+      <line num="159" count="0" type="stmt"/>
+      <line num="166" count="1" type="stmt"/>
+      <line num="167" count="0" type="stmt"/>
+      <line num="168" count="0" type="stmt"/>
+      <line num="170" count="0" type="stmt"/>
+      <line num="171" count="0" type="stmt"/>
+      <line num="182" count="1" type="stmt"/>
+      <line num="183" count="0" type="stmt"/>
+      <line num="184" count="0" type="stmt"/>
+      <line num="186" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="187" count="0" type="stmt"/>
+      <line num="189" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="190" count="0" type="stmt"/>
+      <line num="193" count="0" type="stmt"/>
+      <line num="196" count="0" type="stmt"/>
+      <line num="202" count="0" type="stmt"/>
+      <line num="204" count="0" type="stmt"/>
+      <line num="205" count="0" type="stmt"/>
+      <line num="212" count="0" type="stmt"/>
+      <line num="219" count="1" type="stmt"/>
+      <line num="220" count="0" type="stmt"/>
+      <line num="221" count="0" type="stmt"/>
+      <line num="222" count="0" type="stmt"/>
+      <line num="224" count="0" type="stmt"/>
+      <line num="225" count="0" type="stmt"/>
+      <line num="226" count="0" type="stmt"/>
+      <line num="227" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="228" count="0" type="stmt"/>
+      <line num="232" count="0" type="stmt"/>
+      <line num="234" count="0" type="stmt"/>
+      <line num="235" count="0" type="stmt"/>
+      <line num="247" count="1" type="stmt"/>
+      <line num="248" count="0" type="stmt"/>
+      <line num="249" count="0" type="stmt"/>
+      <line num="250" count="0" type="stmt"/>
+      <line num="252" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="254" count="0" type="stmt"/>
+      <line num="260" count="0" type="stmt"/>
+      <line num="268" count="0" type="stmt"/>
+      <line num="269" count="0" type="stmt"/>
+      <line num="276" count="1" type="stmt"/>
+      <line num="277" count="0" type="stmt"/>
+      <line num="278" count="0" type="stmt"/>
+      <line num="279" count="0" type="stmt"/>
+      <line num="281" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="282" count="0" type="stmt"/>
+      <line num="287" count="0" type="stmt"/>
+      <line num="289" count="0" type="stmt"/>
+      <line num="290" count="0" type="stmt"/>
+      <line num="297" count="1" type="stmt"/>
+      <line num="298" count="0" type="stmt"/>
+      <line num="299" count="0" type="stmt"/>
+      <line num="300" count="0" type="stmt"/>
+      <line num="302" count="0" type="stmt"/>
+      <line num="307" count="0" type="stmt"/>
+      <line num="308" count="0" type="stmt"/>
+    </file>
+    <file name="firebase.js" path="/Users/christianml/Projects/beehive-io/src/lib/firebase.js">
+      <metrics statements="9" coveredstatements="7" conditionals="6" coveredconditionals="3" methods="0" coveredmethods="0"/>
+      <line num="14" count="1" type="stmt"/>
+      <line num="25" count="1" type="stmt"/>
+      <line num="28" count="1" type="stmt"/>
+      <line num="31" count="1" type="stmt"/>
+      <line num="34" count="1" type="stmt"/>
+      <line num="37" count="1" type="cond" truecount="1" falsecount="1"/>
+      <line num="40" count="1" type="cond" truecount="2" falsecount="2"/>
+      <line num="42" count="0" type="stmt"/>
+      <line num="48" count="0" type="stmt"/>
+    </file>
+  </project>
+</coverage>

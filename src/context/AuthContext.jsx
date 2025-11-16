@@ -5,7 +5,7 @@
  * Integrates Firebase Auth with Firestore for user profiles
  */
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { 
   onAuthStateChanged, 
   signInWithEmailAndPassword,
@@ -204,7 +204,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Load user profile from Firestore
-  const loadUserProfile = async (uid) => {
+  const loadUserProfile = useCallback(async (uid) => {
     console.log('🔵 loadUserProfile called for:', uid);
     try {
       const userDocRef = doc(db, 'users', uid);
@@ -232,7 +232,7 @@ export const AuthProvider = ({ children }) => {
       setError(error.message);
       return null;
     }
-  };
+  }, []);
 
   // Load company data from Firestore
   const loadCompanyData = async (companyId) => {
@@ -278,7 +278,7 @@ export const AuthProvider = ({ children }) => {
     });
 
     return unsubscribe;
-  }, []);
+  }, [loadUserProfile]);
 
   // Context value
   const value = {
@@ -308,4 +308,4 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-export default AuthProvider;
+// Refactored to ensure only components are exported for fast refresh compatibility.

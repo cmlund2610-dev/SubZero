@@ -13,6 +13,26 @@ import { lazy } from 'react';
 import AppLayout from './layouts/AppLayout.jsx';
 import ProtectedRoute, { PublicRoute, AdminRoute } from './components/auth/ProtectedRoute.jsx';
 import Settings from './components/Settings.jsx';
+import { ErrorBoundary } from 'react-error-boundary';
+import { Suspense } from 'react';
+
+function ErrorFallback({ error }) {
+  return (
+    <div role="alert">
+      <p>Something went wrong:</p>
+      <pre>{error.message}</pre>
+    </div>
+  );
+}
+
+// Define the withSuspense function to wrap components with Suspense
+function withSuspense(Component) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Component />
+    </Suspense>
+  );
+}
 
 // Lazy load page components for code splitting
 const Home = lazy(() => import('./pages/Home.jsx'));
@@ -20,7 +40,6 @@ const Clients = lazy(() => import('./pages/Clients.jsx'));
 const ClientDetail = lazy(() => import('./pages/ClientDetail.jsx'));
 const Renewals = lazy(() => import('./pages/Renewals.jsx'));
 const Analytics = lazy(() => import('./pages/Analytics.jsx'));
-const Automations = lazy(() => import('./pages/Automations.jsx'));
 const DataImport = lazy(() => import('./pages/DataImport.jsx'));
 const Account = lazy(() => import('./pages/Account.jsx'));
 const Profile = lazy(() => import('./components/Profile.jsx'));
@@ -41,7 +60,7 @@ export const router = createBrowserRouter([
     path: '/signin',
     element: (
       <PublicRoute>
-        <Signin />
+        {withSuspense(Signin)}
       </PublicRoute>
     )
   },
@@ -49,7 +68,7 @@ export const router = createBrowserRouter([
     path: '/signup',
     element: (
       <PublicRoute>
-        <Signup />
+        {withSuspense(Signup)}
       </PublicRoute>
     )
   },
@@ -64,49 +83,45 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home />
+        element: withSuspense(Home)
       },
       {
         path: 'clients',
-        element: <Clients />
+        element: withSuspense(Clients)
       },
       {
         path: 'clients/:id',
-        element: <ClientDetail />
+        element: withSuspense(ClientDetail)
       },
       {
         path: 'renewals',
-        element: <Renewals />
+        element: withSuspense(Renewals)
       },
       {
         path: 'analytics',
-        element: <Analytics />
-      },
-      {
-        path: 'automations',
-        element: <Automations />
+        element: withSuspense(Analytics)
       },
       {
         path: 'data',
-        element: <DataImport />
+        element: withSuspense(DataImport)
       },
       {
         path: 'account',
-        element: <Account />
+        element: withSuspense(Account)
       },
       {
         path: 'profile',
-        element: <Profile />
+        element: withSuspense(Profile)
       },
       {
         path: 'settings',
-        element: <Settings />
+        element: withSuspense(Settings)
       },
       {
         path: 'users',
         element: (
           <AdminRoute>
-            <UserManagement />
+            {withSuspense(UserManagement)}
           </AdminRoute>
         )
       },
@@ -114,7 +129,7 @@ export const router = createBrowserRouter([
         path: 'billing',
         element: (
           <AdminRoute>
-            <Billing />
+            {withSuspense(Billing)}
           </AdminRoute>
         )
       },
@@ -122,14 +137,18 @@ export const router = createBrowserRouter([
         path: 'email-templates',
         element: (
           <AdminRoute>
-            <EmailTemplates />
+            {withSuspense(EmailTemplates)}
           </AdminRoute>
         )
       },
       {
         path: 'styleguide',
-        element: <StyleGuide />
-      }
+        element: withSuspense(StyleGuide)
+      },
     ]
-  }
+  },
+  {
+    path: '/email-templates',
+    element: withSuspense(EmailTemplates),
+  },
 ]);

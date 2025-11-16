@@ -155,7 +155,7 @@ export function calculateGridLayout(enabledWidgets, containerWidth = 12) {
   let currentRow = 0;
   let currentCol = 0;
   
-  enabledWidgets.forEach((widgetId, index) => {
+  enabledWidgets.forEach(widgetId => {
     const widget = getWidget(widgetId);
     if (!widget) return;
     

@@ -4,10 +4,6 @@ import { Box, Typography, Stack, Card, Chip } from '@mui/joy';
 export default function ContractPipelineWidget({ clients = [] }) {
   // Generate pipeline data from clients
   const pipelineData = React.useMemo(() => {
-    const today = new Date();
-    const threeMonths = new Date(today.getFullYear(), today.getMonth() + 3, today.getDate());
-    const sixMonths = new Date(today.getFullYear(), today.getMonth() + 6, today.getDate());
-    
     return [
       {
         label: 'Expiring Soon',

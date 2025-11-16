@@ -34,12 +34,6 @@ export default function UpcomingRenewals({ clients = [] }) {
     }
   };
 
-  const getHealthColor = (score) => {
-    if (score >= 70) return 'success';
-    if (score >= 50) return 'warning';
-    return 'danger';
-  };
-
   return (
     <Card
       variant="outlined"
@@ -70,7 +64,7 @@ export default function UpcomingRenewals({ clients = [] }) {
 
         {renewals.length > 0 ? (
           <Stack spacing={2} sx={{ flex: 1, overflow: 'auto', maxHeight: '500px' }}>
-            {renewals.map((renewal, index) => (
+            {renewals.map((renewal) => (
               <Box key={renewal.id}>
                 <Card 
                   variant="soft" 

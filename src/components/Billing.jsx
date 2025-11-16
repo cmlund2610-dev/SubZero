@@ -52,8 +52,7 @@ import {
 import { useAuth } from '../context/AuthContext.jsx';
 
 const Billing = () => {
-  const { userProfile, userCompany, isAdmin } = useAuth();
-  const [loading, setLoading] = useState(true);
+  const { userCompany, isAdmin } = useAuth();
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   
@@ -70,7 +69,7 @@ const Billing = () => {
   });
 
   // Mock billing data (in real app, this would come from Stripe/payment processor)
-  const [billingData, setBillingData] = useState({
+  const [billingData] = useState({
     subscription: {
       plan: 'Professional',
       status: 'active',
@@ -133,7 +132,6 @@ const Billing = () => {
 
   useEffect(() => {
     // In a real app, load billing data from API
-    setLoading(false);
   }, []);
 
   // Plan options

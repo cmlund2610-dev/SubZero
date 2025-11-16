@@ -125,22 +125,6 @@ export const Sidebar = () => {
         <CNavGroup 
           toggler={
             <>
-              <BoltRounded className="nav-icon" sx={{ fontSize: 20 }} /> Automations
-            </>
-          }
-        >
-          <CNavItem 
-            href="/automations"
-            active={location.pathname === '/automations'}
-            onClick={handleNavigation('/automations')}
-          >
-            <BoltRounded className="nav-icon" sx={{ fontSize: 20 }} /> Manage Automations
-          </CNavItem>
-        </CNavGroup>
-
-        <CNavGroup 
-          toggler={
-            <>
               <Email className="nav-icon" sx={{ fontSize: 20 }} /> Marketing
             </>
           }

@@ -57,7 +57,7 @@ export default function StatsRow({ clients = [] }) {
   return (
     <Box sx={{ width: '100%', mb: 3 }}>
       <Grid container spacing={2}>
-        {stats.map((stat, index) => (
+        {stats.map((stat) => (
           <Grid key={stat.label} xs={12} sm={6} md={3}>
             <Card
               variant="outlined"

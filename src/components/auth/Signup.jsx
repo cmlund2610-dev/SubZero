@@ -257,16 +257,14 @@ export default function Signup() {
           <Stack spacing={2.5}>
             {[
               { 
-                Icon: TimelineRounded, 
                 title: 'Quick Onboarding', 
                 desc: 'Start in minutes with guided setup and smart defaults'
               },
               { 
-                Icon: GroupWorkOutlined, 
                 title: 'Team Collaboration', 
                 desc: 'Built for teams with roles and real-time updates'
               }
-            ].map(({ Icon, title, desc }, index) => (
+            ].map(({ title, desc }, index) => (
               <Box 
                 key={index}
                 sx={{ 
@@ -287,7 +285,7 @@ export default function Signup() {
                 }}
               >
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 36, height: 36, borderRadius: '10px', background: '#FF6D5614' }}>
-                  <Icon sx={{ color: '#FF6D56' }} fontSize="small" />
+                  <GroupWorkOutlined sx={{ color: '#FF6D56' }} fontSize="small" />
                 </Box>
                 <Box>
                   <Typography level="title-sm" sx={{ mb: 0.5, color: '#2E2F33', fontWeight: 600 }}>
@@ -563,7 +561,8 @@ export default function Signup() {
                           disabled={isSubmitting}
                           sx={{
                             borderRadius: '8px',
-                            border: '1.5px solid #828392',
+                            border: '1.5px solid',
+                            borderColor: errors.jobTitle ? 'danger.400' : '#828392',
                             '&:focus-within': {
                               borderColor: '#FF6D56',
                               boxShadow: '0 0 0 3px rgba(255, 109, 86, 0.15)'

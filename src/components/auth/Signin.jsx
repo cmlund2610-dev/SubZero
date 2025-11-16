@@ -194,16 +194,14 @@ export default function Signin() {
           <Stack spacing={2.5}>
             {[
               { 
-                Icon: MultilineChartRounded, 
                 title: 'Predictive Analytics', 
                 desc: 'Identify at-risk customers and growth opportunities earlier'
               },
               { 
-                Icon: BoltRounded, 
                 title: 'Automated Workflows', 
                 desc: 'Intelligent automation for onboarding and renewals'
               }
-            ].map(({ Icon, title, desc }, index) => (
+            ].map(({ title, desc }, index) => (
               <Box 
                 key={index}
                 sx={{ 
@@ -224,7 +222,7 @@ export default function Signin() {
                 }}
               >
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 36, height: 36, borderRadius: '10px', background: '#FF6D5614' }}>
-                  <Icon sx={{ color: '#FF6D56' }} fontSize="small" />
+                  {index === 0 ? <MultilineChartRounded sx={{ color: '#FF6D56' }} fontSize="small" /> : <BoltRounded sx={{ color: '#FF6D56' }} fontSize="small" />}
                 </Box>
                 <Box>
                   <Typography 

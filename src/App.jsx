@@ -20,14 +20,17 @@ import { RouterProvider } from 'react-router-dom';
 import theme from './assets/theme.js';
 import { router } from './router.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
+import ErrorBoundary from './components/ErrorBoundary';
 
 export default function App() {
   return (
     <CssVarsProvider theme={theme} defaultMode="system">
       <CssBaseline />
-      <AuthProvider>
-        <RouterProvider router={router} />
-      </AuthProvider>
+      <ErrorBoundary>
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
+      </ErrorBoundary>
     </CssVarsProvider>
   );
 }

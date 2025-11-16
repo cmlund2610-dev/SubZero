@@ -57,13 +57,6 @@ export default function ChurnRiskWidget({ clients = [] }) {
     };
   }, [clients]);
 
-  const getRiskColor = (risk) => {
-    if (risk === 'high' || risk === 'critical') return 'danger';
-    if (risk === 'medium' || risk === 'moderate') return 'warning';
-    if (risk === 'low') return 'success';
-    return 'neutral';
-  };
-
   const formatCurrency = (value) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -125,7 +118,7 @@ export default function ChurnRiskWidget({ clients = [] }) {
             Critical Risk
           </Typography>
           <Stack spacing={0.5}>
-            {riskAnalysis.high.slice(0, 3).map((client, index) => (
+            {riskAnalysis.high.slice(0, 3).map((client) => (
               <Box
                 key={client.id}
                 sx={{
@@ -157,9 +150,9 @@ export default function ChurnRiskWidget({ clients = [] }) {
             Recommended Actions
           </Typography>
           <Stack spacing={1}>
-            {riskAnalysis.actions.map((action, index) => (
+            {riskAnalysis.actions.map((action) => (
               <Box
-                key={index}
+                key={action.priority}
                 sx={{
                   p: 1,
                   bgcolor: 'background.level1',

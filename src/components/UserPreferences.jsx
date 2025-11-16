@@ -4,10 +4,8 @@
 
 import React, { useState } from 'react';
 import { Box, Typography, Stack, Card, Switch, Select, Option, FormControl, FormLabel, Button } from '@mui/joy';
-import { useAuth } from '../context/AuthContext.jsx';
 
 export default function UserPreferences() {
-  const { userProfile } = useAuth();
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
   const [language, setLanguage] = useState('en');

@@ -94,7 +94,6 @@ function getBreadcrumbTrail(pathname) {
 // Main breadcrumb component
 export default function EnhancedBreadcrumbs() {
   const location = useLocation();
-  const navigate = useNavigate();
   const trail = getBreadcrumbTrail(location.pathname);
   
   if (trail.length <= 1) return null; // Don't show for single-level pages

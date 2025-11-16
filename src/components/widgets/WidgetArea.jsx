@@ -10,7 +10,7 @@ import { Box, Typography, Stack, Button, Card, CircularProgress } from '@mui/joy
 import { DragIndicator, Add } from '@mui/icons-material';
 
 import { WidgetConfig } from '../../lib/persist.js';
-import { WIDGET_REGISTRY, getAvailableWidgets, calculateGridLayout } from './WidgetRegistry.js';
+import { WIDGET_REGISTRY, getAvailableWidgets } from './WidgetRegistry.js';
 
 export default function WidgetArea({ 
   clients = [], 
@@ -37,11 +37,6 @@ export default function WidgetArea({
       availableWidgets.find(w => w.id === widgetId)
     );
   }, [config.enabled, availableWidgets]);
-
-  // Calculate grid layout
-  const gridLayout = useMemo(() => {
-    return calculateGridLayout(enabledWidgets);
-  }, [enabledWidgets]);
 
   // Handle widget reordering
   const handleReorder = (fromIndex, toIndex) => {

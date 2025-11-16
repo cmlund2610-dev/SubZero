@@ -8,7 +8,7 @@
  * - Remove users from company
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
   Typography,
@@ -51,7 +51,6 @@ import {
   getDocs, 
   doc, 
   updateDoc, 
-  deleteDoc,
   setDoc,
   arrayUnion,
   arrayRemove,
@@ -76,7 +75,7 @@ const UserManagement = () => {
   const [inviteLoading, setInviteLoading] = useState(false);
 
   // Load company users
-  const loadUsers = async () => {
+  const loadUsers = useCallback(async () => {
     console.log('🔍 loadUsers called');
     console.log('🔍 userCompany:', userCompany);
     
@@ -120,11 +119,11 @@ const UserManagement = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userCompany]);
 
   useEffect(() => {
     loadUsers();
-  }, [userCompany?.id]);
+  }, [userCompany?.id, loadUsers]);
 
   // Handle user role change
   const handleRoleChange = async (userId, newRole) => {
@@ -174,7 +173,6 @@ const UserManagement = () => {
     try {
       const userRef = doc(db, 'users', userId);
       const companyRef = doc(db, 'companies', userCompany.id);
-      const user = users.find(u => u.id === userId);
       
       // Remove user from company lists
       await updateDoc(companyRef, {

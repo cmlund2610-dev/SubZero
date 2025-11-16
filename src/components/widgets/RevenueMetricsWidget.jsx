@@ -42,7 +42,7 @@ export default function RevenueMetricsWidget({ clients = [] }) {
     return formatCurrency(amount);
   };
 
-  const GrowthIndicator = ({ value, label }) => (
+  const GrowthIndicator = ({ value }) => (
     <Stack direction="row" alignItems="center" spacing={0.5}>
       {value >= 0 ? (
         <TrendingUp color="success" sx={{ fontSize: 14 }} />

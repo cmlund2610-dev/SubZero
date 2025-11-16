@@ -34,7 +34,7 @@ import PageHeader from '../components/PageHeader.jsx';
 import PageContainer from '../components/PageContainer.jsx';
 
 const Profile = ({ embedded = false }) => {
-  const { currentUser, userProfile, userCompany, updateUserProfile } = useAuth();
+  const { currentUser, userProfile, updateUserProfile } = useAuth();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');

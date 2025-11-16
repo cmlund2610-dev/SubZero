@@ -32,7 +32,7 @@ export default function FeatureUsageWidget({ clients = [] }) {
     ];
 
     return features.sort((a, b) => b.usage - a.usage);
-  }, [clients.length]);
+  }, []);
 
   const getUsageColor = (usage) => {
     if (usage >= 70) return 'success';

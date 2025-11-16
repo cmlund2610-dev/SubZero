@@ -80,7 +80,7 @@ export function PublicRoute({ children }) {
 
 // Admin route wrapper (requires admin role)
 export function AdminRoute({ children }) {
-  const { currentUser, userProfile, isAdmin, loading } = useAuth();
+  const { currentUser, isAdmin, loading } = useAuth();
   const location = useLocation();
 
   // Show loading spinner while checking auth state

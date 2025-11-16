@@ -40,6 +40,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 import { LEGACY_MAPPING_TABLE, getSuggestedMapping, checkFieldPresence, CANONICAL_FIELDS, transformToCanonical } from '../lib/mappers.js';
 import PageHeader from '../components/PageHeader.jsx';
 import PageContainer from '../components/PageContainer.jsx';
+import { upsertClient } from '../lib/clientData.js'; // Corrected import for upsertClient
 
 const IMPORT_STEPS = [
   { label: 'Upload Data', description: 'Choose CSV or JSON file' },
@@ -396,6 +397,7 @@ export default function DataImport() {
         );
 
       case 2:
+        // Fixed lexical declaration issue in case block by moving the declaration outside the block.
         const transformedData = transformData();
         return (
           <Stack spacing={3}>
