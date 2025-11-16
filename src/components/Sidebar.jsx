@@ -114,18 +114,43 @@ export const Sidebar = () => {
             <MultilineChartRounded className="nav-icon" sx={{ fontSize: 20 }} /> KPIs and metrics
           </CNavItem>
           <CNavItem 
-            href="/automations"
-            active={location.pathname === '/automations'}
-            onClick={handleNavigation('/automations')}
-          >
-            <BoltRounded className="nav-icon" sx={{ fontSize: 20 }} /> Automations
-          </CNavItem>
-          <CNavItem 
             href="/data"
             active={location.pathname === '/data'}
             onClick={handleNavigation('/data')}
           >
             <CloudUploadRounded className="nav-icon" sx={{ fontSize: 20 }} /> Data Import
+          </CNavItem>
+        </CNavGroup>
+        
+        <CNavGroup 
+          toggler={
+            <>
+              <BoltRounded className="nav-icon" sx={{ fontSize: 20 }} /> Automations
+            </>
+          }
+        >
+          <CNavItem 
+            href="/automations"
+            active={location.pathname === '/automations'}
+            onClick={handleNavigation('/automations')}
+          >
+            <BoltRounded className="nav-icon" sx={{ fontSize: 20 }} /> Manage Automations
+          </CNavItem>
+        </CNavGroup>
+
+        <CNavGroup 
+          toggler={
+            <>
+              <Email className="nav-icon" sx={{ fontSize: 20 }} /> Marketing
+            </>
+          }
+        >
+          <CNavItem 
+            href="/email-templates"
+            active={location.pathname === '/email-templates'}
+            onClick={handleNavigation('/email-templates')}
+          >
+            <Email className="nav-icon" sx={{ fontSize: 20 }} /> Email Templates
           </CNavItem>
         </CNavGroup>
         
@@ -152,15 +177,6 @@ export const Sidebar = () => {
               onClick={handleNavigation('/billing')}
             >
               <PaymentOutlined className="nav-icon" sx={{ fontSize: 20 }} /> Billing
-            </CNavItem>
-          )}
-          {isAdmin && (
-            <CNavItem 
-              href="/email-templates"
-              active={location.pathname === '/email-templates'}
-              onClick={handleNavigation('/email-templates')}
-            >
-              <Email className="nav-icon" sx={{ fontSize: 20 }} /> Email Templates
             </CNavItem>
           )}
         </CNavGroup>
