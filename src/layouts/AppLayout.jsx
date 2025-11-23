@@ -30,10 +30,11 @@ export default function AppLayout() {
           sx={{
             flex: 1,
             overflow: 'auto',
-            px: 3,
-            py: 3,
+            px: 0,
+            py: 0,
             background: 'linear-gradient(180deg, rgba(248, 250, 252, 0.5) 0%, transparent 100%)',
             position: 'relative',
+            width: '100%',
             '&::before': {
               content: '""',
               position: 'absolute',
@@ -48,7 +49,7 @@ export default function AppLayout() {
             }
           }}
         >
-          <Box sx={{ maxWidth: 1120, mx: 'auto', position: 'relative', zIndex: 1 }}>
+          <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
             <Suspense 
               fallback={
                 <Box 

@@ -48,8 +48,6 @@ export default function Home() {
       console.error('Error loading data:', error);
       setClients([]);
       setUpcomingTasks([]);
-    } finally {
-      // loading already handled; keep consistent
     }
   };
 
@@ -100,7 +98,12 @@ export default function Home() {
     return daysUntil <= 90 && daysUntil >= 0;
   }).length;
 
-  // While loading from Firestore, render a lightweight skeleton to avoid empty-state flicker
+  useEffect(() => {
+    console.log('Clients:', clients);
+    console.log('Loading state:', loading);
+  }, [clients, loading]);
+
+  // Conditional rendering logic moved after hooks
   if (loading) {
     return (
       <PageContainer>
@@ -116,118 +119,24 @@ export default function Home() {
     );
   }
 
-  // Show empty state if no clients
   if (clients.length === 0) {
     return (
-      <Box sx={{ 
-        textAlign: 'center', 
-        py: 8,
-        px: 4
-      }}>
-        <Box sx={{ mb: 4 }}>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              mb: 3
-            }}
-          >
-            <Box
-              component="img"
-              src="/Submark.logo.orange.svg"
-              alt="subzero Logo"
-              sx={{
-                width: 80,
-                height: 80,
-                filter: 'drop-shadow(0 4px 8px rgba(255, 109, 86, 0.2))',
-              }}
-            />
-          </Box>
-          <Typography level="h1" sx={{ mb: 2, fontWeight: 700 }}>
-            Welcome to SubZero
-          </Typography>
-          <Typography level="body-lg" color="neutral" sx={{ maxWidth: '500px', mx: 'auto', mb: 4 }}>
-            Your customer success management platform. Import your client data to unlock powerful analytics and insights.
-          </Typography>
+      <PageContainer sx={{ p: 3, maxWidth: '1200px', mx: 'auto' }}>
+        <PageHeader
+          title="Welcome to SubZero"
+          description="Import client data to unlock powerful analytics and insights"
+          icon={HomeIcon}
+        />
+        <Box sx={{ textAlign: 'center', py: 5 }}>
+          <Typography level="body-md">No client data available. Please import data to get started.</Typography>
+          <Button variant="solid" color="primary" onClick={() => navigate('/data')}>Import Client Data</Button>
         </Box>
-
-        <Stack spacing={2} direction="row" justifyContent="center" sx={{ flexWrap: 'wrap', gap: 2 }}>
-          <Button 
-            size="lg"
-            sx={{ 
-              px: 4, 
-              py: 1.5,
-              background: '#FF6D56',
-              '&:hover': {
-                background: '#E55F4C',
-              }
-            }} 
-            onClick={() => navigate('/data')}
-          >
-            Import Client Data
-          </Button>
-          <Button 
-            variant="outlined" 
-            size="lg"
-            sx={{ px: 4, py: 1.5 }}
-            onClick={() => navigate('/analytics')}
-          >
-            View Demo Analytics
-          </Button>
-        </Stack>
-
-        <Grid container spacing={3} sx={{ mt: 6, maxWidth: '900px', mx: 'auto' }}>
-          <Grid xs={12} sm={6} md={3}>
-            <Card variant="soft" sx={{ p: 3, height: '100%', textAlign: 'center' }}>
-              <PeopleAlt sx={{ fontSize: 40, color: '#FF6D56', mb: 1 }} />
-              <Typography level="title-md" sx={{ mb: 0.5, fontWeight: 600 }}>
-                Health Scores
-              </Typography>
-              <Typography level="body-xs" color="neutral">
-                Predict churn and identify opportunities
-              </Typography>
-            </Card>
-          </Grid>
-          <Grid xs={12} sm={6} md={3}>
-            <Card variant="soft" sx={{ p: 3, height: '100%', textAlign: 'center' }}>
-              <AssignmentTurnedIn sx={{ fontSize: 40, color: '#FF6D56', mb: 1 }} />
-              <Typography level="title-md" sx={{ mb: 0.5, fontWeight: 600 }}>
-                Renewals
-              </Typography>
-              <Typography level="body-xs" color="neutral">
-                Track contracts and automate alerts
-              </Typography>
-            </Card>
-          </Grid>
-          <Grid xs={12} sm={6} md={3}>
-            <Card variant="soft" sx={{ p: 3, height: '100%', textAlign: 'center' }}>
-              <TrendingUp sx={{ fontSize: 40, color: '#FF6D56', mb: 1 }} />
-              <Typography level="title-md" sx={{ mb: 0.5, fontWeight: 600 }}>
-                Revenue
-              </Typography>
-              <Typography level="body-xs" color="neutral">
-                Monitor MRR and growth trends
-              </Typography>
-            </Card>
-          </Grid>
-          <Grid xs={12} sm={6} md={3}>
-            <Card variant="soft" sx={{ p: 3, height: '100%', textAlign: 'center' }}>
-              <Warning sx={{ fontSize: 40, color: '#FF6D56', mb: 1 }} />
-              <Typography level="title-md" sx={{ mb: 0.5, fontWeight: 600 }}>
-                Risk Alerts
-              </Typography>
-              <Typography level="body-xs" color="neutral">
-                Catch issues before they escalate
-              </Typography>
-            </Card>
-          </Grid>
-        </Grid>
-      </Box>
+      </PageContainer>
     );
   }
 
   return (
-    <PageContainer>
+    <PageContainer sx={{ p: 3, maxWidth: '1200px', mx: 'auto' }}>
       <PageHeader
         title="Home"
         description="Overview of your customer success metrics"

@@ -310,7 +310,7 @@ const Profile = ({ embedded = false }) => {
   }
 
   return (
-    <PageContainer maxWidth="1000px">
+    <PageContainer sx={{ p: 3, maxWidth: '1200px', mx: 'auto' }}>
       {profileContent}
     </PageContainer>
   );

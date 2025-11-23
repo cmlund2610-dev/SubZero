@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import {
   CSidebar,
@@ -22,15 +22,40 @@ import {
   PaymentOutlined,
   Email,
   SettingsOutlined,
-  ManageAccountsOutlined
+  ManageAccountsOutlined,
+  DomainRounded
 } from '@mui/icons-material'
 import { useAuth } from '../context/AuthContext.jsx'
 import ProfilePicture from './ProfilePicture.jsx'
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../lib/firebase.js';
+
+// Fetch company name from Firestore
+const fetchCompanyName = async (companyId) => {
+  try {
+    const companyDocRef = doc(db, 'companies', companyId);
+    const companyDoc = await getDoc(companyDocRef);
+    if (companyDoc.exists()) {
+      return companyDoc.data().name;
+    }
+  } catch (error) {
+    console.error('Error fetching company name:', error);
+  }
+  return 'Company: Not specified';
+};
 
 export const Sidebar = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const { isAdmin, userProfile, currentUser, logout } = useAuth()
+
+  const [companyName, setCompanyName] = useState('Company: Not specified');
+
+  useEffect(() => {
+    if (userProfile?.companyId) {
+      fetchCompanyName(userProfile.companyId).then(setCompanyName);
+    }
+  }, [userProfile?.companyId]);
 
   const handleNavigation = (path) => (e) => {
     e.preventDefault()
@@ -46,8 +71,6 @@ export const Sidebar = () => {
       console.error('Logout failed:', error)
     }
   }
-
-  const displayName = userProfile?.fullName || currentUser?.displayName || 'User'
 
   return (
     <CSidebar className="border-end" unfoldable>
@@ -145,6 +168,13 @@ export const Sidebar = () => {
             </>
           }
         >
+          <CNavItem 
+            href="/company-overview"
+            active={location.pathname === '/company-overview'}
+            onClick={handleNavigation('/company-overview')}
+          >
+            <DomainRounded className="nav-icon" sx={{ fontSize: 20 }} /> {companyName}
+          </CNavItem>
           {isAdmin && (
             <CNavItem 
               href="/users"
@@ -216,10 +246,13 @@ export const Sidebar = () => {
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap'
               }}>
-                {displayName}
+                {userProfile?.fullName || currentUser?.displayName || 'User'}
               </div>
               <div style={{ fontSize: '12px', color: '#828392' }}>
-                {userProfile?.jobTitle || 'Team Member'}
+                {userProfile?.role || 'Role: Not specified'}
+              </div>
+              <div style={{ fontSize: '12px', color: '#828392' }}>
+                {companyName}
               </div>
             </div>
           </CNavItem>

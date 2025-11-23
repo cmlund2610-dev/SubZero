@@ -42,7 +42,7 @@ export default function EmailTemplates() {
   };
 
   return (
-    <PageContainer>
+    <PageContainer sx={{ p: 3, maxWidth: '1200px', mx: 'auto' }}>
       <PageHeader
         title="Email Templates"
         description="Create and manage email templates with merge tags for automations"

@@ -17,6 +17,9 @@ dist-ssr
 .env
 .env.*.local
 
+# Firebase environment variables
+.env
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -34,3 +37,5 @@ yarn.lock
 
 # Mac
 .DS_Store
+.gitsecret/keys/random_seed
+!*.secret

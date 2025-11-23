@@ -75,7 +75,19 @@ export default function ClientDetail() {
     }
   };
 
-  // Show loading state
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0
+    }).format(value || 0);
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    return new Date(dateString).toLocaleDateString();
+  };
+
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 8, minHeight: '60vh' }}>
@@ -84,7 +96,6 @@ export default function ClientDetail() {
     );
   }
 
-  // If client not found, show not found message
   if (!client) {
     return (
       <Box>
@@ -107,21 +118,8 @@ export default function ClientDetail() {
     );
   }
 
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0
-    }).format(value || 0);
-  };
-
-  const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
-    return new Date(dateString).toLocaleDateString();
-  };
-
   return (
-    <Box>
+    <Box sx={{ p: 3, maxWidth: '1200px', mx: 'auto' }}>
       {/* Back button and header */}
       <Stack spacing={3}>
         <Button
@@ -148,14 +146,13 @@ export default function ClientDetail() {
                 ID: {client.client?.id || client.id}
               </Typography>
             </Stack>
-            
             <Stack direction="row" spacing={1}>
               <Chip 
                 variant="soft" 
                 color="primary"
                 size="lg"
               >
-                {client.subscribedMonths || 0} months
+                {client.subscribedMonths || 'Unknown'} months
               </Chip>
               <Chip 
                 variant="soft" 
@@ -207,12 +204,9 @@ export default function ClientDetail() {
             <Tab>Notes</Tab>
             <Tab>Tasks</Tab>
           </TabList>
-          
           <TabPanel value={0}>
             <Stack spacing={3} sx={{ mt: 2 }}>
               <Typography level="title-lg">Client Overview</Typography>
-              
-              {/* Company Information */}
               <Card variant="outlined" sx={{ p: 3 }}>
                 <Stack spacing={2}>
                   <Typography level="title-md">Company Information</Typography>
@@ -260,80 +254,11 @@ export default function ClientDetail() {
                   </Grid>
                 </Stack>
               </Card>
-
-              {/* Contract Information */}
-              <Card variant="outlined" sx={{ p: 3 }}>
-                <Stack spacing={2}>
-                  <Typography level="title-md">Contract Details</Typography>
-                  <Grid container spacing={2}>
-                    <Grid xs={12} md={6}>
-                      <Stack spacing={1}>
-                        <Typography level="body-sm" color="neutral">Contract Start Date</Typography>
-                        <Typography level="body-md" sx={{ fontWeight: 500 }}>
-                          {formatDate(client.contract?.startDate)}
-                        </Typography>
-                      </Stack>
-                    </Grid>
-                    <Grid xs={12} md={6}>
-                      <Stack spacing={1}>
-                        <Typography level="body-sm" color="neutral">Contract End Date</Typography>
-                        <Typography level="body-md" sx={{ fontWeight: 500 }}>
-                          {formatDate(client.contract?.endDate)}
-                        </Typography>
-                      </Stack>
-                    </Grid>
-                    <Grid xs={12} md={6}>
-                      <Stack spacing={1}>
-                        <Typography level="body-sm" color="neutral">Next Renewal</Typography>
-                        <Typography level="body-md" sx={{ fontWeight: 500 }}>
-                          {formatDate(client.renewal?.date)}
-                        </Typography>
-                      </Stack>
-                    </Grid>
-                    <Grid xs={12} md={6}>
-                      <Stack spacing={1}>
-                        <Typography level="body-sm" color="neutral">Subscription Duration</Typography>
-                        <Typography level="body-md" sx={{ fontWeight: 500 }}>
-                          {client.subscribedMonths || 0} months
-                        </Typography>
-                      </Stack>
-                    </Grid>
-                  </Grid>
-                </Stack>
-              </Card>
-
-              {/* Financial Information */}
-              <Card variant="outlined" sx={{ p: 3 }}>
-                <Stack spacing={2}>
-                  <Typography level="title-md">Financial Metrics</Typography>
-                  <Grid container spacing={2}>
-                    <Grid xs={12} md={6}>
-                      <Stack spacing={1}>
-                        <Typography level="body-sm" color="neutral">Monthly Recurring Revenue</Typography>
-                        <Typography level="h4" color="primary">
-                          {formatCurrency(client.mrr)}
-                        </Typography>
-                      </Stack>
-                    </Grid>
-                    <Grid xs={12} md={6}>
-                      <Stack spacing={1}>
-                        <Typography level="body-sm" color="neutral">Lifetime Value</Typography>
-                        <Typography level="h4" color="success">
-                          {formatCurrency(client.ltv)}
-                        </Typography>
-                      </Stack>
-                    </Grid>
-                  </Grid>
-                </Stack>
-              </Card>
             </Stack>
           </TabPanel>
-          
-          {/* Notes Tab */}
           <TabPanel value={1}>
             <NotesSection client={client} />
           </TabPanel>
-          {/* Tasks Tab */}
           <TabPanel value={2}>
             <TasksSection client={client} />
           </TabPanel>
@@ -429,39 +354,52 @@ function NotesSection({ client }) {
         </Grid>
         <Grid xs={12} md={7}>
           <Card variant="outlined" sx={{ p: 3 }}>
+            {notes.length > 0 ? (
+              notes.map(note => (
+                <Stack key={note.id} spacing={1}>
+                  <Typography level="body-md">{note.text}</Typography>
+                  <Typography level="body-sm" color="neutral">{note.createdByName}</Typography>
+                </Stack>
+              ))
+            ) : (
+              <Typography level="body-md" color="neutral">No notes available.</Typography>
+            )}
+          </Card>
+        </Grid>
+      </Grid>
+
+      <Typography level="title-lg">Tasks</Typography>
+      <Grid container spacing={2}>
+        <Grid xs={12} md={5}>
+          <Card variant="outlined" sx={{ p: 3, height: '100%' }}>
             <Stack spacing={2}>
-              <Typography level="title-md">Recent Notes</Typography>
-              {loading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
-                  <CircularProgress />
-                </Box>
-              ) : notes.length === 0 ? (
-                <Typography level="body-sm" color="neutral">No notes yet.</Typography>
-              ) : (
-                <List sx={{ p: 0, gap: 1 }}>
-                  {notes.map(note => (
-                    <ListItem key={note.id} sx={{ alignItems: 'flex-start' }}>
-                      <Card variant="soft" sx={{ flex: 1, p: 2 }}>
-                        <Stack spacing={1}>
-                          <Typography level="body-sm" sx={{ whiteSpace: 'pre-line' }}>{note.text}</Typography>
-                          <Stack direction="row" justifyContent="space-between" alignItems="center">
-                            <Stack spacing={0.5}>
-                              <Typography level="body-xs" color="neutral" sx={{ fontWeight: 600 }}>
-                                {note.createdByName || 'Unknown User'}
-                              </Typography>
-                              <Typography level="body-xs" color="neutral">
-                                {new Date(note.createdAt).toLocaleString()}
-                              </Typography>
-                            </Stack>
-                            <Button size="sm" variant="outlined" color="danger" onClick={() => deleteNote(note.id)}>Delete</Button>
-                          </Stack>
-                        </Stack>
-                      </Card>
-                    </ListItem>
-                  ))}
-                </List>
-              )}
+              <Typography level="title-md">Add Task</Typography>
+              <Input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Task title"
+              />
+              <Stack direction="row" justifyContent="flex-end" spacing={1}>
+                <Button variant="outlined" color="neutral" onClick={() => setTitle('')} disabled={saving}>Clear</Button>
+                <Button variant="solid" color="primary" onClick={addTask} loading={saving} disabled={!title.trim()}>
+                  Save Task
+                </Button>
+              </Stack>
             </Stack>
+          </Card>
+        </Grid>
+        <Grid xs={12} md={7}>
+          <Card variant="outlined" sx={{ p: 3 }}>
+            {tasks.length > 0 ? (
+              tasks.map(task => (
+                <Stack key={task.id} spacing={1}>
+                  <Typography level="body-md">{task.title}</Typography>
+                  <Typography level="body-sm" color="neutral">{task.createdByName}</Typography>
+                </Stack>
+              ))
+            ) : (
+              <Typography level="body-md" color="neutral">No tasks available.</Typography>
+            )}
           </Card>
         </Grid>
       </Grid>

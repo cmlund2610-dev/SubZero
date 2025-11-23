@@ -38,6 +38,8 @@ const cacheKey = (operation, companyId, clientId) => `${operation}-${companyId}-
  */
 export const addClientNote = async (companyId, clientId, noteData) => {
   try {
+    console.log('Adding note with data:', { companyId, clientId, noteData });
+    
     const noteRef = doc(collection(db, `companies/${companyId}/clients/${clientId}/notes`));
     const note = {
       ...noteData,

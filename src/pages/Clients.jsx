@@ -249,92 +249,18 @@ export default function Clients() {
     );
   }
 
-  // Empty state
+  // Show empty state if no clients
   if (clients.length === 0) {
     return (
-      <PageContainer>
+      <PageContainer sx={{ p: 3, maxWidth: '1200px', mx: 'auto' }}>
         <PageHeader
           title="Clients"
-          description="Manage your client portfolio and track health scores across your customer base"
+          description="Import client data to manage your client portfolio"
           icon={ClientsIcon}
         />
-
-        {/* Enhanced empty state */}
-        <Box sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          textAlign: 'center',
-          py: 6,
-          px: 4,
-          backgroundColor: 'background.level1',
-          borderRadius: 'lg',
-          border: '2px dashed',
-          borderColor: 'neutral.300'
-        }}>
-          <Box sx={{ mb: 3 }}>
-            <Typography level="display1" sx={{ fontSize: '4rem', mb: 2 }}>
-              👥
-            </Typography>
-            <Typography level="h3" sx={{ mb: 1, fontWeight: 600 }}>
-              No Clients Yet
-            </Typography>
-            <Typography level="body-md" color="neutral" sx={{ maxWidth: 400 }}>
-              Start building your customer success portfolio by importing your client data. 
-              Once imported, you'll see health scores, risk levels, and key metrics here.
-            </Typography>
-          </Box>
-
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mb: 3 }}>
-            <Button
-              size="lg"
-              variant="solid"
-              onClick={() => navigate('/data')}
-              sx={{
-                px: 4,
-                py: 1.5,
-                background: '#FF6D56',
-                '&:hover': {
-                  background: '#E55F4C',
-                }
-              }}
-            >
-              📤 Import Client Data
-            </Button>
-            <Button
-              size="lg"
-              variant="outlined"
-              onClick={() => navigate('/')}
-              sx={{ px: 4, py: 1.5 }}
-            >
-              ← Back to Dashboard
-            </Button>
-          </Stack>
-
-          <Box sx={{
-            p: 3,
-            backgroundColor: 'background.surface',
-            borderRadius: 'md',
-            maxWidth: 500
-          }}>
-            <Typography level="body-sm" color="neutral" sx={{ mb: 2, fontWeight: 600 }}>
-              What you can track once you have clients:
-            </Typography>
-            <Stack spacing={1}>
-              <Typography level="body-sm" color="neutral">
-                🏢 Company names and contact information
-              </Typography>
-              <Typography level="body-sm" color="neutral">
-                💰 Monthly recurring revenue (MRR) tracking
-              </Typography>
-              <Typography level="body-sm" color="neutral">
-                📅 Contract and renewal date management
-              </Typography>
-              <Typography level="body-sm" color="neutral">
-                📊 Subscription duration and lifetime value
-              </Typography>
-            </Stack>
-          </Box>
+        <Box sx={{ textAlign: 'center', py: 5 }}>
+          <Typography level="body-md">No client data available. Please import data to get started.</Typography>
+          <Button variant="solid" color="primary" onClick={() => navigate('/import')}>Import Client Data</Button>
         </Box>
       </PageContainer>
     );
@@ -347,7 +273,7 @@ export default function Clients() {
         // Reset logic if needed
       }}
     >
-      <PageContainer>
+      <PageContainer sx={{ p: 3, maxWidth: '1200px', mx: 'auto' }}>
         <PageHeader
           title="Clients"
           description="Manage your client portfolio and track health scores across your customer base"

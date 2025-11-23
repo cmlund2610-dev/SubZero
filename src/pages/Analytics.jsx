@@ -8,7 +8,7 @@
  */
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   Box, 
   Typography, 
@@ -25,7 +25,9 @@ import {
   Alert,
   Link as JoyLink,
   Tooltip as JoyTooltip,
-  IconButton
+  IconButton,
+  Avatar,
+  Button
 } from '@mui/joy';
 import { 
   MultilineChartRounded, 
@@ -108,6 +110,7 @@ export default function Analytics() {
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
   const { userCompany } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadClients();
@@ -418,8 +421,25 @@ export default function Analytics() {
     );
   }
 
+  // Show empty state if no clients
+  if (clients.length === 0) {
+    return (
+      <PageContainer sx={{ p: 3, maxWidth: '1200px', mx: 'auto' }}>
+        <PageHeader
+          title="Analytics"
+          description="Import client data to unlock powerful analytics and insights"
+          icon={Assessment}
+        />
+        <Box sx={{ textAlign: 'center', py: 5 }}>
+          <Typography level="body-md">No client data available. Please import data to get started.</Typography>
+          <Button variant="solid" color="primary" onClick={() => navigate('/import')}>Import Client Data</Button>
+        </Box>
+      </PageContainer>
+    );
+  }
+
   return (
-    <PageContainer>
+    <PageContainer sx={{ p: 3, maxWidth: '1200px', mx: 'auto' }}>
       <PageHeader
         title="KPIs and Metrics"
         description="Comprehensive business intelligence dashboard with data visualizations"
@@ -716,128 +736,63 @@ export default function Analytics() {
                       <YAxis tickFormatter={(value) => formatCurrency(value)} />
                       <RechartsTooltip formatter={(value) => [formatCurrency(value), 'MRR']} />
                       <Area 
-                        type="monotone" 
-                        dataKey="mrr" 
-                        stroke="#3b82f6" 
-                        fill="#3b82f6" 
+                        type="monotone"
+                        dataKey="mrr"
+                        stroke="#3b82f6"
                         fillOpacity={0.3}
+                        fill="url(#colorUv)"
                       />
+                      <defs>
+                        <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.8} />
+                          <stop offset="100%" stopColor="#3b82f6" stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
                     </AreaChart>
                   </ResponsiveContainer>
                 </Box>
               </Card>
 
-              {/* LTV Distribution */}
+              {/* Top Customers Table */}
               <Card sx={{ flex: 1, p: 3 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                  <Typography level="title-lg">LTV Distribution</Typography>
+                  <Typography level="title-lg">Top Customers by MRR</Typography>
                   <MetricTooltip 
-                    title="Customer Value Distribution"
-                    description="Shows how customer lifetime values are distributed across different ranges. Helps identify high-value 'whale' customers vs smaller accounts."
+                    title="Highest Value Customers"
+                    description="The customers contributing the most to your MRR. Focus on retaining these customers as they have the highest revenue impact."
                   />
                 </Box>
-                <Box sx={{ width: '100%', height: 300 }}>
-                  <ResponsiveContainer>
-                    <RechartsBarChart data={analytics.ltvBuckets}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="range" />
-                      <YAxis />
-                      <RechartsTooltip />
-                      <Bar dataKey="count" fill="#8b5cf6" />
-                    </RechartsBarChart>
-                  </ResponsiveContainer>
-                </Box>
-              </Card>
-            </Stack>
-
-            {/* Contract Age vs MRR Scatter Plot */}
-            <Card sx={{ p: 3 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                <Typography level="title-lg">Contract Age vs MRR</Typography>
-                <MetricTooltip 
-                  title="Account Value vs Tenure Analysis"
-                  description="Scatter plot showing the relationship between how long customers have been with you (x-axis) and their monthly revenue (y-axis). Helps identify if older customers are more valuable."
-                />
-              </Box>
-              <Box sx={{ width: '100%', height: 400 }}>
-                <ResponsiveContainer>
-                  <ScatterChart data={analytics.contractAgeScatterData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="age" name="Contract Age (Months)" />
-                    <YAxis dataKey="mrr" name="MRR" tickFormatter={(value) => formatCurrency(value)} />
-                    <RechartsTooltip 
-                      cursor={{ strokeDasharray: '3 3' }}
-                      content={({ active, payload }) => {
-                        if (active && payload && payload.length) {
-                          const data = payload[0].payload;
-                          return (
-                            <Box sx={{ 
-                              bgcolor: 'background.surface', 
-                              p: 2, 
-                              border: '1px solid', 
-                              borderColor: 'divider',
-                              borderRadius: 'sm'
-                            }}>
-                              <Typography level="body-sm" sx={{ fontWeight: 'bold' }}>
-                                {data.name}
-                              </Typography>
-                              <Typography level="body-xs">
-                                Age: {data.age} months
-                              </Typography>
-                              <Typography level="body-xs">
-                                MRR: {formatCurrency(data.mrr)}
-                              </Typography>
-                              <Typography level="body-xs">
-                                LTV: {formatCurrency(data.ltv)}
-                              </Typography>
-                            </Box>
-                          );
-                        }
-                        return null;
-                      }}
-                    />
-                    <Scatter dataKey="mrr" fill="#3b82f6" />
-                  </ScatterChart>
-                </ResponsiveContainer>
-              </Box>
-            </Card>
-
-            {/* Top 10 Customers Table */}
-            <Card>
-              <Box sx={{ p: 3 }}>
-                <Typography level="title-lg" sx={{ mb: 3 }}>Top 10 Customers by MRR</Typography>
                 <Table>
                   <thead>
                     <tr>
-                      <th>Company</th>
-                      <th>MRR</th>
-                      <th>LTV</th>
-                      <th>LTV/MRR Ratio</th>
-                      <th>Contract End Date</th>
+                      <th style={{ textAlign: 'left' }}>Customer</th>
+                      <th style={{ textAlign: 'right' }}>MRR</th>
+                      <th style={{ textAlign: 'right' }}>LTV</th>
+                      <th style={{ textAlign: 'center' }}>Contract End</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {analytics.topCustomersByMRR.map((customer, index) => (
-                      <tr key={index}>
+                    {analytics.topCustomersByMRR.map((customer) => (
+                      <tr key={customer.id}>
                         <td>
-                          {customer.id ? (
-                            <Link to={`/clients/${customer.id}`} style={{ textDecoration: 'none', color: 'inherit', fontWeight: 500 }}>
+                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Avatar src={customer.avatar} sx={{ mr: 2 }} />
+                            <Link to={`/customers/${customer.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                               {customer.name}
                             </Link>
-                          ) : (
-                            customer.name
-                          )}
+                          </Box>
                         </td>
-                        <td>{formatCurrency(customer.mrr)}</td>
-                        <td>{formatCurrency(customer.ltv)}</td>
-                        <td>{customer.mrr > 0 ? (customer.ltv / customer.mrr).toFixed(1) + 'x' : 'N/A'}</td>
-                        <td>{customer.endDate}</td>
+                        <td style={{ textAlign: 'right' }}>{formatCurrency(customer.mrr)}</td>
+                        <td style={{ textAlign: 'right' }}>{formatCurrency(customer.ltv)}</td>
+                        <td style={{ textAlign: 'center' }}>
+                          {new Date(customer.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
                 </Table>
-              </Box>
-            </Card>
+              </Card>
+            </Stack>
           </Stack>
         </TabPanel>
 
@@ -853,50 +808,31 @@ export default function Analytics() {
               <Card sx={{ flex: 1, p: 3 }}>
                 <Stack spacing={1}>
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Typography level="body-sm" color="neutral">Contracts Renewing in 30 Days</Typography>
+                    <Typography level="body-sm" color="neutral">Churned Revenue</Typography>
                     <MetricTooltip 
-                      title="Immediate Renewal Risk"
-                      description="Number of contracts that need renewal decisions within 30 days. High numbers indicate heavy renewal workload and potential revenue at risk."
+                     
                     />
                   </Box>
-                  <Typography level="h3" color="warning" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Schedule />
-                    {analytics.contractsRenewing30Days}
+                  <Typography level="h3" color="error">
+                    {formatCurrency(analytics.churnedRevenueData.reduce((sum, data) => sum + data.revenue, 0))}
                   </Typography>
-                  <Typography level="body-xs" color="neutral">
-                    {formatCurrency(analytics.renewalPipeline30Days)} at risk
-                  </Typography>
+                  <Typography level="body-xs" color="neutral">Last 12 months</Typography>
                 </Stack>
               </Card>
 
               <Card sx={{ flex: 1, p: 3 }}>
                 <Stack spacing={1}>
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Typography level="body-sm" color="neutral">Average Contract Length</Typography>
+                    <Typography level="body-sm" color="neutral">Retention Rate</Typography>
                     <MetricTooltip 
-                      title="Average Engagement Duration"
-                      description="The average number of months customers stay subscribed based on their contract terms. Longer contracts indicate better customer satisfaction and reduced churn risk."
+                      title="Customer Retention Rate"
+                      description="The percentage of customers who remain with your service over a given period. Calculated as the number of customers at the end of the period divided by the number at the start."
                     />
                   </Box>
-                  <Typography level="h3">{analytics.avgContractLength.toFixed(1)} months</Typography>
-                  <Typography level="body-xs" color="neutral">Average engagement duration</Typography>
-                </Stack>
-              </Card>
-
-              <Card sx={{ flex: 1, p: 3 }}>
-                <Stack spacing={1}>
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Typography level="body-sm" color="neutral">Expired Contracts</Typography>
-                    <MetricTooltip 
-                      title="Churned Customer Count"
-                      description="Number of contracts that have passed their end date without renewal. These represent lost customers and revenue that needs to be replaced."
-                    />
-                  </Box>
-                  <Typography level="h3" color="danger" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Warning />
-                    {analytics.expiredContracts}
+                  <Typography level="h3" color="success">
+                    {analytics.retentionCurveData.length > 0 ? `${analytics.retentionCurveData[analytics.retentionCurveData.length - 1].retentionRate.toFixed(1)}%` : 'N/A'}
                   </Typography>
-                  <Typography level="body-xs" color="neutral">Past end date</Typography>
+                  <Typography level="body-xs" color="neutral">24-month trend</Typography>
                 </Stack>
               </Card>
 
@@ -905,99 +841,76 @@ export default function Analytics() {
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <Typography level="body-sm" color="neutral">At-Risk Contracts</Typography>
                     <MetricTooltip 
-                      title="Churn Risk Indicators"
-                      description="Contracts identified as at-risk based on low LTV or upcoming renewals. These customers need proactive engagement to prevent churn."
+                      title="Contracts at Risk of Churn"
+                      description="The number of contracts that are at risk of churning, based on low LTV or nearing renewal dates. Proactive engagement with these customers is crucial."
                     />
                   </Box>
                   <Typography level="h3" color="warning">
                     {analytics.atRiskContracts}
                   </Typography>
-                  <Typography level="body-xs" color="neutral">Need attention</Typography>
+                  <Typography level="body-xs" color="neutral">Immediate attention needed</Typography>
                 </Stack>
               </Card>
             </Stack>
 
-            {/* Retention Analytics Charts */}
+            {/* Churn Analysis Charts */}
             <Stack direction={{ xs: 'column', lg: 'row' }} spacing={3}>
-              {/* Contract End Date Distribution */}
-              <Card sx={{ flex: 1, p: 3 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                  <Typography level="title-lg">Contract End Date Distribution</Typography>
-                  <MetricTooltip 
-                    title="Contract Expiration Timeline"
-                    description="Shows when current contracts are scheduled to end by month. Use this to predict renewal workload and identify potential churn spikes."
-                  />
-                </Box>
-                <Box sx={{ width: '100%', height: 300 }}>
-                  <ResponsiveContainer>
-                    <RechartsBarChart data={analytics.endDateDistributionData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="formattedMonth" />
-                      <YAxis />
-                      <RechartsTooltip />
-                      <Bar dataKey="count" fill="#f59e0b" name="Contracts Ending" />
-                    </RechartsBarChart>
-                  </ResponsiveContainer>
-                </Box>
-              </Card>
-
               {/* Churned Revenue Trend */}
-              <Card sx={{ flex: 1, p: 3 }}>
+              <Card sx={{ flex: 2, p: 3 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                  <Typography level="title-lg">Churned Revenue by Month</Typography>
+                  <Typography level="title-lg">Churned Revenue Trend</Typography>
                   <MetricTooltip 
-                    title="Monthly Churn Impact"
-                    description="Revenue lost each month from contracts that expired without renewal. Track trends to identify if churn is increasing and needs attention."
+                    title="Lost Revenue Over Time"
+                    description="Tracks the trend of revenue lost to churn on a monthly basis. Helps identify patterns or spikes in churned revenue."
                   />
                 </Box>
                 <Box sx={{ width: '100%', height: 300 }}>
                   <ResponsiveContainer>
-                    <RechartsBarChart data={analytics.churnedRevenueData}>
+                    <LineChart data={analytics.churnedRevenueData}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="formattedMonth" />
                       <YAxis tickFormatter={(value) => formatCurrency(value)} />
                       <RechartsTooltip formatter={(value) => [formatCurrency(value), 'Churned Revenue']} />
-                      <Bar dataKey="revenue" fill="#ef4444" name="Lost Revenue" />
-                    </RechartsBarChart>
+                      <Line 
+                        type="monotone" 
+                        dataKey="revenue" 
+                        stroke="#ef4444" 
+                        strokeWidth={3}
+                        dot={{ fill: '#ef4444', strokeWidth: 2, r: 4 }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </Box>
+              </Card>
+
+              {/* Retention Curve */}
+              <Card sx={{ flex: 1, p: 3 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                  <Typography level="title-lg">Retention Curve</Typography>
+                  <MetricTooltip 
+                    title="Customer Retention Over Time"
+                    description="Shows the percentage of customers retained over time since their contract start. A key metric for understanding customer loyalty and satisfaction."
+                  />
+                </Box>
+                <Box sx={{ width: '100%', height: 300 }}>
+                  <ResponsiveContainer>
+                    <LineChart data={analytics.retentionCurveData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis tickFormatter={(value) => `${value}%`} />
+                      <RechartsTooltip formatter={(value) => [value, 'Retention Rate']} />
+                      <Line 
+                        type="monotone" 
+                        dataKey="retentionRate" 
+                        stroke="#22c55e" 
+                        strokeWidth={3}
+                        dot={{ fill: '#22c55e', strokeWidth: 2, r: 4 }}
+                      />
+                    </LineChart>
                   </ResponsiveContainer>
                 </Box>
               </Card>
             </Stack>
-
-            {/* Retention Curve */}
-            <Card sx={{ p: 3 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                <Typography level="title-lg">Customer Retention Curve</Typography>
-                <MetricTooltip 
-                  title="Cohort Retention Analysis"
-                  description="Shows the percentage of customers that remain active over time since their contract start. A steeper decline indicates higher churn rates in the first few months."
-                />
-              </Box>
-              <Box sx={{ width: '100%', height: 300 }}>
-                <ResponsiveContainer>
-                  <LineChart data={analytics.retentionCurveData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="month" name="Months Since Start" />
-                    <YAxis 
-                      domain={[0, 100]} 
-                      tickFormatter={(value) => `${value}%`} 
-                      name="Retention Rate" 
-                    />
-                    <RechartsTooltip 
-                      formatter={(value) => [`${value.toFixed(1)}%`, 'Retention Rate']}
-                      labelFormatter={(value) => `Month ${value}`}
-                    />
-                    <Line 
-                      type="monotone" 
-                      dataKey="retentionRate" 
-                      stroke="#22c55e" 
-                      strokeWidth={3}
-                      dot={{ fill: '#22c55e', strokeWidth: 2, r: 4 }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </Box>
-            </Card>
           </Stack>
         </TabPanel>
       </Tabs>

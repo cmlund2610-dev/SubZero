@@ -10,7 +10,6 @@ import { Box } from '@mui/joy';
 
 const PageContainer = ({
 	children,
-	maxWidth = 1200,
 	sx = {},
 	scroll = false,
 	...rest
@@ -18,17 +17,16 @@ const PageContainer = ({
 	return (
 		<Box
 			sx={{
-				maxWidth,
-				mx: 'auto',
+				width: '100%',
+				maxWidth: 'none', // Remove maxWidth constraints
 				px: { xs: 2, md: 3 },
 				py: { xs: 2, md: 3 },
-				width: '100%',
 				...(scroll
 					? {
-							overflowY: 'auto',
-							WebkitOverflowScrolling: 'touch',
-							height: '100%',
-						}
+						overflowY: 'auto',
+						WebkitOverflowScrolling: 'touch',
+						height: '100%',
+					}
 					: {}),
 				...sx,
 			}}

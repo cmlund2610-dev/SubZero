@@ -527,7 +527,7 @@ export default function DataImport() {
   };
 
   return (
-    <PageContainer>
+    <PageContainer sx={{ p: 3, maxWidth: '1200px', mx: 'auto' }}>
       {/* Page Header */}
       <PageHeader
         title="Data Import"

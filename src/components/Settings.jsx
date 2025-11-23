@@ -9,15 +9,14 @@ import { Box, Typography, Stack, Card, Tabs, TabList, Tab, TabPanel, Switch, For
 import PageContainer from './PageContainer.jsx';
 import PageHeader from './PageHeader.jsx';
 import UserPreferences from './UserPreferences.jsx';
-import CompanySettings from './CompanySettings.jsx';
-import { Settings as SettingsIcon, Notifications, Security, Storage } from '@mui/icons-material';
+import { Settings as SettingsIcon, Notifications, Security } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext.jsx';
 
 export default function Settings() {
   const { isAdmin } = useAuth();
 
   return (
-    <PageContainer>
+    <PageContainer sx={{ p: 3, maxWidth: '1200px', mx: 'auto' }}>
       <PageHeader
         icon={SettingsIcon}
         title="Settings"
@@ -29,8 +28,6 @@ export default function Settings() {
           <Tab>User Preferences</Tab>
           <Tab>Notifications</Tab>
           <Tab>Security</Tab>
-          {isAdmin && <Tab>Company Settings</Tab>}
-          {isAdmin && <Tab>Data & Storage</Tab>}
         </TabList>
         
         <TabPanel value={0} sx={{ p: 3 }}>
@@ -44,18 +41,6 @@ export default function Settings() {
         <TabPanel value={2} sx={{ p: 3 }}>
           <SecuritySettings />
         </TabPanel>
-        
-        {isAdmin && (
-          <TabPanel value={3} sx={{ p: 3 }}>
-            <CompanySettings />
-          </TabPanel>
-        )}
-        
-        {isAdmin && (
-          <TabPanel value={4} sx={{ p: 3 }}>
-            <DataStorageSettings />
-          </TabPanel>
-        )}
       </Tabs>
     </PageContainer>
   );
@@ -202,12 +187,12 @@ function SecuritySettings() {
 // (Integrations removed per request)
 
 // Data & Storage Settings Component
-function DataStorageSettings() {
+function CompanySettings() {
   return (
     <Stack spacing={3}>
       <Card variant="outlined">
         <Typography level="title-lg" sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Storage /> Data Storage
+          <Storage /> Company Data
         </Typography>
         <Stack spacing={2}>
           <Box>

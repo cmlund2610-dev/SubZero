@@ -115,89 +115,19 @@ export default function Renewals() {
   // Show empty state if no renewals
   if (upcomingRenewals.length === 0) {
     return (
-      <PageContainer>
+      <PageContainer sx={{ p: 3, maxWidth: '1200px', mx: 'auto' }}>
         <PageHeader
           title="Contract Renewals"
-          description="Track and manage contract renewals across your client portfolio"
+          description="Import client data to unlock powerful renewal tracking features"
           icon={RenewalsIcon}
         />
-        
-        {clients.length === 0 ? (
-          <Card 
-            variant="outlined" 
-            sx={{ 
-              p: 4, 
-              textAlign: 'center',
-              border: '2px dashed',
-              borderColor: 'divider'
-            }}
-          >
-            <Typography sx={{ fontSize: '4rem', mb: 2 }}>📋</Typography>
-            <Typography level="title-lg" sx={{ mb: 2 }}>
-              Track Contract Renewals
-            </Typography>
-            <Typography level="body-md" color="neutral" sx={{ mb: 3, maxWidth: 400, mx: 'auto' }}>
-              Import your client data to unlock powerful renewal tracking features:
-            </Typography>
-            
-            <Box sx={{ textAlign: 'left', mb: 4, maxWidth: 300, mx: 'auto' }}>
-              <Stack spacing={1}>
-                <Typography level="body-sm" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  📊 Pipeline forecasting and weighted revenue projections
-                </Typography>
-                <Typography level="body-sm" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  ⏰ Automated renewal alerts and timeline tracking
-                </Typography>
-                <Typography level="body-sm" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  🎯 Success probability scoring and risk assessment
-                </Typography>
-                <Typography level="body-sm" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  📈 Stage-based workflow management
-                </Typography>
-              </Stack>
-            </Box>
-            
-            <Stack direction="row" spacing={2} sx={{ justifyContent: 'center' }}>
-              <Button 
-                size="lg"
-                sx={{
-                  background: '#FF6D56',
-                  color: 'white',
-                  '&:hover': {
-                    background: '#E55F4C',
-                  }
-                }}
-                onClick={() => window.location.href = '/data'}
-              >
-                Import Client Data
-              </Button>
-              <Button variant="outlined" color="neutral">
-                View Demo
-              </Button>
-            </Stack>
-          </Card>
-        ) : (
-          <Card 
-            variant="outlined" 
-            sx={{ 
-              p: 4, 
-              textAlign: 'center',
-              border: '2px dashed',
-              borderColor: 'divider'
-            }}
-          >
-            <Typography sx={{ fontSize: '3rem', mb: 2 }}>✅</Typography>
-            <Typography level="title-lg" sx={{ mb: 2 }}>
-              All Caught Up!
-            </Typography>
-            <Typography level="body-md" color="neutral" sx={{ mb: 3 }}>
-              No upcoming renewals in the next 90 days. Your renewal pipeline is clear.
-            </Typography>
-            <Button variant="outlined" color="neutral">
-              View All Contracts
-            </Button>
-          </Card>
-        )}
+        <Box sx={{ textAlign: 'center', py: 5 }}>
+          <Typography level="body-md" sx={{ mb: 2 }}>
+            Import client data to unlock renewal tracking features.
+          </Typography>
+          <Button variant="solid" color="primary" onClick={() => navigate('/import')}>Import Client Data</Button>
+          <Button variant="outlined" color="neutral" onClick={() => navigate('/demo')}>View Demo Renewals</Button>
+        </Box>
       </PageContainer>
     );
   }
@@ -324,7 +254,7 @@ export default function Renewals() {
     : 0;
 
   return (
-    <PageContainer>
+    <PageContainer sx={{ p: 3, maxWidth: '1200px', mx: 'auto' }}>
       {/* Page header */}
       <PageHeader
         title="Contract Renewals"

@@ -14,7 +14,7 @@ import { ManageAccounts } from '@mui/icons-material';
 
 export default function Account() {
   return (
-    <PageContainer>
+    <PageContainer sx={{ p: 3, maxWidth: '1200px', mx: 'auto' }}>
       <PageHeader
         icon={ManageAccounts}
         title="Account"
