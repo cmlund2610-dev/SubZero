@@ -107,6 +107,10 @@ export const router = createBrowserRouter([
         element: withSuspense(DataImport)
       },
       {
+        path: 'import',
+        element: withSuspense(DataImport)
+      },
+      {
         path: 'account',
         element: withSuspense(Account)
       },

@@ -370,7 +370,7 @@ export default function Clients() {
 
         {/* Clients Table */}
         <Card variant="outlined">
-          <Table hoverRow>
+          <Table>
             <thead>
               <tr>
                 <th>
@@ -407,7 +407,7 @@ export default function Clients() {
                   <td>
                     <Typography
                       level="body-sm"
-                      sx={{ fontWeight: 600, cursor: 'pointer', textDecoration: 'underline' }}
+                      sx={{ fontWeight: 600, cursor: 'pointer' }}
                       onClick={() => navigate(`/clients/${client.id}`)}
                     >
                       {client.company?.name || 'N/A'}

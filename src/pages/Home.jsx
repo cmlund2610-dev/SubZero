@@ -209,7 +209,7 @@ export default function Home() {
                 <Grid xs={6}>
                   <Box>
                     <Typography level="h2" sx={{ fontWeight: 700, color: 'success.500' }}>
-                      ${(totalMRR / 1000).toFixed(1)}K
+                      {totalMRR.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
                     </Typography>
                     <Typography level="body-sm" color="neutral">
                       Total MRR

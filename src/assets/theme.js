@@ -134,11 +134,11 @@ const theme = extendTheme({
     JoyCard: {
       styleOverrides: {
         root: {
-          boxShadow: '0 2px 10px rgba(130,131,146,0.15)',
-          transition: 'transform 0.2s ease',
+          boxShadow: 'none',
+          transition: 'none',
           '&:hover': {
-            transform: 'scale(1.01)',
-            boxShadow: '0 8px 20px rgba(130,131,146,0.18)',
+            transform: 'none',
+            boxShadow: 'none',
           },
         },
       },
@@ -146,22 +146,10 @@ const theme = extendTheme({
     JoyButton: {
       styleOverrides: {
         root: {
-          fontWeight: 600,
-          borderRadius: '12px',
-          transition: 'all 0.2s ease-in-out',
+          transition: 'none',
           '&:hover': {
-            transform: 'translateY(-1px)',
+            transform: 'none',
           },
-        },
-        solid: {
-          backgroundColor: primary,
-          color: textLight,
-          '&:hover': { backgroundColor: primaryHover },
-        },
-        outlined: {
-          borderColor: neutral,
-          color: neutral,
-          '&:hover': { backgroundColor: '#F2F3F6' },
         },
       },
     },

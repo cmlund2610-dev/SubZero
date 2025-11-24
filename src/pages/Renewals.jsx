@@ -52,10 +52,12 @@ export default function Renewals() {
         setLoading(true);
         const data = await getCompanyRenewalsData(userCompany.id);
         setRenewalsData(data);
+        console.log('🔍 Raw Renewals Data:', data);
         
         // Load clients
         const firestoreClients = await getCompanyClients(userCompany.id);
         setClients(firestoreClients || []);
+        console.log('🔍 Raw Clients Data:', firestoreClients);
       } catch (error) {
         console.error('Error loading renewals data:', error);
         setClients([]);
@@ -68,32 +70,25 @@ export default function Renewals() {
   }, [userCompany?.id]);
   
   const upcomingRenewals = useMemo(() => {
-    if (clients.length === 0) return [];
-    
-    return clients
-      .filter(client => client.renewal?.date)
-      .map(client => {
-        const renewalDate = new Date(client.renewal.date);
-        const today = new Date();
-        const daysUntil = Math.ceil((renewalDate - today) / (1000 * 60 * 60 * 24));
-        
-        // Use stored data if available, otherwise use defaults
-        const stored = renewalsData[client.id] || {};
-        
-        return {
-          id: client.id,
-          company: client.company?.name || 'Unknown Company',
-          renewalDate: client.renewal.date,
-          currentMRR: client.mrr || 0,
-          proposedMRR: client.mrr || 0, // In real app, this would be separate
-          stage: stored.stage || 'forecast', // Use stored or default stage
-          probability: stored.probability !== undefined ? stored.probability : (client.health?.score || 50),
-          csm: client.csm?.owner || 'Unassigned',
-          daysUntil
-        };
-      })
-      .filter(renewal => renewal.daysUntil <= 90 && renewal.daysUntil >= 0)
-      .sort((a, b) => a.daysUntil - b.daysUntil);
+    return clients.map(client => {
+      const renewalDate = client.renewal?.date ? new Date(client.renewal.date) : null;
+      const today = new Date();
+      const daysUntil = renewalDate ? Math.ceil((renewalDate - today) / (1000 * 60 * 60 * 24)) : null;
+
+      const stored = renewalsData[client.id] || {};
+
+      return {
+        id: client.id,
+        company: client.company?.name || 'Unknown Company',
+        renewalDate: client.renewal?.date || 'No Date Provided',
+        currentMRR: Number(client.mrr) || 0,
+        proposedMRR: Number(client.mrr) || 0,
+        stage: stored.stage || 'forecast',
+        probability: stored.probability !== undefined ? stored.probability : (client.health?.score || 50),
+        csm: client.csm?.owner || 'Unassigned',
+        daysUntil: daysUntil !== null ? daysUntil : 'N/A'
+      };
+    });
   }, [clients, renewalsData]);
 
   // Loading indicator while fetching from Firestore
@@ -328,7 +323,7 @@ export default function Renewals() {
 
       {/* Renewals table */}
       <Card variant="outlined">
-        <Table hoverRow>
+        <Table>
           <thead>
             <tr>
               <th style={{ width: '22%' }}>Company</th>
@@ -346,25 +341,13 @@ export default function Renewals() {
                 <td>
                   <Link
                     onClick={() => navigate(`/clients/${renewal.id}`)}
-                    sx={{ 
-                      cursor: 'pointer',
-                      fontWeight: 600,
-                      color: 'primary.500',
-                      '&:hover': {
-                        color: 'primary.700',
-                        textDecoration: 'underline'
-                      }
-                    }}
+                    sx={{ cursor: 'pointer', fontWeight: 600, color: 'primary.500' }}
                   >
                     {renewal.company}
                   </Link>
                 </td>
                 <td>
-                  <Chip 
-                    size="sm" 
-                    variant="soft" 
-                    color={renewal.daysUntil <= 7 ? 'danger' : renewal.daysUntil <= 30 ? 'warning' : 'neutral'}
-                  >
+                  <Chip size="sm" variant="soft" color={renewal.daysUntil <= 7 ? 'danger' : renewal.daysUntil <= 30 ? 'warning' : 'neutral'}>
                     {renewal.daysUntil} days
                   </Chip>
                 </td>
@@ -415,11 +398,6 @@ export default function Renewals() {
                     <Option value={90}>90%</Option>
                     <Option value={100}>100%</Option>
                   </Select>
-                </td>
-                <td>
-                  <Typography level="body-sm">
-                    {renewal.csm}
-                  </Typography>
                 </td>
               </tr>
             ))}

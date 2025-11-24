@@ -85,17 +85,44 @@ export default function DataImport() {
           const lines = e.target.result.split('\n').filter(line => line.trim());
           headers = lines[0].split(',').map(h => h.trim().replace(/['"]/g, ''));
           
-          data = lines.slice(1).map(line => {
+          // Update progress dynamically during data processing
+          data = lines.slice(1).map((line, index) => {
             const values = line.split(',').map(v => v.trim().replace(/['"]/g, ''));
             const obj = {};
-            headers.forEach((header, index) => {
-              obj[header] = values[index] || '';
+            headers.forEach((header, idx) => {
+              obj[header] = values[idx] || '';
             });
+
+            // Update progress
+            setImportProgress(Math.round((index + 1) / lines.length * 100));
+
             return obj;
           });
         } else {
           throw new Error('Please upload a CSV or JSON file');
         }
+
+        // Dynamic field mapping based on uploaded headers
+        const fieldMapping = {
+          client_id: 'client_id',
+          company_name: 'company_name',
+          contact_name: 'contact_name',
+          contact_email: 'contact_email',
+          contract_startDate: 'contract_startDate',
+          contract_endDate: 'contract_endDate',
+          renewal_date: 'renewal_date',
+          mrr: 'mrr',
+          ltv: 'ltv',
+          subscribedMonths: 'subscribedMonths'
+        };
+
+        data = data.map(row => {
+          const mappedRow = {};
+          Object.keys(fieldMapping).forEach(key => {
+            mappedRow[key] = row[fieldMapping[key]] || '';
+          });
+          return mappedRow;
+        });
 
         setUploadedData(data);
         setOriginalHeaders(headers);
@@ -127,22 +154,23 @@ export default function DataImport() {
     }));
   };
 
+  // Enhanced validation preview and sample data display
   const validateMappings = () => {
     const mappedFields = Object.values(fieldMappings).filter(Boolean);
     const fieldCheck = checkFieldPresence(mappedFields, uploadedData);
-    
+
     // Check for required fields
     const requiredFields = CANONICAL_FIELDS.filter(field => field.required).map(field => field.key);
     const missingRequired = requiredFields.filter(field => !mappedFields.includes(field));
-    
+
     const results = {
       ...fieldCheck,
       missingRequired,
       hasRequiredFields: missingRequired.length === 0,
-      unmappedFields: originalHeaders.filter(h => !fieldMappings[h]),
-      duplicateMappings: findDuplicateMappings()
+      duplicateMappings: findDuplicateMappings(),
+      transformedData: transformData().slice(0, 3), // Preview first 3 records
     };
-    
+
     setValidationResults(results);
     setActiveStep(2);
   };
@@ -169,6 +197,60 @@ export default function DataImport() {
     });
   };
 
+  const renderValidationResults = () => {
+    return (
+      <Stack spacing={2}>
+        {validationResults?.missingRequired.length > 0 && (
+          <Alert variant="soft" color="danger">
+            <Typography level="body-sm">
+              <strong>Missing required fields:</strong> {validationResults.missingRequired.join(', ')}
+            </Typography>
+          </Alert>
+        )}
+
+        {validationResults?.duplicateMappings.length > 0 && (
+          <Alert variant="soft" color="warning">
+            <Typography level="body-sm">
+              <strong>Duplicate mappings:</strong> {validationResults.duplicateMappings.join(', ')}
+            </Typography>
+          </Alert>
+        )}
+
+        <Alert variant="soft" color="success">
+          <Typography level="body-sm">
+            Ready to import {uploadedData.length} clients with {Object.keys(fieldMappings).length} mapped fields.
+          </Typography>
+        </Alert>
+
+        <Card variant="outlined">
+          <Typography level="title-sm" sx={{ mb: 2 }}>
+            Preview (First 3 Records)
+          </Typography>
+          <Table size="sm">
+            <thead>
+              <tr>
+                <th>Company</th>
+                <th>MRR</th>
+                <th>Health Score</th>
+                <th>Risk Level</th>
+              </tr>
+            </thead>
+            <tbody>
+              {validationResults.transformedData.map((client, index) => (
+                <tr key={index}>
+                  <td>{client.companyName || 'N/A'}</td>
+                  <td>{client.mrr ? `$${client.mrr}` : 'N/A'}</td>
+                  <td>{client.health?.score || 'N/A'}</td>
+                  <td>{client.churn?.risk || 'N/A'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </Card>
+      </Stack>
+    );
+  };
+
   // Step 4: Import
   const executeImport = async () => {
     setIsImporting(true);
@@ -177,6 +259,8 @@ export default function DataImport() {
     
     try {
       const transformedData = transformData();
+      
+      console.log('🔍 Mapped Data:', transformedData); // Debugging log to inspect mapped data
       
       if (!userCompany?.id) {
         throw new Error('No company ID found. Please sign in again.');
@@ -411,56 +495,7 @@ export default function DataImport() {
             </Box>
 
             {/* Validation Results */}
-            <Stack spacing={2}>
-              {validationResults?.missingRequired.length > 0 && (
-                <Alert variant="soft" color="danger">
-                  <Typography level="body-sm">
-                    <strong>Missing required fields:</strong> {validationResults.missingRequired.join(', ')}
-                  </Typography>
-                </Alert>
-              )}
-
-              {validationResults?.duplicateMappings.length > 0 && (
-                <Alert variant="soft" color="warning">
-                  <Typography level="body-sm">
-                    <strong>Duplicate mappings:</strong> {validationResults.duplicateMappings.join(', ')}
-                  </Typography>
-                </Alert>
-              )}
-
-              <Alert variant="soft" color="success">
-                <Typography level="body-sm">
-                  Ready to import {uploadedData.length} clients with {Object.keys(fieldMappings).length} mapped fields.
-                </Typography>
-              </Alert>
-            </Stack>
-
-            {/* Preview */}
-            <Card variant="outlined">
-              <Typography level="title-sm" sx={{ mb: 2 }}>
-                Preview (First 3 Records)
-              </Typography>
-              <Table size="sm">
-                <thead>
-                  <tr>
-                    <th>Company</th>
-                    <th>MRR</th>
-                    <th>Health Score</th>
-                    <th>Risk Level</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {transformedData.slice(0, 3).map((client, index) => (
-                    <tr key={index}>
-                      <td>{client.companyName || 'N/A'}</td>
-                      <td>{client.mrr ? `$${client.mrr}` : 'N/A'}</td>
-                      <td>{client.health?.score || 'N/A'}</td>
-                      <td>{client.churn?.risk || 'N/A'}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </Card>
+            {renderValidationResults()}
 
             <Stack direction="row" justifyContent="space-between">
               <Button variant="outlined" onClick={() => setActiveStep(1)}>
@@ -496,7 +531,7 @@ export default function DataImport() {
                 <CheckCircle sx={{ fontSize: '4rem', color: 'success.500' }} />
                 <Box textAlign="center">
                   <Typography level="h4" sx={{ mb: 1 }}>
-                    Import Complete!
+                    Import Complete! Welcome to SubZero.
                   </Typography>
                   <Typography level="body-md" color="neutral" sx={{ mb: 3 }}>
                     Successfully imported {uploadedData.length} clients to Firestore. You can now view them in the Clients page.

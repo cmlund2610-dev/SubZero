@@ -280,7 +280,7 @@ function NotesSection({ client }) {
   useEffect(() => {
     const loadNotes = async () => {
       if (!userCompany?.id) return;
-      
+
       try {
         setLoading(true);
         const fetchedNotes = await getClientNotes(userCompany.id, client.id);
@@ -297,15 +297,15 @@ function NotesSection({ client }) {
 
   const addNote = async () => {
     if (!draft.trim() || !userCompany?.id) return;
-    
+
     setSaving(true);
     try {
       const noteData = {
         text: draft.trim(),
         createdBy: userProfile?.uid || 'unknown',
-        createdByName: userProfile?.fullName || 'Unknown User'
+        createdByName: userProfile?.fullName || 'Unknown User',
       };
-      
+
       const newNote = await addClientNote(userCompany.id, client.id, noteData);
       setNotes([newNote, ...notes]);
       setDraft('');
@@ -319,10 +319,10 @@ function NotesSection({ client }) {
 
   const deleteNote = async (noteId) => {
     if (!userCompany?.id) return;
-    
+
     try {
       await deleteClientNote(userCompany.id, client.id, noteId);
-      setNotes(notes.filter(n => n.id !== noteId));
+      setNotes(notes.filter((n) => n.id !== noteId));
     } catch (error) {
       console.error('Error deleting note:', error);
       alert('Failed to delete note. Please try again.');
@@ -344,8 +344,21 @@ function NotesSection({ client }) {
                 placeholder="Meeting summary, observation, next steps..."
               />
               <Stack direction="row" justifyContent="flex-end" spacing={1}>
-                <Button variant="outlined" color="neutral" onClick={() => setDraft('')} disabled={saving}>Clear</Button>
-                <Button variant="solid" color="primary" onClick={addNote} loading={saving} disabled={!draft.trim()}>
+                <Button
+                  variant="outlined"
+                  color="neutral"
+                  onClick={() => setDraft('')}
+                  disabled={saving}
+                >
+                  Clear
+                </Button>
+                <Button
+                  variant="solid"
+                  color="primary"
+                  onClick={addNote}
+                  loading={saving}
+                  disabled={!draft.trim()}
+                >
                   Save Note
                 </Button>
               </Stack>
@@ -355,50 +368,18 @@ function NotesSection({ client }) {
         <Grid xs={12} md={7}>
           <Card variant="outlined" sx={{ p: 3 }}>
             {notes.length > 0 ? (
-              notes.map(note => (
+              notes.map((note) => (
                 <Stack key={note.id} spacing={1}>
                   <Typography level="body-md">{note.text}</Typography>
-                  <Typography level="body-sm" color="neutral">{note.createdByName}</Typography>
+                  <Typography level="body-sm" color="neutral">
+                    {note.createdByName}
+                  </Typography>
                 </Stack>
               ))
             ) : (
-              <Typography level="body-md" color="neutral">No notes available.</Typography>
-            )}
-          </Card>
-        </Grid>
-      </Grid>
-
-      <Typography level="title-lg">Tasks</Typography>
-      <Grid container spacing={2}>
-        <Grid xs={12} md={5}>
-          <Card variant="outlined" sx={{ p: 3, height: '100%' }}>
-            <Stack spacing={2}>
-              <Typography level="title-md">Add Task</Typography>
-              <Input
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Task title"
-              />
-              <Stack direction="row" justifyContent="flex-end" spacing={1}>
-                <Button variant="outlined" color="neutral" onClick={() => setTitle('')} disabled={saving}>Clear</Button>
-                <Button variant="solid" color="primary" onClick={addTask} loading={saving} disabled={!title.trim()}>
-                  Save Task
-                </Button>
-              </Stack>
-            </Stack>
-          </Card>
-        </Grid>
-        <Grid xs={12} md={7}>
-          <Card variant="outlined" sx={{ p: 3 }}>
-            {tasks.length > 0 ? (
-              tasks.map(task => (
-                <Stack key={task.id} spacing={1}>
-                  <Typography level="body-md">{task.title}</Typography>
-                  <Typography level="body-sm" color="neutral">{task.createdByName}</Typography>
-                </Stack>
-              ))
-            ) : (
-              <Typography level="body-md" color="neutral">No tasks available.</Typography>
+              <Typography level="body-md" color="neutral">
+                No notes available.
+              </Typography>
             )}
           </Card>
         </Grid>
