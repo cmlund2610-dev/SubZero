@@ -19,7 +19,10 @@ import {
   getDoc, 
   updateDoc,
   serverTimestamp,
-  collection
+  collection,
+  query,
+  where,
+  getDocs
 } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase.js';
 
@@ -264,6 +267,24 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Function to retrieve user UID based on email
+  const getUserUIDByEmail = async (email) => {
+    try {
+      const usersCollection = collection(db, 'users');
+      const querySnapshot = await getDocs(query(usersCollection, where('email', '==', email)));
+      if (!querySnapshot.empty) {
+        const userDoc = querySnapshot.docs[0];
+        return userDoc.id; // Return the UID
+      } else {
+        console.warn('No user found with email:', email);
+        return null;
+      }
+    } catch (error) {
+      console.error('Error retrieving user UID by email:', error);
+      return null;
+    }
+  };
+
   // Auth state listener
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -303,6 +324,7 @@ export const AuthProvider = ({ children }) => {
     updateUserProfile,
     loadUserProfile,
     loadCompanyData,
+    getUserUIDByEmail,
     // Helper computed properties
     isAuthenticated: !!currentUser,
     isProfileLoaded: !!userProfile,
