@@ -90,8 +90,13 @@ export const AuthProvider = ({ children }) => {
         };
         
         console.log('🔵 Saving company data:', companyData);
-        await setDoc(companyRef, companyData);
-        console.log('✅ Company document saved');
+        try {
+          await setDoc(companyRef, companyData);
+          console.log('✅ Company document saved');
+        } catch (error) {
+          console.error('❌ Failed to save company document:', error);
+          throw new Error('Company creation failed');
+        }
       } else {
         // Join existing company (would need invitation logic here)
         companyId = profileData.companyId;
@@ -114,8 +119,13 @@ export const AuthProvider = ({ children }) => {
       };
 
       console.log('🔵 Saving user profile:', completeProfile);
-      await setDoc(userDocRef, completeProfile);
-      console.log('✅ User profile saved');
+      try {
+        await setDoc(userDocRef, completeProfile);
+        console.log('✅ User profile saved');
+      } catch (error) {
+        console.error('❌ Failed to save user profile:', error);
+        throw new Error('User profile creation failed');
+      }
       
       setUserProfile(completeProfile);
       setUserCompany(companyData);
