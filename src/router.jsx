@@ -160,4 +160,12 @@ export const router = createBrowserRouter([
     path: '/email-templates',
     element: withSuspense(EmailTemplates),
   },
+  {
+    path: '*',
+    element: (
+      <ErrorBoundary FallbackComponent={ErrorFallback}>
+        <div>Page not found</div>
+      </ErrorBoundary>
+    )
+  }
 ]);
