@@ -46,15 +46,9 @@ export const analytics = typeof window !== 'undefined' ? getAnalytics(app) : nul
 console.log('Initializing Firebase with config:', firebaseConfig);
 console.log('Firestore DB initialized:', db);
 
-// Connect to Firebase emulators in development
-if (typeof window !== 'undefined') {
-  // Only connect to emulators if not already connected
-  try {
-    // Connect to auth emulator if running locally
-    // Uncomment these lines if you want to use Firebase emulators for development
-    // connectAuthEmulator(auth, "http://localhost:9099", { disableWarnings: true });
-    // connectFirestoreEmulator(db, 'localhost', 8080);
-  } catch (error) {
-    console.log('Firebase emulators already connected or not available');
-  }
+// Conditionally connect to Firebase emulators in development
+if (window.location.hostname === 'localhost') {
+  console.log('🔵 Connecting to Firebase emulators...');
+  connectAuthEmulator(auth, "http://localhost:9099", { disableWarnings: true });
+  connectFirestoreEmulator(db, 'localhost', 8080);
 }
