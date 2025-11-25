@@ -305,6 +305,9 @@ const Profile = ({ embedded = false }) => {
     </Stack>
   );
 
+  console.log('🔵 Current user:', currentUser);
+  console.log('🔵 User profile:', userProfile);
+
   if (embedded) {
     return profileContent;
   }
